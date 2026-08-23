@@ -254,11 +254,12 @@ export async function deleteCustomCategory(categoryId: string) {
 
 export async function setUserPassword(newPassword: string): Promise<{ success: boolean; message: string }> {
   const session = await auth();
+  const sessionEmail = session?.user?.email?.toLowerCase().trim();
   let userId = session?.user?.id;
 
-  if (!userId && session?.user?.email) {
+  if (sessionEmail) {
     const dbUser = await prisma.user.findUnique({
-      where: { email: session.user.email.toLowerCase() },
+      where: { email: sessionEmail },
       select: { id: true },
     });
     if (dbUser) userId = dbUser.id;
@@ -289,4 +290,5 @@ export async function setUserPassword(newPassword: string): Promise<{ success: b
     return { success: false, message: "Gagal menyimpan kata sandi. Silakan coba lagi." };
   }
 }
+
 
