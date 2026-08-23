@@ -131,7 +131,7 @@ export async function getDashboardAnalyticsData(): Promise<DashboardAnalyticsDat
     orderBy: { createdAt: "asc" },
   });
 
-  const accounts = accountsRaw.map((acc) => ({
+  const accounts = accountsRaw.map((acc: { id: string; name: string; type: string; balance: number | unknown; color: string | null }) => ({
     id: acc.id,
     name: acc.name,
     type: acc.type,
@@ -139,7 +139,7 @@ export async function getDashboardAnalyticsData(): Promise<DashboardAnalyticsDat
     color: acc.color,
   }));
 
-  const netWorth = accounts.reduce((sum, acc) => sum + acc.balance, 0);
+  const netWorth = accounts.reduce((sum: number, acc: { balance: number }) => sum + acc.balance, 0);
 
   // 2. Fetch Goals for Safe-to-Spend allocation
   const goalsRaw = await prisma.goalVault.findMany({
@@ -147,7 +147,7 @@ export async function getDashboardAnalyticsData(): Promise<DashboardAnalyticsDat
     orderBy: { currentAmount: "desc" },
   });
 
-  const topGoals: TopGoalItem[] = goalsRaw.slice(0, 3).map((g) => {
+  const topGoals: TopGoalItem[] = goalsRaw.slice(0, 3).map((g: { id: string; name: string; targetAmount: number | unknown; currentAmount: number | unknown; color: string | null; icon: string | null; deadline: Date | null; status: string }) => {
     const target = Number(g.targetAmount);
     const current = Number(g.currentAmount);
     const progress = target > 0 ? Math.min(100, Math.round((current / target) * 100)) : 0;
@@ -164,7 +164,7 @@ export async function getDashboardAnalyticsData(): Promise<DashboardAnalyticsDat
     };
   });
 
-  const totalGoalSavings = goalsRaw.reduce((sum, g) => sum + Number(g.currentAmount), 0);
+  const totalGoalSavings = goalsRaw.reduce((sum: number, g: { currentAmount: number | unknown }) => sum + Number(g.currentAmount), 0);
 
   // 3. Fetch Transactions for 6 Months
   const transactionsRaw = await prisma.transaction.findMany({
@@ -269,10 +269,10 @@ export async function getDashboardAnalyticsData(): Promise<DashboardAnalyticsDat
   });
 
   // Format Category Expense Points with percentage, count, and average
-  const totalCategoryExpense = Array.from(categoryExpenseMap.values()).reduce((sum, c) => sum + c.amount, 0);
+  const totalCategoryExpense = Array.from(categoryExpenseMap.values()).reduce((sum: number, c: { amount: number }) => sum + c.amount, 0);
   const categoryExpenses: CategoryExpensePoint[] = Array.from(categoryExpenseMap.values())
     .sort((a, b) => b.amount - a.amount)
-    .map((c) => ({
+    .map((c: { name: string; color: string; amount: number; count: number }) => ({
       name: c.name,
       amount: c.amount,
       color: c.color,
@@ -366,7 +366,16 @@ export async function getDashboardAnalyticsData(): Promise<DashboardAnalyticsDat
   }
 
   // 4. Fetch 5 Recent Transactions
-  const recentTransactions: RecentTransactionItem[] = transactionsRaw.slice(0, 5).map((tx) => ({
+  const recentTransactions: RecentTransactionItem[] = transactionsRaw.slice(0, 5).map((tx: {
+    id: string;
+    type: string;
+    amount: number | unknown;
+    date: Date;
+    description: string | null;
+    receiptUrl: string | null;
+    category?: { name: string; icon: string | null; color: string | null } | null;
+    account: { name: string; type: string };
+  }) => ({
     id: tx.id,
     type: tx.type as "INCOME" | "EXPENSE" | "TRANSFER",
     amount: Number(tx.amount),
@@ -392,7 +401,7 @@ export async function getDashboardAnalyticsData(): Promise<DashboardAnalyticsDat
     orderBy: { name: "asc" },
   });
 
-  const categories = categoriesRaw.map((c) => ({
+  const categories = categoriesRaw.map((c: { id: string; name: string; type: string; icon: string | null; color: string | null }) => ({
     id: c.id,
     name: c.name,
     type: c.type,

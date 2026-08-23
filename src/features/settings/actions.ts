@@ -83,7 +83,15 @@ export async function getSettingsData(): Promise<SettingsData> {
       transactionsCount,
       goalsCount,
     },
-    categories: categoriesRaw.map((c) => ({
+    categories: categoriesRaw.map((c: {
+      id: string;
+      name: string;
+      type: string;
+      icon: string | null;
+      color: string | null;
+      isDefault: boolean;
+      _count: { transactions: number };
+    }) => ({
       id: c.id,
       name: c.name,
       type: c.type,

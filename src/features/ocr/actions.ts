@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { Prisma } from "@prisma/client";
 
 export interface ActionResult<T = unknown> {
   success: boolean;
@@ -39,7 +40,7 @@ export async function saveReceiptTransaction(
   }
 
   try {
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       // 1. Verify account ownership
       const account = await tx.account.findFirst({
         where: { id: accountId, userId, isArchived: false },

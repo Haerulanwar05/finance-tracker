@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { Prisma } from "@prisma/client";
 import {
   createTransactionSchema,
   updateTransactionSchema,
@@ -136,7 +137,7 @@ export async function getTransactionsData(filters?: TransactionFilterInput) {
   let totalIncome = 0;
   let totalExpense = 0;
 
-  const transactions: TransactionWithRelations[] = rawTransactions.map((tx) => {
+  const transactions: TransactionWithRelations[] = rawTransactions.map((tx: (typeof rawTransactions)[0]) => {
     const numAmount = Number(tx.amount);
     if (tx.type === "INCOME") {
       totalIncome += numAmount;
@@ -152,7 +153,7 @@ export async function getTransactionsData(filters?: TransactionFilterInput) {
 
   const netCashflow = totalIncome - totalExpense;
 
-  const sanitizedAccounts = accounts.map((acc) => ({
+  const sanitizedAccounts = accounts.map((acc: (typeof accounts)[0]) => ({
     ...acc,
     balance: Number(acc.balance),
   }));
@@ -192,7 +193,7 @@ export async function createTransaction(input: CreateTransactionInput): Promise<
   const userId = session.user.id;
 
   try {
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       // 1. Verify source account exists and belongs to user
       const source = await tx.account.findFirst({
         where: { id: accountId, userId, isArchived: false },
@@ -304,7 +305,7 @@ export async function updateTransaction(input: UpdateTransactionInput): Promise<
   const userId = session.user.id;
 
   try {
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       // 1. Fetch old transaction
       const oldTx = await tx.transaction.findFirst({
         where: { id, userId },
@@ -413,7 +414,7 @@ export async function deleteTransaction(id: string): Promise<ActionResult> {
   const userId = session.user.id;
 
   try {
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       const existing = await tx.transaction.findFirst({
         where: { id, userId },
       });
@@ -485,7 +486,7 @@ export async function importBulkTransactions(
   try {
     let netAdjustment = 0;
 
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       // 1. Verify target account
       const account = await tx.account.findFirst({
         where: { id: accountId, userId, isArchived: false },
@@ -502,15 +503,17 @@ export async function importBulkTransactions(
         },
       });
 
-      const categoryMap = new Map(allCategories.map((c) => [c.name.toLowerCase(), c.id]));
-      const defaultExpenseCat = allCategories.find((c) => c.type === "EXPENSE")?.id || null;
-      const defaultIncomeCat = allCategories.find((c) => c.type === "INCOME")?.id || null;
+      const categoryMap = new Map<string, string>(
+        allCategories.map((c: (typeof allCategories)[0]) => [c.name.toLowerCase(), c.id])
+      );
+      const defaultExpenseCat = allCategories.find((c: (typeof allCategories)[0]) => c.type === "EXPENSE")?.id || null;
+      const defaultIncomeCat = allCategories.find((c: (typeof allCategories)[0]) => c.type === "INCOME")?.id || null;
 
       // 3. Prepare transaction records
       for (const row of rows) {
         let matchedCategoryId: string | null = null;
         if (row.suggestedCategoryId) {
-          matchedCategoryId = categoryMap.get(row.suggestedCategoryId.toLowerCase()) || null;
+          matchedCategoryId = categoryMap.get(row.suggestedCategoryId.toLowerCase()) ?? null;
         }
         if (!matchedCategoryId) {
           matchedCategoryId = row.type === "INCOME" ? defaultIncomeCat : defaultExpenseCat;

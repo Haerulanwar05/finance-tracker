@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { Prisma } from "@prisma/client";
 import {
   createGoalSchema,
   updateGoalSchema,
@@ -96,7 +97,22 @@ export async function getGoalsData() {
   let activeCount = 0;
   let achievedCount = 0;
 
-  const goals: GoalVaultWithRelations[] = rawGoals.map((g) => {
+  const goals: GoalVaultWithRelations[] = rawGoals.map((g: {
+    id: string;
+    userId: string;
+    linkedAccountId: string | null;
+    name: string;
+    targetAmount: number;
+    currentAmount: number;
+    deadline: Date | null;
+    color: string | null;
+    icon: string | null;
+    status: string;
+    createdAt: Date;
+    updatedAt: Date;
+    linkedAccount?: { id: string; name: string; type: string; balance: number } | null;
+    allocations?: Array<{ id: string; amount: number; type: string; date: Date; note: string | null }>;
+  }) => {
     totalTarget += g.targetAmount;
     totalSaved += g.currentAmount;
     if (g.status === "ACHIEVED" || g.currentAmount >= g.targetAmount) {
@@ -297,7 +313,7 @@ export async function depositToVault(input: AllocateFundsInput): Promise<ActionR
   const { vaultId, sourceAccountId, amount, note } = validated.data;
 
   try {
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       // 1. Verify Account and Balance
       const account = await tx.account.findFirst({
         where: { id: sourceAccountId, userId, isArchived: false },
@@ -388,7 +404,7 @@ export async function withdrawFromVault(input: WithdrawFundsInput): Promise<Acti
   const { vaultId, targetAccountId, amount, note } = validated.data;
 
   try {
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       // 1. Verify Goal Vault and Saved Balance
       const vault = await tx.goalVault.findFirst({
         where: { id: vaultId, userId },
