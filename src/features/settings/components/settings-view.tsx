@@ -17,8 +17,10 @@ import {
   PiggyBank,
   CheckCircle2,
   AlertCircle,
+  KeyRound,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { usePrivacy } from "@/context/privacy-context";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -27,6 +29,7 @@ import {
   updateProfile,
   createCustomCategory,
   deleteCustomCategory,
+  setUserPassword,
 } from "../actions";
 
 interface SettingsViewProps {
@@ -82,7 +85,46 @@ export function SettingsView({ data }: SettingsViewProps) {
   // Category filter state
   const [catFilter, setCatFilter] = React.useState<"ALL" | "EXPENSE" | "INCOME">("ALL");
 
+  // Password management state
+  const [newPassword, setNewPassword] = React.useState("");
+  const [confirmPassword, setConfirmPassword] = React.useState("");
+  const [isSavingPassword, setIsSavingPassword] = React.useState(false);
+  const [hasPassword, setHasPassword] = React.useState(Boolean(data.user.hasPassword));
+  const [passwordMessage, setPasswordMessage] = React.useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
+
   const numericBudget = Math.max(0, parseInt(budgetStr.replace(/\D/g, ""), 10) || 0);
+
+  const handlePasswordSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPasswordMessage(null);
+
+    if (newPassword.length < 6) {
+      setPasswordMessage({ type: "error", text: "Password minimal harus 6 karakter." });
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      setPasswordMessage({ type: "error", text: "Konfirmasi password tidak cocok." });
+      return;
+    }
+
+    setIsSavingPassword(true);
+    const res = await setUserPassword(newPassword);
+    setIsSavingPassword(false);
+
+    if (res.success) {
+      setPasswordMessage({ type: "success", text: res.message });
+      setHasPassword(true);
+      setNewPassword("");
+      setConfirmPassword("");
+      router.refresh();
+    } else {
+      setPasswordMessage({ type: "error", text: res.message });
+    }
+  };
 
   const handleProfileSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -302,7 +344,86 @@ export function SettingsView({ data }: SettingsViewProps) {
         </form>
       </div>
 
-      {/* 2. Kelola Kategori Transaksi */}
+      {/* 2. Kata Sandi & Keamanan Masuk */}
+      <div className="rounded-3xl border border-zinc-800/80 bg-zinc-900/60 backdrop-blur-xl p-6 sm:p-8 space-y-6 shadow-xl">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-800/80 pb-4">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center">
+              <KeyRound className="h-5 w-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h2 className="text-base font-bold text-white">Kata Sandi & Keamanan Masuk</h2>
+                {hasPassword ? (
+                  <span className="text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">
+                    ● Password Aktif
+                  </span>
+                ) : (
+                  <span className="text-[10px] font-semibold text-blue-400 bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 rounded-full">
+                    Akun Google (Tanpa Password Manual)
+                  </span>
+                )}
+              </div>
+              <p className="text-xs text-zinc-400">
+                {hasPassword
+                  ? "Anda bisa masuk lewat Google atau menggunakan Email & Kata Sandi manual"
+                  : "Buat kata sandi agar akun Google ini juga bisa login lewat form email & password biasa"}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <form onSubmit={handlePasswordSubmit} className="space-y-4 max-w-xl">
+          {passwordMessage && (
+            <div
+              className={`p-3 rounded-2xl text-xs flex items-center gap-2 border ${
+                passwordMessage.type === "success"
+                  ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-300"
+                  : "bg-rose-500/10 border-rose-500/20 text-rose-300"
+              }`}
+            >
+              {passwordMessage.type === "success" ? (
+                <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+              ) : (
+                <AlertCircle className="h-4 w-4 text-rose-400 shrink-0" />
+              )}
+              <span>{passwordMessage.text}</span>
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Input
+              label={hasPassword ? "Kata Sandi Baru" : "Buat Kata Sandi Baru"}
+              type="password"
+              placeholder="Minimal 6 karakter"
+              required
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+            />
+
+            <Input
+              label="Konfirmasi Kata Sandi"
+              type="password"
+              placeholder="Ketik ulang password"
+              required
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+          </div>
+
+          <div className="flex justify-end pt-1">
+            <Button
+              type="submit"
+              disabled={isSavingPassword || !newPassword}
+              className="bg-amber-600 hover:bg-amber-500 text-white font-semibold text-xs shadow-lg shadow-amber-900/30"
+            >
+              {isSavingPassword ? "Menyimpan..." : hasPassword ? "Perbarui Kata Sandi" : "Simpan Kata Sandi Akun"}
+            </Button>
+          </div>
+        </form>
+      </div>
+
+      {/* 3. Kelola Kategori Transaksi */}
       <div className="rounded-3xl border border-zinc-800/80 bg-zinc-900/60 backdrop-blur-xl p-6 sm:p-8 space-y-6 shadow-xl">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-800/80 pb-4">
           <div className="flex items-center gap-3">

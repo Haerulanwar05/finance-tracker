@@ -42,4 +42,18 @@ describe("Pengaturan & Settings Test Suite", () => {
       expect(canDeleteCategory(customCat)).toBe(true);
     });
   });
+
+  describe("3. Password & Security Invariants", () => {
+    it("validates minimum 6 characters password requirement", () => {
+      function validatePassword(pass: string): boolean {
+        return Boolean(pass && pass.length >= 6);
+      }
+
+      expect(validatePassword("123456")).toBe(true);
+      expect(validatePassword("rahasia123")).toBe(true);
+      expect(validatePassword("12345")).toBe(false);
+      expect(validatePassword("")).toBe(false);
+    });
+  });
 });
+

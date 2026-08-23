@@ -3,6 +3,7 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import bcrypt from "bcryptjs";
 
 export interface SettingsData {
   user: {
@@ -10,6 +11,7 @@ export interface SettingsData {
     name: string | null;
     email: string | null;
     monthlySpendingLimit: number;
+    hasPassword: boolean;
     createdAt: string;
   };
   stats: {
@@ -50,6 +52,7 @@ export async function getSettingsData(): Promise<SettingsData> {
           name: true,
           email: true,
           monthlySpendingLimit: true,
+          passwordHash: true,
           createdAt: true,
         },
       })
@@ -63,6 +66,7 @@ export async function getSettingsData(): Promise<SettingsData> {
         name: true,
         email: true,
         monthlySpendingLimit: true,
+        passwordHash: true,
         createdAt: true,
       },
     });
@@ -76,6 +80,7 @@ export async function getSettingsData(): Promise<SettingsData> {
         name: session?.user?.name || "Pengguna",
         email: session?.user?.email || null,
         monthlySpendingLimit: 5000000,
+        hasPassword: false,
         createdAt: new Date().toISOString(),
       },
       stats: {
@@ -110,6 +115,7 @@ export async function getSettingsData(): Promise<SettingsData> {
       name: user.name,
       email: user.email,
       monthlySpendingLimit: Number(user.monthlySpendingLimit) || 0,
+      hasPassword: Boolean(user.passwordHash),
       createdAt: user.createdAt.toISOString(),
     },
     stats: {
@@ -245,3 +251,42 @@ export async function deleteCustomCategory(categoryId: string) {
     return { success: false, message: "Gagal menghapus kategori." };
   }
 }
+
+export async function setUserPassword(newPassword: string): Promise<{ success: boolean; message: string }> {
+  const session = await auth();
+  let userId = session?.user?.id;
+
+  if (!userId && session?.user?.email) {
+    const dbUser = await prisma.user.findUnique({
+      where: { email: session.user.email.toLowerCase() },
+      select: { id: true },
+    });
+    if (dbUser) userId = dbUser.id;
+  }
+
+  if (!userId) {
+    return { success: false, message: "Sesi tidak valid. Silakan login kembali." };
+  }
+
+  if (!newPassword || newPassword.length < 6) {
+    return { success: false, message: "Password minimal harus 6 karakter." };
+  }
+
+  try {
+    const passwordHash = await bcrypt.hash(newPassword, 12);
+    await prisma.user.update({
+      where: { id: userId },
+      data: { passwordHash },
+    });
+
+    revalidatePath("/settings");
+    return {
+      success: true,
+      message: "Kata sandi berhasil disimpan! Anda sekarang bisa masuk menggunakan email & kata sandi ini.",
+    };
+  } catch (e) {
+    console.error("Error setting user password:", e);
+    return { success: false, message: "Gagal menyimpan kata sandi. Silakan coba lagi." };
+  }
+}
+

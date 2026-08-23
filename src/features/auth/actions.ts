@@ -46,6 +46,22 @@ export async function registerUser(input: RegisterInput): Promise<ActionResult> 
     });
 
     if (existing) {
+      if (!existing.passwordHash) {
+        // User created account via Google OAuth earlier! Link password so they can log in via password too
+        const passwordHash = await bcrypt.hash(password, 12);
+        await prisma.user.update({
+          where: { id: existing.id },
+          data: {
+            passwordHash,
+            name: existing.name || name,
+          },
+        });
+        return {
+          success: true,
+          message: "Kata sandi berhasil ditautkan ke akun Anda! Silakan masuk menggunakan email dan kata sandi ini.",
+        };
+      }
+
       return {
         success: false,
         message: "Email sudah terdaftar. Silakan login.",
