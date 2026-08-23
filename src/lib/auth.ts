@@ -47,7 +47,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         if (!user.email) return false;
 
         try {
-          const emailLower = user.email.toLowerCase();
+          const emailLower = user.email.toLowerCase().trim();
           let dbUser = await prisma.user.findUnique({
             where: { email: emailLower },
           });
@@ -89,12 +89,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             });
           }
 
-          user.id = dbUser.id;
-          return true;
+          if (dbUser) {
+            user.id = dbUser.id;
+          }
         } catch (error) {
-          console.error("Error provisioning Google OAuth user:", error);
-          return false;
+          console.error("Non-fatal provisioning log in Google OAuth signIn:", error);
         }
+        return true;
       }
       return true;
     },
