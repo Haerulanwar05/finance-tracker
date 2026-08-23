@@ -150,6 +150,9 @@
   - [x] Konfigurasi `"postinstall": "prisma generate"` dan `"build": "prisma generate && next build"` di `package.json`.
   - [x] Anotasi tipe eksplisit pada seluruh transaksi Prisma (`Prisma.TransactionClient`) dan array callbacks.
   - [x] Sinkronisasi repositori GitHub (`https://github.com/Haerulanwar05/finance-tracker.git`).
+- [x] **8.4 Database Keep-Alive Heartbeat Automation**
+  - [x] Endpoint `/api/health` untuk kueri denyut ringan (`SELECT 1`) menjaga connection pool tetap segar.
+  - [x] GitHub Actions workflow (`.github/workflows/keep-alive.yml`) cron otomatis setiap 3 hari untuk mencegah database Supabase tertidur (*auto-pause*).
 
 ---
 
