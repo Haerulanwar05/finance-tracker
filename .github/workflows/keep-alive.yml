@@ -1,0 +1,16 @@
+name: Supabase Database Keep-Alive Heartbeat
+
+on:
+  schedule:
+    # Berjalan otomatis setiap 3 hari sekali pada pukul 00:00 UTC (07:00 WIB)
+    - cron: '0 0 */3 * *'
+  workflow_dispatch: # Memungkinkan tombol trigger manual dari tab Actions di GitHub
+
+jobs:
+  keep-alive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase Database Health Endpoint
+        run: |
+          echo "Sending automated keep-alive ping to Supabase Database..."
+          curl -s -f -X GET https://finance-tracker-haerul.vercel.app/api/health || echo "Ping completed"
