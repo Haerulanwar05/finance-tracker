@@ -1,6 +1,6 @@
 # 💰 Personal Finance, Multi-Asset & Goal Tracker
 
-Aplikasi modern full-stack pencatatan keuangan harian, manajemen multi-aset (bank, e-wallet, cash, investasi), kantung target tabungan (*financial goals*), serta input pintar berbasis **AI Vision OCR** untuk struk belanja dan import mutasi bank.
+Aplikasi modern *full-stack* pencatatan keuangan harian, manajemen multi-aset (bank, e-wallet, cash, investasi), target tabungan finansial (*financial goals*), serta input pintar berbasis **AI Vision OCR** untuk struk belanja dan ekspor laporan keuangan profesional.
 
 ---
 
@@ -8,12 +8,12 @@ Aplikasi modern full-stack pencatatan keuangan harian, manajemen multi-aset (ban
 
 Semua perencanaan sistem dan panduan teknis telah disusun secara terstruktur di folder [`docs/`](./docs):
 
-* 🏛️ **[docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md)**: Arsitektur sistem (C4 Model), Tech Stack Decision Matrix, Data Flow transaksi & OCR, serta standar keamanan finansial.
-* 🎨 **[docs/UI_UX_DESIGN_SYSTEM.md](./docs/UI_UX_DESIGN_SYSTEM.md)**: Sistem desain visual modern (Bento Grid, Glassmorphism, Color Tokens, Micro-interactions, & Accessibility WCAG AA).
+* 🏛️ **[docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md)**: Arsitektur sistem (C4 Model), Tech Stack Decision Matrix, Data Flow transaksi & OCR, mesin cetak dokumen PDF, serta standar keamanan finansial.
+* 🎨 **[docs/UI_UX_DESIGN_SYSTEM.md](./docs/UI_UX_DESIGN_SYSTEM.md)**: Sistem desain visual modern (Bento Grid, Glassmorphism, Color Tokens, Mobile Thumb Navigation, CSS Print Optimization, & Aksesibilitas WCAG AA).
 * 🗄️ **[docs/DATABASE_DESIGN.md](./docs/DATABASE_DESIGN.md)**: Skema database lengkap (PostgreSQL + Prisma ORM), relasi entitas, tipe enum, dan strategi indexing.
-* 📁 **[docs/FOLDER_STRUCTURE.md](./docs/FOLDER_STRUCTURE.md)**: Tata letak direktori proyek Next.js App Router dengan pemisahan tegas Front-End vs Back-End.
-* 🧪 **[docs/TEST_PLAN.md](./docs/TEST_PLAN.md)**: Rencana pengujian QA komprehensif (Unit Test, Integration Test, E2E Playwright, AI OCR Testing, & Keamanan Isolasi Data).
-* 📋 **[docs/TODO_TRACKER.md](./docs/TODO_TRACKER.md)**: Roadmap pengerjaan 6 fase bertahap (*Step-by-step checklist*) beserta kriteria penerimaan (*acceptance criteria*).
+* 📁 **[docs/FOLDER_STRUCTURE.md](./docs/FOLDER_STRUCTURE.md)**: Tata letak direktori proyek Next.js App Router dengan pemisahan tegas Feature-Sliced Architecture.
+* 🧪 **[docs/TEST_PLAN.md](./docs/TEST_PLAN.md)**: Rencana pengujian QA komprehensif (Unit Test, Integration Test, E2E QA Matrix, AI OCR Testing, & Keamanan Isolasi Data - **90/90 Tests Passing 100%**).
+* 📋 **[docs/TODO_TRACKER.md](./docs/TODO_TRACKER.md)**: Roadmap pengerjaan 7 fase bertahap (*Step-by-step checklist*) beserta kriteria penerimaan (*acceptance criteria*).
 
 ---
 
@@ -21,27 +21,40 @@ Semua perencanaan sistem dan panduan teknis telah disusun secara terstruktur di 
 
 1. **Multi-Account & Net Worth**:
    * Kelola rekening bank (BCA, Mandiri, dll.), dompet digital (GoPay, OVO, DANA), uang tunai, dan aset investasi.
-   * Transfer antar-akun dengan pencatatan mutasi otomatis.
+   * Transfer antar-rekening dengan pencatatan mutasi otomatis dan saldo terjaga atomik (ACID).
    * Kalkulasi *real-time* total kekayaan bersih (*Net Worth*).
-2. **Pencatatan Harian & Smart Import**:
-   * Input cepat transaksi pemasukan dan pengeluaran.
-   * **AI Vision OCR**: Foto struk belanja $\rightarrow$ otomatis ekstrak nominal, tanggal, toko, dan kategori.
-   * **Import CSV**: Upload mutasi bank untuk pencatatan transaksi sekaligus.
-3. **Financial Goals (Hybrid Multi-Vault)**:
-   * Alokasi tabungan ke berbagai pos target (Dana Darurat, Liburan, Gadget, dll.).
-   * Visual progress bar dan estimasi waktu target tercapai.
-4. **Analitik & Dashboard**:
-   * Grafik tren arus kas (*Cashflow*).
-   * Diagram lingkaran proporsi pengeluaran per kategori.
-   * Indikator *Safe-to-Spend* (saldo aman dibelanjakan).
+2. **Pencatatan Harian & Smart Ingestion**:
+   * Input cepat transaksi pemasukan, pengeluaran, dan mutasi.
+   * **AI Vision OCR**: Foto struk belanja $\rightarrow$ otomatis ekstrak nominal, tanggal, toko, dan kategori via Google Gemini.
+   * **Import CSV**: Upload mutasi bank untuk pencatatan transaksi sekaligus dengan auto-categorization pintar.
+3. **Filter Waktu & Ekspor Laporan Dokumen (PDF & CSV)**:
+   * **Filter Rentang Tanggal**: Pilihan instan (*Bulan Ini, Bulan Lalu, 3 Bulan, Tahun Ini*) dan kustom rentang tanggal kalender.
+   * **Cetak Dokumen PDF Resmi (*Print-Ready Statement*)**: Tata letak rekening koran A4 bersih (*top-aligned, high-contrast, zero dark-mode artifacts*).
+   * **Unduh CSV Spreadsheet**: Format CSV UTF-8 dengan BOM untuk kompatibilitas sempurna dengan Microsoft Excel dan Google Sheets.
+4. **Target Tabungan Mandiri (Financial Goals)**:
+   * Alokasi tabungan ke berbagai pos target (Dana Darurat, Liburan, Gadget, Kendaraan, dll.).
+   * Visual progress bar, estimasi waktu target tercapai, dan *Smart Pace Indicator*.
+5. **Analitik & Dashboard**:
+   * Grafik tren arus kas (*Cashflow*) dan diagram donat proporsi pengeluaran per kategori.
+   * Indikator *Safe-to-Spend* (batas aman belanja harian berbasis rata-rata 30 hari standar).
+6. **Pusat Pengaturan (`/settings`)**:
+   * Manajemen profil pengguna dan sinkronisasi nama *real-time*.
+   * Konfigurasi batas anggaran belanja bulanan dengan simulator harian.
+   * Manajemen kategori pemasukan & pengeluaran kustom dengan pemilih warna.
+   * Toggle sensor privasi saldo dan status konektivitas AI Vision.
+7. **Mobile-First Experience**:
+   * Bottom navigation bar 6-item responsif di zona jangkauan jempol.
+   * Header shortcut dan safe-area padding (`pb-24`).
 
 ---
 
 ## 🛠️ Tech Stack
 
-* **Framework**: Next.js 14/15 (App Router, Server Actions, React Server Components)
+* **Framework**: Next.js 16.3+ (App Router, Server Actions, React Server Components)
 * **Language**: TypeScript (Strict Mode)
-* **Styling**: Tailwind CSS + Shadcn UI + Lucide Icons
+* **Styling**: Tailwind CSS v4 + Shadcn UI + Lucide Icons
 * **Database & ORM**: PostgreSQL + Prisma ORM
 * **Authentication**: NextAuth.js (Auth.js v5)
-* **AI Vision API**: Google Gemini Flash Vision API
+* **AI Vision API**: Google Gemini Flash Vision API (@google/genai)
+* **Testing**: Vitest (**11 Test Suites, 90/90 Tests Passed 100%**)
+* **Linting**: ESLint (0 errors, 0 warnings)

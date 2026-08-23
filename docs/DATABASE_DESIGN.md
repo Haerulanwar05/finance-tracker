@@ -1,5 +1,5 @@
 # 🗄️ Database Design & Schema Specification
-## PostgreSQL + Prisma ORM
+## SQLite / PostgreSQL + Prisma ORM
 
 ---
 
@@ -32,8 +32,7 @@ erDiagram
 
 ```prisma
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
 }
 
 generator client {
@@ -44,20 +43,21 @@ generator client {
 // 1. User & Authentication
 // ----------------------------------------------------
 model User {
-  id            String         @id @default(cuid())
-  name          String?
-  email         String         @unique
-  emailVerified DateTime?
-  passwordHash  String?
-  image         String?
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  id                   String         @id @default(cuid())
+  name                 String?
+  email                String         @unique
+  emailVerified        DateTime?
+  passwordHash         String?
+  image                String?
+  monthlySpendingLimit Float          @default(0)
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime       @updatedAt
 
-  accounts      Account[]
-  categories    Category[]
-  transactions  Transaction[]
-  goalVaults    GoalVault[]
-  budgets       Budget[]
+  accounts             Account[]
+  categories           Category[]
+  transactions         Transaction[]
+  goalVaults           GoalVault[]
+  budgets              Budget[]
 
   @@map("users")
 }
@@ -65,22 +65,14 @@ model User {
 // ----------------------------------------------------
 // 2. Accounts / Dompet & Rekening Aset
 // ----------------------------------------------------
-enum AccountType {
-  BANK          // Rekening Bank (BCA, Mandiri, dll.)
-  EWALLET       // E-Wallet (GoPay, OVO, ShopeePay, DANA)
-  CASH          // Dompet Fisik / Uang Tunai
-  INVESTMENT    // Reksadana, Emas, Saham, Deposito
-  CREDIT_CARD   // Kartu Kredit / Paylater
-}
-
 model Account {
   id              String         @id @default(cuid())
   userId          String
   name            String         // misal: "BCA Tahapan", "GoPay Utama"
-  type            AccountType    @default(BANK)
-  balance         Decimal        @default(0) @db.Decimal(15, 2)
+  type            String         @default("BANK") // BANK, EWALLET, CASH, INVESTMENT, CREDIT_CARD
+  balance         Float          @default(0)
   currency        String         @default("IDR")
-  color           String?        // Hex code untuk visual badge (#0052CC)
+  color           String?        // Hex code (#0052CC)
   icon            String?        // Identifier icon (landmark, wallet, coins)
   accountNumber   String?        // 4 digit terakhir (opsional)
   isArchived      Boolean        @default(false)
@@ -99,16 +91,11 @@ model Account {
 // ----------------------------------------------------
 // 3. Categories (Pemasukan & Pengeluaran)
 // ----------------------------------------------------
-enum CategoryType {
-  EXPENSE
-  INCOME
-}
-
 model Category {
   id          String        @id @default(cuid())
   userId      String?       // Null = Default System Category, Non-null = User Custom Category
   name        String        // misal: "Makanan & Minuman", "Gaji", "Transportasi"
-  type        CategoryType  @default(EXPENSE)
+  type        String        @default("EXPENSE") // EXPENSE, INCOME
   icon        String?       // Lucide icon name (utensils, car, briefcase)
   color       String?       // Hex color code
   isDefault   Boolean       @default(false)
@@ -126,24 +113,18 @@ model Category {
 // ----------------------------------------------------
 // 4. Transactions (Pencatatan Keuangan Harian)
 // ----------------------------------------------------
-enum TransactionType {
-  EXPENSE
-  INCOME
-  TRANSFER
-}
-
 model Transaction {
   id              String            @id @default(cuid())
   userId          String
   accountId       String            // Akun Sumber
   targetAccountId String?           // Khusus TRANSFER (Akun Tujuan)
   categoryId      String?           // Opsional untuk transfer
-  type            TransactionType   @default(EXPENSE)
-  amount          Decimal           @db.Decimal(15, 2)
+  type            String            @default("EXPENSE") // EXPENSE, INCOME, TRANSFER
+  amount          Float
   date            DateTime          @default(now())
   description     String?
   receiptUrl      String?           // File foto struk belanja
-  rawOcrJson      Json?             // Metadata JSON hasil parse Vision OCR
+  rawOcrJson      String?           // Metadata JSON hasil parse Vision OCR
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
 
@@ -160,25 +141,19 @@ model Transaction {
 }
 
 // ----------------------------------------------------
-// 5. Goal Vaults (Kantung Finansial & Target Tabungan)
+// 5. Goal Vaults (Target Tabungan Finansial)
 // ----------------------------------------------------
-enum VaultStatus {
-  ACTIVE
-  ACHIEVED
-  PAUSED
-}
-
 model GoalVault {
   id              String            @id @default(cuid())
   userId          String
   linkedAccountId String?           // Opsional: Rekening fisik yang memegang uang ini
   name            String            // misal: "Dana Darurat", "Liburan Jepang"
-  targetAmount    Decimal           @db.Decimal(15, 2)
-  currentAmount   Decimal           @default(0) @db.Decimal(15, 2)
+  targetAmount    Float
+  currentAmount   Float             @default(0)
   deadline        DateTime?
   color           String?
   icon            String?
-  status          VaultStatus       @default(ACTIVE)
+  status          String            @default("ACTIVE") // ACTIVE, ACHIEVED, PAUSED
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
 
@@ -193,17 +168,12 @@ model GoalVault {
 // ----------------------------------------------------
 // 6. Vault Allocations (Riwayat Alokasi Tabungan)
 // ----------------------------------------------------
-enum AllocationType {
-  DEPOSIT   // Masukkan dana ke kantung
-  WITHDRAW  // Tarik dana dari kantung
-}
-
 model VaultAllocation {
   id            String          @id @default(cuid())
   vaultId       String
   transactionId String?
-  amount        Decimal         @db.Decimal(15, 2)
-  type          AllocationType  @default(DEPOSIT)
+  amount        Float
+  type          String          @default("DEPOSIT") // DEPOSIT, WITHDRAW
   date          DateTime        @default(now())
   note          String?
 
@@ -215,13 +185,13 @@ model VaultAllocation {
 }
 
 // ----------------------------------------------------
-// 7. Budgets (Batas Pengeluaran Bulanan)
+// 7. Budgets (Batas Pengeluaran Bulanan per Kategori)
 // ----------------------------------------------------
 model Budget {
   id          String    @id @default(cuid())
   userId      String
   categoryId  String
-  amount      Decimal   @db.Decimal(15, 2)
+  amount      Float
   month       Int       // 1-12
   year        Int       // misal: 2026
   createdAt   DateTime  @default(now())
@@ -240,8 +210,8 @@ model Budget {
 ## 3. Indexing & Query Optimization Strategy
 
 1. **Composite Index `[userId, date]`**:
-   * Mempercepat filter riwayat transaksi bulanan dan pencarian *cashflow* dashboard tanpa *full-table scan*.
-2. **Cascading Deletes vs SetNull**:
-   * Menghapus `Account` atau `Category` tidak akan menghapus riwayat `Transaction`, melainkan mengubah relasi menjadi `SetNull` agar pembukuan masa lalu tetap utuh.
-3. **Decimal Precision**:
-   * Menggunakan `@db.Decimal(15, 2)` menjamin akurasi angka hingga ratusan triliun Rupiah tanpa kehilangan presisi angka desimal.
+   * Mempercepat filter riwayat transaksi bulanan dan kalkulasi *cashflow* dashboard tanpa *full-table scan*.
+2. **Relasi Cascading vs SetNull**:
+   * Menghapus `Account` atau `Category` mengubah relasi di tabel `Transaction` menjadi `SetNull` agar buku mutasi masa lalu tetap utuh dan audit trail tidak hilang.
+3. **Penyimpanan Angka Rupiah**:
+   * Disimpan dalam nilai murni Rupiah yang menjamin performa kalkulasi tinggi dan kompatibilitas lintas SQLite & PostgreSQL.

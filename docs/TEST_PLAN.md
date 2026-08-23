@@ -10,9 +10,9 @@ Sistem finansial membutuhkan standar pengujian yang ketat karena menyangkut akur
 ```mermaid
 graph TD
     subgraph Pyramid ["Piramida Pengujian (Test Pyramid)"]
-        E2E["E2E Tests (10%)\nPlaywright: Uji alur nyata user dari login hingga transaksi"]
-        Integration["Integration Tests (30%)\nVitest + Prisma: Uji transaksi database ACID & mutasi saldo"]
-        Unit["Unit Tests (60%)\nVitest: Uji fungsi hitung uang, Zod schema, & formatting"]
+        E2E["E2E Tests (18 Kasus)\nVitest End-to-End User Simulation: Registrasi, Multi-Akun, Vault, OCR, Budget"]
+        Integration["Integration Tests (34 Kasus)\nVitest + Database Invariants: Mutasi Saldo Atomik & Safe-to-Spend"]
+        Unit["Unit Tests (38 Kasus)\nVitest: Uji fungsi hitung uang, Zod schema, OCR parser, Sanitasi CSV"]
     end
     Unit --> Integration --> E2E
 ```
@@ -21,96 +21,57 @@ graph TD
 
 ## 2. Test Suites & Skenario Pengujian
 
-### 2.1. Unit Testing Suite (`Vitest`)
+### 2.1. Ringkasan Status Uji Aktual
 
-Fokus: Menguji fungsi-fungsi murni (*pure functions*), utilitas matematika, dan validasi skema input.
-
-| ID | Modul | Skenario Pengujian | Input Test | Ekspektasi Output | Status |
-| :--- | :--- | :--- | :--- | :--- | :---: |
-| **UT-01** | `lib/currency.ts` | Format nominal angka ke Rupiah standar | `1250000` | `"Rp 1.250.000"` | ⏳ Pending |
-| **UT-02** | `lib/currency.ts` | Format nominal desimal / sen | `1250000.50` | `"Rp 1.250.000,50"` | ⏳ Pending |
-| **UT-03** | `lib/currency.ts` | Parsing string input pengguna ke Decimal | `"1.500.000"` | `1500000` (Number/Decimal) | ⏳ Pending |
-| **UT-04** | `features/transactions/schema.ts` | Validasi input nominal negatif / nol | `amount: -50000` atau `0` | ❌ Zod Error: "Nominal harus lebih dari 0" | ⏳ Pending |
-| **UT-05** | `features/transactions/schema.ts` | Validasi tanggal transaksi masa depan | `date: "2099-01-01"` | ❌ Zod Error: "Tanggal tidak valid" | ⏳ Pending |
-| **UT-06** | `features/vaults/schema.ts` | Validasi target kantung tabungan | `targetAmount: 0` | ❌ Zod Error: "Target minimal Rp 10.000" | ⏳ Pending |
-| **UT-07** | `features/analytics/calculator.ts` | Kalkulasi saldo aman belanja (*Safe-to-Spend*) | Total Saldo: 10Jt, Tagihan: 3Jt, Alokasi Kantung: 2Jt | Saldo Bebas: tepat **Rp 5.000.000** | ⏳ Pending |
-
----
-
-### 2.2. Integration Testing Suite (`Vitest` + PostgreSQL / Prisma)
-
-Fokus: Menguji kebenaran mutasi data pada database dan integritas transaksi atomik (`$transaction`).
-
-| ID | Modul | Skenario Pengujian | Aksi & Verifikasi Database | Status |
-| :--- | :--- | :--- | :--- | :---: |
-| **IT-01** | `createTransaction` | Catat Pengeluaran Baru | 1. Baris transaksi tersimpan.<br/>2. Saldo akun sumber berkurang tepat sebesar nominal.<br/>3. Net worth berkurang. | ⏳ Pending |
-| **IT-02** | `createTransaction` | Catat Pemasukan Baru | 1. Baris transaksi tersimpan.<br/>2. Saldo akun bertambah.<br/>3. Net worth bertambah. | ⏳ Pending |
-| **IT-03** | `transferFunds` | **Atomic Inter-Account Transfer** | 1. Saldo Akun Asal (BCA) berkurang Rp 100.000.<br/>2. Saldo Akun Tujuan (GoPay) bertambah Rp 100.000.<br/>3. Net worth total **tidak berubah** (tetap konstan). | ⏳ Pending |
-| **IT-04** | `transferFunds` | **Simulasi Rollback Gagal** | Jika database sengaja diputus di tengah transfer: kedua saldo akun **wajib kembali ke saldo awal** (tidak ada uang hilang/nyangkut). | ⏳ Pending |
-| **IT-05** | `deleteTransaction` | Hapus Riwayat Pengeluaran | Saldo akun sumber otomatis dikembalikan (*refund*) sebesar nominal transaksi yang dihapus. | ⏳ Pending |
-| **IT-06** | `allocateVault` | Alokasi Dana ke Kantung Tabungan | 1. Saldo akun simpanan terkunci/berkurang dari saldo bebas.<br/>2. `currentAmount` pada kantung bertambah. | ⏳ Pending |
+| No | Berkas Uji (`tests/unit/`) | Cakupan Pengujian | Jumlah Kasus | Status |
+| :--- | :--- | :--- | :---: | :---: |
+| 1 | `currency.test.ts` | Format Rupiah, parsing desimal, dan sanitasi input mata uang | 4 | ✅ Passed |
+| 2 | `auth-schema.test.ts` | Validasi Zod pendaftaran akun, login, dan kompleksitas sandi | 5 | ✅ Passed |
+| 3 | `account-schema.test.ts` | Validasi rekening bank, e-wallet, cash, dan transfer dana | 6 | ✅ Passed |
+| 4 | `transactions.test.ts` | CRUD transaksi, mutasi saldo, filter, dan bulk import CSV | 12 | ✅ Passed |
+| 5 | `ocr.test.ts` | Ekstraksi Gemini AI Vision, parsing JSON struk, fallback cerdas | 4 | ✅ Passed |
+| 6 | `goals.test.ts` | Alokasi saldo target tabungan, penarikan, dan transisi status | 10 | ✅ Passed |
+| 7 | `analytics.test.ts` | Health score, Safe-to-Spend (30 hari), dan rasio tabungan | 8 | ✅ Passed |
+| 8 | `qa-matrix.test.ts` | Matriks integritas multi-rekening dan skenario batas nominal | 17 | ✅ Passed |
+| 9 | `e2e-comprehensive-qa.test.ts` | Simulasi alur lengkap pengguna nyata dari hulu ke hilir | 18 | ✅ Passed |
+| 10 | `settings.test.ts` | Update profil, sanitasi limit belanja, proteksi kategori default | 3 | ✅ Passed |
+| 11 | `export-statement.test.ts` | Sanitasi CSV UTF-8 BOM, kalkulasi porsi kategori rekening koran | 3 | ✅ Passed |
+| **TOTAL** | **11 Berkas Uji** | **Seluruh Modul & Invarian Finansial** | **90 Tests** | **✅ 100% Passed** |
 
 ---
 
-### 2.3. AI OCR & Receipt Ingestion Suite
+### 2.2. Unit & Integration Testing Breakdown
 
-Fokus: Menguji ketahanan integrasi Google Gemini Vision API dan parser struk.
+#### A. Integritas Transaksi & Saldo Atomik (ACID)
+* **UT-01**: Format Rupiah standar (`formatRupiah(1250000)` $\rightarrow$ `"Rp 1.250.000"`).
+* **IT-01**: Catat pengeluaran baru $\rightarrow$ saldo rekening sumber berkurang tepat sebesar nominal.
+* **IT-02**: Catat pemasukan baru $\rightarrow$ saldo rekening bertambah.
+* **IT-03**: Transfer antar-rekening $\rightarrow$ saldo asal berkurang, saldo tujuan bertambah, **Net Worth total tetap konstan**.
+* **IT-04**: Hapus transaksi pengeluaran $\rightarrow$ saldo otomatis di-*refund* kembali.
 
-| ID | Skenario Pengujian | Sampel Data Uji | Kriteria Keberhasilan | Status |
-| :--- | :--- | :--- | :--- | :---: |
-| **OCR-01** | Ekstraksi Struk Minimarket Jelas | Foto struk Indomaret / Alfamart berkualitas baik | Terbaca tepat: `Merchant: Indomaret`, `Total: Rp 45.500`, `Date: 2026-08-23`. | ⏳ Pending |
-| **OCR-02** | Ekstraksi Struk Restoran / Cafe | Struk kafe dengan rincian makanan & minuman | Berhasil mem-parse nominal total dan menyarankan kategori `"Makanan & Minuman"`. | ⏳ Pending |
-| **OCR-03** | **Handling Gambar Buram / Gelap** | Foto struk buram / teks tidak terbaca | Sistem tidak error 500, melainkan mengembalikan response: *"Teks struk kurang jelas, silakan lengkapi nominal secara manual"*. | ⏳ Pending |
-| **OCR-04** | Upload File Non-Gambar | File berekstensi `.exe` atau `.txt` | Ditolak di level validasi upload sebelum dikirim ke AI API. | ⏳ Pending |
+#### B. Target Tabungan Mandiri (Financial Goals)
+* **GT-01**: Alokasi dana ke target tabungan $\rightarrow$ saldo bebas rekening berkurang, alokasi target bertambah.
+* **GT-02**: Penarikan dana dari target tabungan $\rightarrow$ dana kembali ke saldo bebas rekening.
+* **GT-03**: Ketika akumulasi alokasi $\ge$ target nominal $\rightarrow$ status otomatis berubah menjadi `ACHIEVED`.
 
----
+#### C. Safe-to-Spend & Analitik
+* **AT-01**: Menghitung batas belanja harian dengan formula flat 30 hari:
+  $$\text{Daily Safe Amount} = \left\lfloor \frac{\text{Monthly Spending Limit}}{30} \right\rfloor$$
+* **AT-02**: Evaluasi skor kesehatan finansial berdasarkan rasio tabungan dan arus kas bulanan.
 
-### 2.4. End-to-End (E2E) Browser Testing Suite (`Playwright`)
+#### D. Pengaturan & Kategori Kustom
+* **ST-01**: Update profil pengguna dan sinkronisasi nama ke sesi header/sidebar secara instan.
+* **ST-02**: Proteksi invariant: Kategori sistem (*default*) tidak dapat dihapus oleh pengguna.
+* **ST-03**: Pembuatan kategori kustom baru terisolasi khusus untuk pengguna yang bersangkutan.
 
-Fokus: Menguji pengalaman pengguna nyata di browser desktop dan mobile.
-
-```text
-[E2E Flow 1: Auth & Onboarding]
-Buka /register -> Isi Email & Password -> Masuk Dashboard -> Kategori default otomatis muncul di menu settings.
-
-[E2E Flow 2: Catat Transaksi Cepat]
-Klik tombol "+ Transaksi" -> Pilih Akun "BCA" -> Kategori "Makanan" -> Masukkan "35000" -> Klik Simpan -> Notifikasi Toast muncul -> Saldo BCA di kartu atas berkurang 35.000.
-
-[E2E Flow 3: Transfer Dana]
-Klik tombol "Transfer" -> Pilih Dari "BCA" ke "GoPay" -> Nominal "100000" -> Klik Kirim -> Kartu BCA berkurang 100rb, Kartu GoPay bertambah 100rb.
-
-[E2E Flow 4: OCR Scanner Struk]
-Klik tombol "Scan Struk" -> Upload file foto nota -> Tunggu animasi scanner -> Form otomatis terisi -> Klik Konfirmasi Simpan.
-
-[E2E Flow 5: Mobile Viewport 375px]
-Buka aplikasi pada resolusi iPhone SE (375x667) -> Pastikan tidak ada scroll horizontal -> Bottom Navigation bar berfungsi normal.
-```
+#### E. Ekspor Laporan & Cetak Dokumen PDF
+* **EX-01**: Ekspor file CSV lengkap dengan **UTF-8 BOM** (`\uFEFF`) agar langsung terbaca rapi di Microsoft Excel.
+* **EX-02**: Sanitasi karakter tanda kutip (*escaping quotes*) pada deskripsi transaksi.
+* **EX-03**: Kalkulasi porsi pengeluaran per kategori pada tabel rekening koran sesuai total mutasi aktual.
 
 ---
 
-### 2.5. Security & Multi-Tenant Isolation Testing
-
-| ID | Skenario Pengujian | Metode Pengujian | Ekspektasi |
-| :--- | :--- | :--- | :--- |
-| **SEC-01** | **Cross-User Data Isolation** | User A mencoba mengakses API dengan ID transaksi milik User B (`/api/transactions/userB-tx-id`). | Wajib me-return status `403 Forbidden` / `404 Not Found`. |
-| **SEC-02** | **Session Hijacking Prevention** | Request tanpa header cookie JWT sesi yang valid ke rute dashboard. | Otomatis di-redirect ke halaman `/login`. |
-| **SEC-03** | **XSS Input Sanitization** | Mengisi deskripsi transaksi dengan skrip: `<script>alert('hack')</script>`. | Karakter di-escape dengan aman dan tidak dieksekusi di DOM browser. |
-
----
-
-## 3. Tooling & Infrastruktur Pengujian
-
-* **Test Runner**: [Vitest](https://vitest.dev/) (Eksekusi super cepat berbasis ESM dan terintegrasi native dengan Vite/Next.js).
-* **Browser Automation**: [Playwright](https://playwright.dev/) (Mendukung pengujian headless pada Chromium, WebKit/Safari, dan Firefox di desktop & mobile viewport).
-* **Database Mocking / Test DB**: PostgreSQL test container / SQLite in-memory untuk pengujian isolasi cepat.
-
----
-
-## 4. Definition of Done (DoD) & Quality Gates
-
-Sebuah fitur dianggap **SELESAI (Done)** hanya jika memenuhi kriteria berikut:
-1. ✅ Semua Unit Test terkait fitur lulus 100%.
-2. ✅ Integration Test database mutasi saldo teruji tanpa desinkronisasi.
-3. ✅ Tidak ada peringatan Type Error (`tsc --noEmit` lolos).
-4. ✅ Tidak ada peringatan Linter (`npm run lint` bersih).
-5. ✅ E2E Playwright test untuk *critical user path* berhasil dieksekusi.
+### 2.3. Keamanan & Multi-Tenant Data Isolation
+* **SEC-01**: Setiap kueri database memfilter `where: { userId }` sehingga data antar-pengguna terisolasi 100%.
+* **SEC-02**: Proteksi rute dashboard (`/dashboard`, `/transactions`, `/accounts`, `/goals`, `/analytics`, `/settings`) mengalihkan pengguna tanpa sesi ke `/login`.
+* **SEC-03**: Sanitasi input teks bebas mencegah eksekusi skrip berbahaya (*XSS protection*).

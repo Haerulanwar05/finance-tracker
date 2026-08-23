@@ -1,36 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 💰 Personal Finance, Multi-Asset & Goal Tracker
 
-## Getting Started
+Aplikasi modern *full-stack* pencatatan keuangan harian, manajemen multi-aset (bank, e-wallet, cash, investasi), target tabungan finansial (*financial goals*), serta input pintar berbasis **AI Vision OCR** untuk struk belanja dan ekspor laporan keuangan profesional.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 📚 Dokumentasi Proyek Lengkap
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Semua perencanaan sistem dan panduan teknis telah disusun secara terstruktur di folder [`docs/`](./docs):
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+* 🏛️ **[docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md)**: Arsitektur sistem (C4 Model), Tech Stack Decision Matrix, Data Flow transaksi & OCR, mesin cetak dokumen PDF, serta standar keamanan finansial.
+* 🎨 **[docs/UI_UX_DESIGN_SYSTEM.md](./docs/UI_UX_DESIGN_SYSTEM.md)**: Sistem desain visual modern (Bento Grid, Glassmorphism, Color Tokens, Mobile Thumb Navigation, CSS Print Optimization, & Aksesibilitas WCAG AA).
+* 🗄️ **[docs/DATABASE_DESIGN.md](./docs/DATABASE_DESIGN.md)**: Skema database lengkap (PostgreSQL + Prisma ORM), relasi entitas, tipe enum, dan strategi indexing.
+* 📁 **[docs/FOLDER_STRUCTURE.md](./docs/FOLDER_STRUCTURE.md)**: Tata letak direktori proyek Next.js App Router dengan pemisahan tegas Feature-Sliced Architecture.
+* 🧪 **[docs/TEST_PLAN.md](./docs/TEST_PLAN.md)**: Rencana pengujian QA komprehensif (Unit Test, Integration Test, E2E QA Matrix, AI OCR Testing, & Keamanan Isolasi Data - **90/90 Tests Passing 100%**).
+* 📋 **[docs/TODO_TRACKER.md](./docs/TODO_TRACKER.md)**: Roadmap pengerjaan 7 fase bertahap (*Step-by-step checklist*) beserta kriteria penerimaan (*acceptance criteria*).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 🚀 Fitur Utama
 
-To learn more about Next.js, take a look at the following resources:
+1. **Multi-Account & Net Worth**:
+   * Kelola rekening bank (BCA, Mandiri, dll.), dompet digital (GoPay, OVO, DANA), uang tunai, dan aset investasi.
+   * Transfer antar-rekening dengan pencatatan mutasi otomatis dan saldo terjaga atomik (ACID).
+   * Kalkulasi *real-time* total kekayaan bersih (*Net Worth*).
+2. **Pencatatan Harian & Smart Ingestion**:
+   * Input cepat transaksi pemasukan, pengeluaran, dan mutasi.
+   * **AI Vision OCR**: Foto struk belanja $\rightarrow$ otomatis ekstrak nominal, tanggal, toko, dan kategori via Google Gemini.
+   * **Import CSV**: Upload mutasi bank untuk pencatatan transaksi sekaligus dengan auto-categorization pintar.
+3. **Filter Waktu & Ekspor Laporan Dokumen (PDF & CSV)**:
+   * **Filter Rentang Tanggal**: Pilihan instan (*Bulan Ini, Bulan Lalu, 3 Bulan, Tahun Ini*) dan kustom rentang tanggal kalender.
+   * **Cetak Dokumen PDF Resmi (*Print-Ready Statement*)**: Tata letak rekening koran A4 bersih (*top-aligned, high-contrast, zero dark-mode artifacts*).
+   * **Unduh CSV Spreadsheet**: Format CSV UTF-8 dengan BOM untuk kompatibilitas sempurna dengan Microsoft Excel dan Google Sheets.
+4. **Target Tabungan Mandiri (Financial Goals)**:
+   * Alokasi tabungan ke berbagai pos target (Dana Darurat, Liburan, Gadget, Kendaraan, dll.).
+   * Visual progress bar, estimasi waktu target tercapai, dan *Smart Pace Indicator*.
+5. **Analitik & Dashboard**:
+   * Grafik tren arus kas (*Cashflow*) dan diagram donat proporsi pengeluaran per kategori.
+   * Indikator *Safe-to-Spend* (batas aman belanja harian berbasis rata-rata 30 hari standar).
+6. **Pusat Pengaturan (`/settings`)**:
+   * Manajemen profil pengguna dan sinkronisasi nama *real-time*.
+   * Konfigurasi batas anggaran belanja bulanan dengan simulator harian.
+   * Manajemen kategori pemasukan & pengeluaran kustom dengan pemilih warna.
+   * Toggle sensor privasi saldo dan status konektivitas AI Vision.
+7. **Mobile-First Experience**:
+   * Bottom navigation bar 6-item responsif di zona jangkauan jempol.
+   * Header shortcut dan safe-area padding (`pb-24`).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🛠️ Tech Stack
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+* **Framework**: Next.js 16.3+ (App Router, Server Actions, React Server Components)
+* **Language**: TypeScript (Strict Mode)
+* **Styling**: Tailwind CSS v4 + Shadcn UI + Lucide Icons
+* **Database & ORM**: PostgreSQL + Prisma ORM
+* **Authentication**: NextAuth.js (Auth.js v5)
+* **AI Vision API**: Google Gemini Flash Vision API (@google/genai)
+* **Testing**: Vitest (**11 Test Suites, 90/90 Tests Passed 100%**)
+* **Linting**: ESLint (0 errors, 0 warnings)

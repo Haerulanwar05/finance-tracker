@@ -20,6 +20,16 @@
 # production
 /build
 
+# database local files
+*.db
+*.db-journal
+*.sqlite
+dev.db
+prisma/dev.db
+
+# supabase temporary configs
+supabase/.temp
+
 # misc
 .DS_Store
 *.pem
@@ -30,8 +40,10 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
+# env files (strict private)
+.env
+.env*.local
+!.env.example
 
 # vercel
 .vercel
