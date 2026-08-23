@@ -43,54 +43,76 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (account?.provider === "google") {
         if (!user.email) return false;
 
-        let dbUser = await prisma.user.findUnique({
-          where: { email: user.email.toLowerCase() },
-        });
-
-        if (!dbUser) {
-          dbUser = await prisma.user.create({
-            data: {
-              email: user.email.toLowerCase(),
-              name: user.name || "Pengguna",
-              image: user.image,
-              monthlySpendingLimit: 5000000,
-            },
+        try {
+          const emailLower = user.email.toLowerCase();
+          let dbUser = await prisma.user.findUnique({
+            where: { email: emailLower },
           });
 
-          // Auto-seed initial 3 wallets + standard financial categories
-          await prisma.account.createMany({
-            data: [
-              { userId: dbUser.id, name: "Rekening Utama", type: "BANK", balance: 0, color: "#0052CC" },
-              { userId: dbUser.id, name: "Dompet Digital (E-Wallet)", type: "EWALLET", balance: 0, color: "#00875A" },
-              { userId: dbUser.id, name: "Uang Tunai (Cash)", type: "CASH", balance: 0, color: "#FFAB00" },
-            ],
-          });
+          if (!dbUser) {
+            dbUser = await prisma.$transaction(async (tx) => {
+              const newUser = await tx.user.create({
+                data: {
+                  email: emailLower,
+                  name: user.name || "Pengguna",
+                  image: user.image,
+                  monthlySpendingLimit: 5000000,
+                },
+              });
 
-          await prisma.category.createMany({
-            data: [
-              { userId: dbUser.id, name: "Makanan & Minuman", type: "EXPENSE", color: "#FF5630", isDefault: true },
-              { userId: dbUser.id, name: "Transportasi", type: "EXPENSE", color: "#FFAB00", isDefault: true },
-              { userId: dbUser.id, name: "Belanja & Kebutuhan", type: "EXPENSE", color: "#0052CC", isDefault: true },
-              { userId: dbUser.id, name: "Tagihan & Utilitas", type: "EXPENSE", color: "#6554C0", isDefault: true },
-              { userId: dbUser.id, name: "Hiburan & Rekreasi", type: "EXPENSE", color: "#00B8D9", isDefault: true },
-              { userId: dbUser.id, name: "Gaji & Pendapatan", type: "INCOME", color: "#36B37E", isDefault: true },
-              { userId: dbUser.id, name: "Investasi & Dividen", type: "INCOME", color: "#00875A", isDefault: true },
-            ],
-          });
+              // Auto-seed initial 3 wallets
+              await tx.account.createMany({
+                data: [
+                  { userId: newUser.id, name: "Rekening Utama", type: "BANK", balance: 0, color: "#0052CC" },
+                  { userId: newUser.id, name: "Dompet Digital (E-Wallet)", type: "EWALLET", balance: 0, color: "#00875A" },
+                  { userId: newUser.id, name: "Uang Tunai (Cash)", type: "CASH", balance: 0, color: "#FFAB00" },
+                ],
+              });
+
+              // Auto-seed standard financial categories
+              await tx.category.createMany({
+                data: [
+                  { userId: newUser.id, name: "Makanan & Minuman", type: "EXPENSE", color: "#FF5630", isDefault: true },
+                  { userId: newUser.id, name: "Transportasi", type: "EXPENSE", color: "#FFAB00", isDefault: true },
+                  { userId: newUser.id, name: "Belanja & Kebutuhan", type: "EXPENSE", color: "#0052CC", isDefault: true },
+                  { userId: newUser.id, name: "Tagihan & Utilitas", type: "EXPENSE", color: "#6554C0", isDefault: true },
+                  { userId: newUser.id, name: "Hiburan & Rekreasi", type: "EXPENSE", color: "#00B8D9", isDefault: true },
+                  { userId: newUser.id, name: "Gaji & Pendapatan", type: "INCOME", color: "#36B37E", isDefault: true },
+                  { userId: newUser.id, name: "Investasi & Dividen", type: "INCOME", color: "#00875A", isDefault: true },
+                ],
+              });
+
+              return newUser;
+            });
+          }
+
+          user.id = dbUser.id;
+          return true;
+        } catch (error) {
+          console.error("Error provisioning Google OAuth user:", error);
+          return false;
         }
-
-        user.id = dbUser.id;
       }
       return true;
     },
     async jwt({ token, user }) {
-      if (user) {
+      if (user?.id) {
         token.id = user.id;
+      } else if (!token.id && token.email) {
+        try {
+          const dbUser = await prisma.user.findUnique({
+            where: { email: token.email.toLowerCase() },
+            select: { id: true },
+          });
+          if (dbUser) token.id = dbUser.id;
+        } catch (e) {
+          console.error("JWT user lookup error:", e);
+        }
       }
       return token;
     },
     async session({ session, token }) {
-      if (token && session.user) {
+      if (token?.id && session.user) {
         session.user.id = token.id as string;
       }
       return session;
