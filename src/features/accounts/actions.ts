@@ -24,14 +24,24 @@ export interface ActionResult<T = unknown> {
  */
 export async function getAccountsData() {
   const session = await auth();
-  if (!session?.user?.id) {
+  let userId = session?.user?.id;
+
+  if (!userId && session?.user?.email) {
+    const dbUser = await prisma.user.findUnique({
+      where: { email: session.user.email.toLowerCase() },
+      select: { id: true },
+    });
+    if (dbUser) userId = dbUser.id;
+  }
+
+  if (!userId) {
     return { accounts: [], archivedAccounts: [], netWorth: 0 };
   }
 
   const [activeAccounts, archivedAccounts] = await Promise.all([
     prisma.account.findMany({
       where: {
-        userId: session.user.id,
+        userId,
         isArchived: false,
       },
       orderBy: {
@@ -40,7 +50,7 @@ export async function getAccountsData() {
     }),
     prisma.account.findMany({
       where: {
-        userId: session.user.id,
+        userId,
         isArchived: true,
       },
       orderBy: {

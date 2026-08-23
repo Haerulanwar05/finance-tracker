@@ -11,26 +11,41 @@ export default async function DashboardLayout({
   const session = await auth();
 
   // Route Protection: Redirect unauthenticated users to /login
-  if (!session?.user?.id) {
+  if (!session?.user?.id && !session?.user?.email) {
     redirect("/login");
   }
 
-  // Fetch real-time user profile from database
-  const dbUser = await prisma.user.findUnique({
-    where: { id: session.user.id },
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      image: true,
-    },
-  });
+  let userId = session?.user?.id;
+  let dbUser = userId
+    ? await prisma.user.findUnique({
+        where: { id: userId },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          image: true,
+        },
+      })
+    : null;
+
+  if (!dbUser && session?.user?.email) {
+    dbUser = await prisma.user.findUnique({
+      where: { email: session.user.email.toLowerCase() },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        image: true,
+      },
+    });
+  }
 
   const currentUser = {
-    ...session.user,
-    name: dbUser?.name || session.user.name || "Kawan",
-    email: dbUser?.email || session.user.email,
-    image: dbUser?.image || session.user.image,
+    ...session?.user,
+    id: dbUser?.id || session?.user?.id || "anonymous",
+    name: dbUser?.name || session?.user?.name || "Kawan",
+    email: dbUser?.email || session?.user?.email,
+    image: dbUser?.image || session?.user?.image,
   };
 
   return (

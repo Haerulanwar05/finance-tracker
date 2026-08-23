@@ -32,25 +32,59 @@ export interface SettingsData {
 
 export async function getSettingsData(): Promise<SettingsData> {
   const session = await auth();
-  if (!session?.user?.id) {
-    throw new Error("Unauthorized");
+  let userId = session?.user?.id;
+
+  if (!userId && session?.user?.email) {
+    const dbUser = await prisma.user.findUnique({
+      where: { email: session.user.email.toLowerCase() },
+      select: { id: true },
+    });
+    if (dbUser) userId = dbUser.id;
   }
 
-  const userId = session.user.id;
+  let user = userId
+    ? await prisma.user.findUnique({
+        where: { id: userId },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          monthlySpendingLimit: true,
+          createdAt: true,
+        },
+      })
+    : null;
 
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      monthlySpendingLimit: true,
-      createdAt: true,
-    },
-  });
+  if (!user && session?.user?.email) {
+    user = await prisma.user.findUnique({
+      where: { email: session.user.email.toLowerCase() },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        monthlySpendingLimit: true,
+        createdAt: true,
+      },
+    });
+    if (user) userId = user.id;
+  }
 
-  if (!user) {
-    throw new Error("User not found");
+  if (!user || !userId) {
+    return {
+      user: {
+        id: userId || "anonymous",
+        name: session?.user?.name || "Pengguna",
+        email: session?.user?.email || null,
+        monthlySpendingLimit: 5000000,
+        createdAt: new Date().toISOString(),
+      },
+      stats: {
+        accountsCount: 0,
+        transactionsCount: 0,
+        goalsCount: 0,
+      },
+      categories: [],
+    };
   }
 
   const [accountsCount, transactionsCount, goalsCount, categoriesRaw] = await Promise.all([

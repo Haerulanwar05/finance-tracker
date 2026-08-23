@@ -95,27 +95,61 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
       return true;
     },
-    async jwt({ token, user }) {
-      if (user?.id) {
-        token.id = user.id;
-      } else if (!token.id && token.email) {
+    async jwt({ token, user, account }) {
+      if (token.email) {
         try {
-          const dbUser = await prisma.user.findUnique({
-            where: { email: token.email.toLowerCase() },
-            select: { id: true },
+          const emailLower = token.email.toLowerCase();
+          let dbUser = await prisma.user.findUnique({
+            where: { email: emailLower },
+            select: { id: true, name: true, image: true },
           });
-          if (dbUser) token.id = dbUser.id;
+
+          if (!dbUser && user) {
+            // Auto-provision if somehow not created in signIn
+            dbUser = await prisma.user.create({
+              data: {
+                email: emailLower,
+                name: user.name || "Pengguna",
+                image: user.image,
+                monthlySpendingLimit: 5000000,
+              },
+              select: { id: true, name: true, image: true },
+            });
+          }
+
+          if (dbUser) {
+            token.id = dbUser.id;
+            if (dbUser.name) token.name = dbUser.name;
+            if (dbUser.image) token.picture = dbUser.image;
+          }
         } catch (e) {
           console.error("JWT user lookup error:", e);
         }
+      } else if (user?.id) {
+        token.id = user.id;
       }
       return token;
     },
     async session({ session, token }) {
       if (token?.id && session.user) {
         session.user.id = token.id as string;
+      } else if (session?.user?.email) {
+        try {
+          const dbUser = await prisma.user.findUnique({
+            where: { email: session.user.email.toLowerCase() },
+            select: { id: true, name: true, image: true },
+          });
+          if (dbUser && session.user) {
+            session.user.id = dbUser.id;
+            if (dbUser.name) session.user.name = dbUser.name;
+            if (dbUser.image) session.user.image = dbUser.image;
+          }
+        } catch (e) {
+          console.error("Session user lookup error:", e);
+        }
       }
       return session;
     },
   },
 });
+

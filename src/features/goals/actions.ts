@@ -54,7 +54,17 @@ export interface GoalVaultWithRelations {
  */
 export async function getGoalsData() {
   const session = await auth();
-  if (!session?.user?.id) {
+  let userId = session?.user?.id;
+
+  if (!userId && session?.user?.email) {
+    const dbUser = await prisma.user.findUnique({
+      where: { email: session.user.email.toLowerCase() },
+      select: { id: true },
+    });
+    if (dbUser) userId = dbUser.id;
+  }
+
+  if (!userId) {
     return {
       goals: [] as GoalVaultWithRelations[],
       summary: {
@@ -67,8 +77,6 @@ export async function getGoalsData() {
       accounts: [],
     };
   }
-
-  const userId = session.user.id;
 
   const [rawGoals, accounts] = await Promise.all([
     prisma.goalVault.findMany({

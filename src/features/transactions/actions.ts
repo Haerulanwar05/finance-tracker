@@ -56,7 +56,17 @@ export interface TransactionWithRelations {
  */
 export async function getTransactionsData(filters?: TransactionFilterInput) {
   const session = await auth();
-  if (!session?.user?.id) {
+  let userId = session?.user?.id;
+
+  if (!userId && session?.user?.email) {
+    const dbUser = await prisma.user.findUnique({
+      where: { email: session.user.email.toLowerCase() },
+      select: { id: true },
+    });
+    if (dbUser) userId = dbUser.id;
+  }
+
+  if (!userId) {
     return {
       transactions: [] as TransactionWithRelations[],
       summary: { totalIncome: 0, totalExpense: 0, netCashflow: 0, count: 0 },
@@ -64,8 +74,6 @@ export async function getTransactionsData(filters?: TransactionFilterInput) {
       categories: [],
     };
   }
-
-  const userId = session.user.id;
 
   // Build Prisma Where Clause
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

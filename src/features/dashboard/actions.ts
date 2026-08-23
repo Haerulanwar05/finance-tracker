@@ -104,11 +104,54 @@ const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agt", "Se
 
 export async function getDashboardAnalyticsData(): Promise<DashboardAnalyticsData> {
   const session = await auth();
-  if (!session?.user?.id) {
-    throw new Error("Unauthorized");
+  let userId = session?.user?.id;
+
+  if (!userId && session?.user?.email) {
+    const dbUser = await prisma.user.findUnique({
+      where: { email: session.user.email.toLowerCase() },
+      select: { id: true },
+    });
+    if (dbUser) userId = dbUser.id;
   }
 
-  const userId = session.user.id;
+  if (!userId) {
+    return {
+      netWorth: 0,
+      monthlyIncome: 0,
+      monthlyExpense: 0,
+      prevMonthIncome: 0,
+      prevMonthExpense: 0,
+      incomeGrowthPct: 0,
+      expenseGrowthPct: 0,
+      savingsRate: 0,
+      healthScore: 100,
+      healthGrade: "A+",
+      avgDailySpend: 0,
+      totalGoalSavings: 0,
+      monthlyBudget: {
+        monthlyLimit: 5000000,
+        monthlySpent: 0,
+        monthlyRemaining: 5000000,
+        usagePercentage: 0,
+        dailySafeAmount: 166667,
+        daysRemaining: 30,
+        status: "SAFE",
+        isCustom: false,
+      },
+      safeToSpend: {
+        dailyAmount: 166667,
+        monthlyRemaining: 5000000,
+        daysRemaining: 30,
+        status: "SAFE",
+      },
+      cashflowTrend: [],
+      categoryExpenses: [],
+      recentTransactions: [],
+      topGoals: [],
+      accounts: [],
+      categories: [],
+    };
+  }
   const now = new Date();
 
   // Current month range
