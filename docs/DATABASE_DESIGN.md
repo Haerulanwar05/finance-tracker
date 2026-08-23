@@ -1,5 +1,5 @@
 # 🗄️ Database Design & Schema Specification
-## SQLite / PostgreSQL + Prisma ORM
+## Supabase Cloud PostgreSQL + Prisma ORM 7
 
 ---
 
@@ -32,7 +32,7 @@ erDiagram
 
 ```prisma
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
 }
 
 generator client {
@@ -213,5 +213,5 @@ model Budget {
    * Mempercepat filter riwayat transaksi bulanan dan kalkulasi *cashflow* dashboard tanpa *full-table scan*.
 2. **Relasi Cascading vs SetNull**:
    * Menghapus `Account` atau `Category` mengubah relasi di tabel `Transaction` menjadi `SetNull` agar buku mutasi masa lalu tetap utuh dan audit trail tidak hilang.
-3. **Penyimpanan Angka Rupiah**:
-   * Disimpan dalam nilai murni Rupiah yang menjamin performa kalkulasi tinggi dan kompatibilitas lintas SQLite & PostgreSQL.
+3. **Driver Adapter `@prisma/adapter-pg` & Connection Pooling**:
+   * Menggunakan pool connection PostgreSQL untuk efisiensi koneksi pada lingkungan serverless Next.js di Vercel tanpa kehabisan *database connections limit*.

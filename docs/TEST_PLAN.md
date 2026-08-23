@@ -75,3 +75,6 @@ graph TD
 * **SEC-01**: Setiap kueri database memfilter `where: { userId }` sehingga data antar-pengguna terisolasi 100%.
 * **SEC-02**: Proteksi rute dashboard (`/dashboard`, `/transactions`, `/accounts`, `/goals`, `/analytics`, `/settings`) mengalihkan pengguna tanpa sesi ke `/login`.
 * **SEC-03**: Sanitasi input teks bebas mencegah eksekusi skrip berbahaya (*XSS protection*).
+* **SEC-04**: Mode bypass dev otomatis dinonaktifkan di environment produksi (`NODE_ENV === 'production'`).
+* **SEC-05**: Google OAuth token handshake terenkripsi JWT dan diverifikasi secara stateless.
+* **SEC-06**: Database cloud PostgreSQL dilindungi connection pooler dengan enkripsi SSL.

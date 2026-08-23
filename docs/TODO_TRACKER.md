@@ -4,8 +4,8 @@
 ---
 
 ## 📊 Status Progres Ringkas
-* **Total Milestone**: 7 Fase Lengkap
-* **Status Saat Ini**: `🎉 SELURUH FASE (0 - 7) SELESAI, TERUJI & PRODUCTION READY`
+* **Total Milestone**: 8 Fase Lengkap
+* **Status Saat Ini**: `🎉 SELURUH FASE (0 - 8) SELESAI, TERUJI & PRODUCTION READY`
 * **Metrik Kualitas QA**: **11 Test Suites, 90/90 Unit & E2E Tests Passed (100%)**, **ESLint 0 errors / 0 warnings**, **Next.js 16 Production Build Bersih**.
 
 ---
@@ -13,24 +13,24 @@
 ## 🎯 Fase 0: Project Setup & Baseline Tooling
 - [x] **0.1 Inisialisasi Proyek Next.js 16 (App Router & Turbopack)**
   - [x] Setup Next.js App Router dengan TypeScript & Tailwind CSS v4.
-  - [x] Instalasi paket esensial (`lucide-react`, `clsx`, `tailwind-merge`, `zod`, `@prisma/client`, `next-auth`, `recharts`).
+  - [x] Instalasi paket esensial (`lucide-react`, `clsx`, `tailwind-merge`, `zod`, `@prisma/client`, `next-auth`, `recharts`, `@prisma/adapter-pg`, `pg`).
   - [x] Setup helper format Rupiah (`lib/currency.ts`) dan utils Tailwind (`cn`).
   - [x] Konfigurasi testing suite Vitest & Unit Test baseline passing (`tests/unit/currency.test.ts`).
 - [x] **0.2 Setup Database & ORM**
   - [x] Konfigurasi environment template di `.env.example` dan `.env`.
   - [x] Inisialisasi skema lengkap di `prisma/schema.prisma` (User, Account, Category, Transaction, GoalVault, VaultAllocation, Budget).
-  - [x] Konfigurasi Prisma Client singleton di `lib/prisma.ts`.
+  - [x] Konfigurasi Prisma Client singleton dengan adapter `@prisma/adapter-pg` di `lib/prisma.ts`.
 
 ---
 
 ## 🔐 Fase 1: Autentikasi & Akun Pengguna
 - [x] **1.1 Setup NextAuth.js (Auth.js v5)**
-  - [x] Konfigurasi Credentials Provider (Email & Password Hash bcrypt) di `src/lib/auth.ts`.
+  - [x] Konfigurasi Google OAuth Provider & Credentials Provider (Email & Password Hash bcrypt) di `src/lib/auth.ts`.
   - [x] Route handler API di `src/app/api/auth/[...nextauth]/route.ts`.
 - [x] **1.2 Halaman Auth & Auto-Seeder**
   - [x] Validasi Zod form login & register di `src/features/auth/schema.ts`.
   - [x] Server Action registrasi atomik di `src/features/auth/actions.ts` (otomatis membuat 3 dompet awal + 10 kategori finansial).
-  - [x] Halaman `/login` dan `/register` dengan tema Dark Bento Glassmorphism.
+  - [x] Halaman `/login` dan `/register` dengan tombol Google Sign-In & Dark Bento Glassmorphism.
   - [x] Unit Test schema validasi (`tests/unit/auth-schema.test.ts`) lolos 100%.
 
 ---
@@ -137,8 +137,25 @@
 
 ---
 
+## ☁️ Fase 8: Cloud PostgreSQL Migration (Supabase), Google OAuth & Production Vercel CI/CD
+- [x] **8.1 Migrasi Cloud Database Supabase (PostgreSQL)**
+  - [x] Setup proyek cloud database Supabase di Region Singapore (`ap-southeast-1`).
+  - [x] Pembaruan `prisma/schema.prisma` dengan provider `postgresql` dan driver adapter `@prisma/adapter-pg`.
+  - [x] Eksekusi `prisma db push` langsung ke server cloud dan auto-sinkronisasi 7 tabel utama.
+- [x] **8.2 Integrasi Google OAuth & Production Auth**
+  - [x] Konfigurasi Google Cloud OAuth 2.0 Client ID dan Secret di `src/lib/auth.ts`.
+  - [x] Tombol UI *"Lanjutkan dengan Google"* di `/login` dan `/register` dengan auto-seeding dompet awal & kategori.
+  - [x] Guarding mode bypass admin/dev otomatis dinonaktifkan di production (`NODE_ENV === "production"`).
+- [x] **8.3 Vercel Build Pipeline & Type Resilience**
+  - [x] Konfigurasi `"postinstall": "prisma generate"` dan `"build": "prisma generate && next build"` di `package.json`.
+  - [x] Anotasi tipe eksplisit pada seluruh transaksi Prisma (`Prisma.TransactionClient`) dan array callbacks.
+  - [x] Sinkronisasi repositori GitHub (`https://github.com/Haerulanwar05/finance-tracker.git`).
+
+---
+
 ## 🚀 Kriteria Keberhasilan (Acceptance Criteria)
 1. **Zero Balance Desynchronization**: Saldo akun selalu cocok 100% dengan akumulasi mutasi transaksi (garansi ACID).
 2. **Instant Receipt Logging**: Waktu pemrosesan struk dari upload foto hingga form terisi < 3 detik.
 3. **Seamless Mobile Experience**: Tampilan responsif dan nyaman digunakan di layar HP dengan bottom navigation bar ergonomis.
 4. **Professional Print Fidelity**: Hasil cetak PDF A4 bersih, proporsional, dan tepat berada di puncak kertas.
+5. **Production Cloud Durability**: Data tersimpan permanen di cloud PostgreSQL Supabase dengan perlindungan sesi Google OAuth.

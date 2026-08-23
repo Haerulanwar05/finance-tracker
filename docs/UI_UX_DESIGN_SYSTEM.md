@@ -30,6 +30,7 @@ pie title Distribusi Warna Visual Antarmuka
 | **Expense / Alert** | `#F43F5E` | `text-rose-500 bg-rose-500/10` | Pengeluaran, peringatan batas budget, saldo defisit. |
 | **Primary Accent / Goals** | `#3B82F6` | `text-blue-500 bg-blue-500/10` | Tombol aksi utama (CTA), target tabungan finansial. |
 | **Transfer / Neutral** | `#A855F7` | `text-purple-500 bg-purple-500/10` | Mutasi transfer antar-rekening/dompet. |
+| **Google Sign-In Button** | `#27272A` | `bg-zinc-800/80 border-zinc-700` | Tombol otentikasi Google dengan ikon multi-color resmi. |
 | **Text Primary** | `#F4F4F5` | `text-zinc-100` | Judul, nominal saldo utama. |
 | **Text Muted** | `#A1A1AA` | `text-zinc-400` | Label tanggal, kategori sekunder, placeholder. |
 
