@@ -297,31 +297,18 @@ export function PwaInstallBanner() {
               </div>
             ) : (
               <div className="space-y-3.5">
-                {/* 1-Click Native Browser Prompt Button */}
-                <Button
-                  type="button"
-                  onClick={handleInstallClick}
-                  className="w-full bg-emerald-500 hover:bg-emerald-400 active:scale-95 text-zinc-950 font-bold rounded-2xl h-11 text-xs cursor-pointer shadow-xl shadow-emerald-500/25 flex items-center justify-center gap-2"
-                >
-                  <Sparkles className="h-4 w-4" />
-                  <span>Pasang Otomatis Sekarang (1-Klik)</span>
-                </Button>
-
                 {/* Direct Desktop Shortcut Download Option */}
-                <div className="p-3.5 rounded-2xl bg-zinc-900/70 border border-zinc-800/80 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <p className="text-xs font-bold text-white">Unduh Pintasan Desktop Langsung</p>
-                      <p className="text-[10px] text-zinc-400">Download file pintasan `.url` ke desktop PC / laptop Anda.</p>
-                    </div>
+                <div className="p-4 rounded-2xl bg-zinc-900/70 border border-zinc-800/80 space-y-3">
+                  <div className="space-y-1">
+                    <p className="text-xs font-bold text-white">Unduh Pintasan Desktop Langsung</p>
+                    <p className="text-[11px] text-zinc-400">Download file pintasan `.url` ke desktop PC / laptop Anda.</p>
                   </div>
                   <Button
                     type="button"
-                    variant="outline"
                     onClick={downloadDesktopShortcut}
-                    className="w-full text-xs border-zinc-700 bg-zinc-800/80 hover:bg-zinc-700 text-white rounded-xl h-9 cursor-pointer flex items-center justify-center gap-1.5"
+                    className="w-full text-xs font-bold bg-blue-600 hover:bg-blue-500 active:scale-95 text-white rounded-xl h-10 cursor-pointer flex items-center justify-center gap-2 shadow-lg shadow-blue-600/20"
                   >
-                    <Download className="h-3.5 w-3.5 text-blue-400" />
+                    <Download className="h-4 w-4" />
                     <span>Unduh File Pintasan (FinanceTracker.url)</span>
                   </Button>
                 </div>
