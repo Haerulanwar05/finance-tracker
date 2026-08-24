@@ -14,6 +14,8 @@ import {
   LogOut,
   Eye,
   EyeOff,
+  Laptop,
+  Download,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PrivacyProvider, usePrivacy } from "@/context/privacy-context";
@@ -116,6 +118,24 @@ function DashboardShellInner({ user, children }: DashboardShellProps) {
 
         {/* User Profile & Sign Out Footer */}
         <div className="pt-4 border-t border-zinc-800/80 space-y-3">
+          {/* Quick Install App Desktop Trigger */}
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new CustomEvent("open-pwa-install-modal"))}
+            className="w-full flex items-center justify-between p-2.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 hover:border-emerald-500/40 hover:bg-emerald-500/15 transition-all text-left cursor-pointer group"
+          >
+            <div className="flex items-center gap-2.5">
+              <div className="h-7 w-7 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
+                <Laptop className="h-3.5 w-3.5" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-xs font-bold text-white group-hover:text-emerald-300 truncate">Pasang di Desktop</p>
+                <p className="text-[10px] text-zinc-400 truncate">Aplikasi PC / Laptop</p>
+              </div>
+            </div>
+            <Download className="h-3.5 w-3.5 text-emerald-400 group-hover:scale-110 transition-transform shrink-0 mr-0.5" />
+          </button>
+
           <div className="flex items-center justify-between px-2">
             <div className="flex items-center gap-2.5 overflow-hidden">
               <div className="relative">

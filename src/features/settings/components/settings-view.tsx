@@ -23,6 +23,8 @@ import {
   Wifi,
   RefreshCw,
   Layers,
+  Download,
+  Laptop,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -654,7 +656,18 @@ export function SettingsView({ data }: SettingsViewProps) {
               </p>
             </div>
 
-            <div className="flex items-center gap-2 shrink-0">
+            <div className="flex items-center gap-2 shrink-0 flex-wrap">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => window.dispatchEvent(new CustomEvent("open-pwa-install-modal"))}
+                className="text-xs border-emerald-500/30 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 rounded-xl cursor-pointer"
+              >
+                <Download className="h-3.5 w-3.5 mr-1.5" />
+                <span>Pasang Aplikasi</span>
+              </Button>
+
               <Button
                 type="button"
                 variant="outline"

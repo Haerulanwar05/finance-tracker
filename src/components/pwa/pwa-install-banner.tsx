@@ -9,7 +9,7 @@ interface BeforeInstallPromptEvent extends Event {
   userChoice: Promise<{ outcome: "accepted" | "dismissed"; platform: string }>;
 }
 
-const DISMISS_KEY = "financetracker_pwa_install_dismissed_until";
+const DISMISS_KEY = "financetracker_pwa_dismissed_session";
 
 export function PwaInstallBanner() {
   const [deferredPrompt, setDeferredPrompt] = React.useState<BeforeInstallPromptEvent | null>(null);
@@ -31,12 +31,6 @@ export function PwaInstallBanner() {
     setIsStandalone(isRunningStandalone);
     if (isRunningStandalone) return;
 
-    // Check dismissal cooldown
-    const dismissedUntil = localStorage.getItem(DISMISS_KEY);
-    if (dismissedUntil && Number(dismissedUntil) > Date.now()) {
-      return;
-    }
-
     // Detect Device Type
     const userAgent = window.navigator.userAgent.toLowerCase();
     const isIosDevice = /iphone|ipad|ipod/.test(userAgent);
@@ -45,23 +39,41 @@ export function PwaInstallBanner() {
     setIsIOS(isIosDevice);
     setIsDesktop(!isMobileDevice);
 
+    // Listen for custom trigger from sidebar or settings
+    const handleOpenCustom = () => {
+      setShowGuideModal(true);
+    };
+    window.addEventListener("open-pwa-install-modal", handleOpenCustom);
+
     // Listen for Chrome/Edge/Android beforeinstallprompt
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
-      setShowBanner(true);
+      // Only show banner if not dismissed in current session
+      const isDismissed = sessionStorage.getItem(DISMISS_KEY);
+      if (!isDismissed) {
+        setShowBanner(true);
+      }
     };
 
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
 
-    // Show banner after brief delay on iOS or Desktop if not standalone
-    const timer = setTimeout(() => {
-      setShowBanner(true);
-    }, 2500);
+    // Show banner after brief delay on iOS or Desktop if not dismissed in current session
+    const isDismissed = sessionStorage.getItem(DISMISS_KEY);
+    if (!isDismissed) {
+      const timer = setTimeout(() => {
+        setShowBanner(true);
+      }, 1500);
+      return () => {
+        window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+        window.removeEventListener("open-pwa-install-modal", handleOpenCustom);
+        clearTimeout(timer);
+      };
+    }
 
     return () => {
       window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
-      clearTimeout(timer);
+      window.removeEventListener("open-pwa-install-modal", handleOpenCustom);
     };
   }, []);
 
@@ -81,9 +93,7 @@ export function PwaInstallBanner() {
 
   const handleDismiss = () => {
     setShowBanner(false);
-    // Cooldown 7 days
-    const nextWeek = Date.now() + 7 * 24 * 60 * 60 * 1000;
-    localStorage.setItem(DISMISS_KEY, nextWeek.toString());
+    sessionStorage.setItem(DISMISS_KEY, "true");
   };
 
   if (isStandalone || !showBanner) return null;
