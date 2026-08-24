@@ -12,7 +12,7 @@ import {
 } from "recharts";
 import { MonthlyCashflowPoint } from "../actions";
 import { formatCompactRupiah, formatRupiah } from "@/lib/currency";
-import { BarChart3 } from "lucide-react";
+import { BarChart3, TrendingUp } from "lucide-react";
 import { usePrivacy } from "@/context/privacy-context";
 
 interface CashflowChartProps {
@@ -25,6 +25,7 @@ interface CustomTooltipProps {
     value: number;
     name: string;
     color: string;
+    dataKey?: string;
   }>;
   label?: string;
   isPrivate: boolean;
@@ -33,26 +34,54 @@ interface CustomTooltipProps {
 function CustomTooltip({ active, payload, label, isPrivate }: CustomTooltipProps) {
   if (!active || !payload || !payload.length) return null;
 
+  const income = payload.find((p) => p.dataKey === "pemasukan")?.value || 0;
+  const expense = payload.find((p) => p.dataKey === "pengeluaran")?.value || 0;
+  const net = income - expense;
+
   return (
-    <div className="rounded-2xl border border-zinc-800 bg-zinc-950/95 backdrop-blur-xl p-3.5 shadow-2xl space-y-2 min-w-[180px]">
-      <p className="text-xs font-bold text-zinc-200 border-b border-zinc-800/80 pb-1.5">
-        Bulan {label}
-      </p>
-      <div className="space-y-1.5 text-xs">
-        {payload.map((entry, index) => (
-          <div key={`item-${index}`} className="flex items-center justify-between gap-3">
-            <span className="flex items-center gap-1.5 text-zinc-400">
-              <span
-                className="h-2 w-2 rounded-full"
-                style={{ backgroundColor: entry.color }}
-              />
-              <span>{entry.name}</span>
-            </span>
-            <span className="font-mono font-bold text-white tabular-nums">
-              {isPrivate ? "Rp •••••" : formatRupiah(entry.value)}
-            </span>
-          </div>
-        ))}
+    <div className="rounded-2xl border border-zinc-700/80 bg-zinc-950/95 backdrop-blur-2xl p-4 shadow-2xl space-y-2.5 min-w-[210px] select-none pointer-events-none">
+      <div className="flex items-center justify-between border-b border-zinc-800/80 pb-2">
+        <span className="text-xs font-bold text-zinc-200">
+          Bulan {label}
+        </span>
+        <span
+          className={`text-[10px] font-semibold px-2 py-0.5 rounded-full font-mono ${
+            net >= 0
+              ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
+              : "bg-rose-500/15 text-rose-400 border border-rose-500/30"
+          }`}
+        >
+          {net >= 0 ? "+Surplus" : "-Defisit"}
+        </span>
+      </div>
+
+      <div className="space-y-2 text-xs">
+        <div className="flex items-center justify-between gap-3">
+          <span className="flex items-center gap-2 text-zinc-400">
+            <span className="h-2.5 w-2.5 rounded-full bg-gradient-to-tr from-emerald-600 to-emerald-400 shadow-sm shadow-emerald-500/40" />
+            <span>Pemasukan</span>
+          </span>
+          <span className="font-mono font-bold text-emerald-400 tabular-nums">
+            {isPrivate ? "Rp •••••" : formatRupiah(income)}
+          </span>
+        </div>
+
+        <div className="flex items-center justify-between gap-3">
+          <span className="flex items-center gap-2 text-zinc-400">
+            <span className="h-2.5 w-2.5 rounded-full bg-gradient-to-tr from-rose-600 to-rose-400 shadow-sm shadow-rose-500/40" />
+            <span>Pengeluaran</span>
+          </span>
+          <span className="font-mono font-bold text-rose-400 tabular-nums">
+            {isPrivate ? "Rp •••••" : formatRupiah(expense)}
+          </span>
+        </div>
+
+        <div className="pt-1.5 border-t border-zinc-800/60 flex items-center justify-between gap-3">
+          <span className="text-[11px] text-zinc-400">Net Arus Kas</span>
+          <span className={`font-mono font-bold text-xs ${net >= 0 ? "text-emerald-300" : "text-rose-300"}`}>
+            {isPrivate ? "Rp •••••" : (net >= 0 ? `+${formatRupiah(net)}` : formatRupiah(net))}
+          </span>
+        </div>
       </div>
     </div>
   );
@@ -67,37 +96,43 @@ export function CashflowChart({ data }: CashflowChartProps) {
   );
 
   return (
-    <div className="rounded-3xl border border-zinc-800/80 bg-zinc-900/60 backdrop-blur-xl p-5 sm:p-6 space-y-4 shadow-xl flex flex-col justify-between">
+    <div className="rounded-3xl border border-zinc-800/80 bg-gradient-to-b from-zinc-900/80 via-zinc-900/50 to-zinc-950/90 backdrop-blur-xl p-5 sm:p-6 space-y-4 shadow-xl flex flex-col justify-between select-none">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-        <div className="flex items-center gap-2.5">
-          <div className="h-9 w-9 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center">
-            <BarChart3 className="h-4.5 w-4.5" />
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div className="h-10 w-10 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center shadow-lg shadow-blue-500/5">
+            <BarChart3 className="h-5 w-5" />
           </div>
           <div>
-            <h3 className="text-base font-bold text-white tracking-tight">
-              Tren Arus Kas (6 Bulan)
-            </h3>
+            <div className="flex items-center gap-2">
+              <h3 className="text-base font-bold text-white tracking-tight">
+                Tren Arus Kas (6 Bulan)
+              </h3>
+              <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">
+                <TrendingUp className="h-3 w-3" />
+                <span>Cashflow</span>
+              </span>
+            </div>
             <p className="text-xs text-zinc-400">
-              Perbandingan pemasukan dan pengeluaran per bulan
+              Perbandingan pertumbuhan pemasukan vs pengeluaran
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-4 text-xs">
+        <div className="flex items-center gap-4 text-xs bg-zinc-900/90 border border-zinc-800/80 px-3 py-1.5 rounded-xl self-start sm:self-auto">
           <div className="flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-sm bg-emerald-500" />
-            <span className="text-zinc-400">Pemasukan</span>
+            <span className="h-2.5 w-2.5 rounded-full bg-gradient-to-tr from-emerald-600 to-emerald-400" />
+            <span className="text-zinc-300 font-medium text-[11px]">Pemasukan</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-sm bg-rose-500" />
-            <span className="text-zinc-400">Pengeluaran</span>
+            <span className="h-2.5 w-2.5 rounded-full bg-gradient-to-tr from-rose-600 to-rose-400" />
+            <span className="text-zinc-300 font-medium text-[11px]">Pengeluaran</span>
           </div>
         </div>
       </div>
 
       {/* Chart Canvas */}
-      <div className="h-[260px] w-full pt-2">
+      <div className="h-[270px] w-full pt-2">
         {!isMounted ? (
           <div className="h-full w-full flex items-center justify-center text-xs text-zinc-500 animate-pulse">
             Memuat grafik arus kas...
@@ -108,10 +143,24 @@ export function CashflowChart({ data }: CashflowChartProps) {
               data={data}
               margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
               barGap={6}
+              accessibilityLayer={false}
+              style={{ outline: "none", userSelect: "none" }}
             >
+              <defs>
+                <linearGradient id="incomeGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#34d399" stopOpacity={1} />
+                  <stop offset="100%" stopColor="#059669" stopOpacity={0.85} />
+                </linearGradient>
+                <linearGradient id="expenseGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#fb7185" stopOpacity={1} />
+                  <stop offset="100%" stopColor="#e11d48" stopOpacity={0.85} />
+                </linearGradient>
+              </defs>
+
               <CartesianGrid
                 strokeDasharray="3 3"
                 stroke="#27272a"
+                strokeOpacity={0.4}
                 vertical={false}
               />
               <XAxis
@@ -132,21 +181,23 @@ export function CashflowChart({ data }: CashflowChartProps) {
               />
               <Tooltip
                 content={<CustomTooltip isPrivate={isPrivate} />}
-                cursor={{ fill: "rgba(255, 255, 255, 0.03)", radius: 8 }}
+                cursor={{ fill: "rgba(255, 255, 255, 0.03)", radius: 10 }}
               />
               <Bar
                 dataKey="pemasukan"
                 name="Pemasukan"
-                fill="#10b981"
-                radius={[6, 6, 0, 0]}
+                fill="url(#incomeGradient)"
+                radius={[6, 6, 2, 2]}
                 maxBarSize={32}
+                activeBar={false}
               />
               <Bar
                 dataKey="pengeluaran"
                 name="Pengeluaran"
-                fill="#f43f5e"
-                radius={[6, 6, 0, 0]}
+                fill="url(#expenseGradient)"
+                radius={[6, 6, 2, 2]}
                 maxBarSize={32}
+                activeBar={false}
               />
             </BarChart>
           </ResponsiveContainer>

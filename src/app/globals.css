@@ -39,6 +39,46 @@ body {
 }
 
 /* ==========================================================================
+   RECHARTS SVG FOCUS & OUTLINE ELIMINATION
+   ========================================================================== */
+.recharts-wrapper,
+.recharts-surface,
+.recharts-layer,
+.recharts-sector,
+.recharts-rectangle,
+.recharts-bar-rectangle,
+.recharts-pie-sector,
+.recharts-curve,
+.recharts-active-dot,
+svg.recharts-surface,
+path.recharts-sector,
+path.recharts-rectangle,
+path.recharts-curve,
+rect.recharts-bar-rectangle {
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+}
+
+*:focus:not(:focus-visible) {
+  outline: none !important;
+}
+
+.recharts-wrapper:focus,
+.recharts-wrapper:active,
+.recharts-surface:focus,
+.recharts-surface:active,
+.recharts-sector:focus,
+.recharts-sector:active,
+.recharts-rectangle:focus,
+.recharts-rectangle:active {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* ==========================================================================
    PRECISION A4 TOP-ALIGNED PAGE-FIT PRINT STYLES FOR FINANCIAL STATEMENTS
    ========================================================================== */
 @media print {
