@@ -13,6 +13,7 @@ const DISMISS_KEY = "financetracker_pwa_dismissed_session";
 
 export function PwaInstallBanner() {
   const [deferredPrompt, setDeferredPrompt] = React.useState<BeforeInstallPromptEvent | null>(null);
+  const promptRef = React.useRef<BeforeInstallPromptEvent | null>(null);
   const [isIOS, setIsIOS] = React.useState(false);
   const [isDesktop, setIsDesktop] = React.useState(false);
   const [isStandalone, setIsStandalone] = React.useState(false);
@@ -40,7 +41,21 @@ export function PwaInstallBanner() {
     setIsDesktop(!isMobileDevice);
 
     // Listen for custom trigger from sidebar or settings
-    const handleOpenCustom = () => {
+    const handleOpenCustom = async () => {
+      if (promptRef.current) {
+        try {
+          await promptRef.current.prompt();
+          const choiceResult = await promptRef.current.userChoice;
+          if (choiceResult.outcome === "accepted") {
+            setShowBanner(false);
+            promptRef.current = null;
+            setDeferredPrompt(null);
+            return;
+          }
+        } catch {
+          // Fallback to guide modal
+        }
+      }
       setShowGuideModal(true);
     };
     window.addEventListener("open-pwa-install-modal", handleOpenCustom);
@@ -48,7 +63,9 @@ export function PwaInstallBanner() {
     // Listen for Chrome/Edge/Android beforeinstallprompt
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
-      setDeferredPrompt(e as BeforeInstallPromptEvent);
+      const promptEvent = e as BeforeInstallPromptEvent;
+      promptRef.current = promptEvent;
+      setDeferredPrompt(promptEvent);
       // Only show banner if not dismissed in current session
       const isDismissed = sessionStorage.getItem(DISMISS_KEY);
       if (!isDismissed) {
@@ -78,13 +95,20 @@ export function PwaInstallBanner() {
   }, []);
 
   const handleInstallClick = async () => {
-    if (deferredPrompt) {
-      await deferredPrompt.prompt();
-      const choiceResult = await deferredPrompt.userChoice;
-      if (choiceResult.outcome === "accepted") {
-        setShowBanner(false);
+    const prompt = deferredPrompt || promptRef.current;
+    if (prompt) {
+      try {
+        await prompt.prompt();
+        const choiceResult = await prompt.userChoice;
+        if (choiceResult.outcome === "accepted") {
+          setShowBanner(false);
+          promptRef.current = null;
+          setDeferredPrompt(null);
+          return;
+        }
+      } catch {
+        setShowGuideModal(true);
       }
-      setDeferredPrompt(null);
     } else {
       // Show manual guide modal (iOS Safari or Desktop Chrome/Edge)
       setShowGuideModal(true);
@@ -96,12 +120,13 @@ export function PwaInstallBanner() {
     sessionStorage.setItem(DISMISS_KEY, "true");
   };
 
-  if (isStandalone || !showBanner) return null;
+  if (isStandalone) return null;
 
   return (
     <>
       {/* Floating Modern PWA Install Banner */}
-      <div className="fixed bottom-24 md:bottom-6 right-4 left-4 md:left-auto md:max-w-lg z-40 animate-in slide-in-from-bottom-6 duration-300">
+      {showBanner && (
+        <div className="fixed bottom-24 md:bottom-6 right-4 left-4 md:left-auto md:max-w-lg z-40 animate-in slide-in-from-bottom-6 duration-300">
         <div className="relative overflow-hidden rounded-3xl border border-emerald-500/30 bg-zinc-950/90 backdrop-blur-2xl p-4 sm:p-5 shadow-2xl shadow-black/90 ring-1 ring-emerald-500/20 group">
           {/* Subtle Ambient Glow Effect */}
           <div className="absolute -top-10 -right-10 w-40 h-40 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none" />
@@ -155,6 +180,7 @@ export function PwaInstallBanner() {
           </div>
         </div>
       </div>
+      )}
 
       {/* Multi-Device Installation Instruction Modal */}
       {showGuideModal && (
