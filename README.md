@@ -15,8 +15,9 @@
 Berikut adalah rangkuman peningkatan dan fitur terbaru yang membuat pengalaman Anda mengelola keuangan harian semakin cepat, rapi, dan praktis:
 
 ### 📲 1. Pasang Aplikasi di Layar HP & Laptop/PC (PWA) & Catat Offline Tanpa Internet
-* **Bisa Dipasang di Semua Perangkat (HP & Komputer)**: Anda sekarang dapat memasang FinanceTracker sebagai aplikasi mandiri di **Android, iPhone, iPad, serta Laptop / PC Desktop (Windows & Mac)** melalui banner *"Pasang FinanceTracker"* atau menu Pengaturan.
-* **Banner Modern & Panduan Jelas**: Dilengkapi tampilan pop-up modern dan panduan visual langkah demi langkah yang disesuaikan otomatis dengan perangkat yang Anda gunakan (Safari di iPhone, atau Chrome/Edge di Laptop).
+* **Bisa Dipasang di Semua Perangkat (HP & Komputer)**: Anda sekarang dapat memasang FinanceTracker sebagai aplikasi mandiri di **Android, iPhone, iPad, serta Laptop / PC Desktop (Windows & Mac)** melalui banner *"Pasang FinanceTracker"*, tombol sidebar desktop, atau menu Pengaturan.
+* **Dukungan Desktop Native & Pin ke Taskbar**: Berjalan sebagai jendela aplikasi desktop mandiri tanpa bilah browser web, memiliki ikon resmi tersendiri di Taskbar Windows, dan dapat di-*Pin* langsung ke Taskbar untuk akses instan 1-klik setiap hari.
+* **Generator Unduh Pintasan Desktop (`FinanceTracker.url`)**: Tersedia tombol instan untuk langsung men-download file pintasan ke komputer Anda.
 * **Tetap Bisa Mencatat Saat Offline**: Sedang di tempat tanpa sinyal atau kuota internet habis? Anda tetap dapat mencatat pengeluaran harian seperti biasa. Catatan Anda akan disimpan dengan aman di **Antrean Lokal Perangkat** dan **otomatis tersinkronisasi (*auto-sync*)** ke server cloud begitu koneksi internet terhubung kembali!
 * **Akses Cepat (*App Shortcuts*)**: Ikon aplikasi di layar HP mendukung *Long-Press Shortcut* untuk langsung membuka fitur "Catat Transaksi" atau "Ringkasan Keuangan".
 

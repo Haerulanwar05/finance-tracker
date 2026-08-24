@@ -189,6 +189,8 @@
   - [x] Web App Manifest (`public/manifest.json`) & Ikon Vektor Lengkap (192px, 512px, Maskable, Apple Touch Icon).
   - [x] Service Worker Caching (`public/sw.js`) dengan strategi Stale-While-Revalidate untuk static assets dan Network-First untuk HTML navigasi.
   - [x] PWA Install Prompt Banner (`pwa-install-banner.tsx`) dengan dukungan Multi-Device (Android, iPhone Safari, dan Laptop/PC Desktop Chrome & Edge), copywriting alami, dan sentuhan visual glassmorphism modern.
+  - [x] Early `beforeinstallprompt` global event handler di `<head>` (`src/app/layout.tsx`) untuk penangkapan prompt instan di browser Chromium.
+  - [x] Desktop Native Standalone App integration: tombol pemicu khusus di Sidebar Desktop PC (`💻 Pasang di Desktop`), tombol di Pengaturan, dan generator unduh pintasan instan (`FinanceTracker.url`) untuk Desktop & Pin ke Taskbar Windows.
   - [x] Client-Side Offline Queue Engine (`src/lib/offline-queue.ts`) & React Context (`src/context/offline-context.tsx`).
   - [x] Integrasi modal tambah transaksi (`add-transaction-modal.tsx`) dengan fallback otomatis ke antrean lokal HP saat tidak ada koneksi internet.
   - [x] Auto-Sync background dispatcher yang otomatis mengirim transaksi tersimpan ke server cloud saat perangkat kembali online.
