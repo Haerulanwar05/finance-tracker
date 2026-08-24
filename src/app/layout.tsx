@@ -49,6 +49,22 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="mobile-web-app-capable" content="yes" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.__pwaInstallPrompt = null;
+              window.addEventListener('beforeinstallprompt', function(e) {
+                e.preventDefault();
+                window.__pwaInstallPrompt = e;
+                window.dispatchEvent(new CustomEvent('pwa-prompt-ready'));
+              });
+              window.addEventListener('appinstalled', function() {
+                window.__pwaInstallPrompt = null;
+                window.dispatchEvent(new CustomEvent('pwa-installed'));
+              });
+            `,
+          }}
+        />
       </head>
       <body className="min-h-full flex flex-col bg-zinc-950 text-zinc-100">{children}</body>
     </html>
