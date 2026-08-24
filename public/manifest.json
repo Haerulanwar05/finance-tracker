@@ -1,0 +1,65 @@
+{
+  "name": "FinanceTracker - Smart Personal Finance",
+  "short_name": "FinanceTracker",
+  "description": "Kelola keuangan pribadi, multi-rekening, target tabungan, dan catat struk belanja otomatis dengan AI Vision.",
+  "start_url": "/dashboard",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#09090b",
+  "theme_color": "#09090b",
+  "orientation": "portrait-primary",
+  "id": "/?pwa=true",
+  "categories": [
+    "finance",
+    "productivity",
+    "utilities"
+  ],
+  "icons": [
+    {
+      "src": "/icons/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-maskable.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Catat Transaksi",
+      "short_name": "Transaksi Baru",
+      "description": "Tambah catatan pengeluaran atau pemasukan baru",
+      "url": "/transactions",
+      "icons": [
+        {
+          "src": "/icons/icon-192.svg",
+          "sizes": "192x192",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Ringkasan Keuangan",
+      "short_name": "Overview",
+      "description": "Lihat total kekayaan dan grafik arus kas",
+      "url": "/dashboard",
+      "icons": [
+        {
+          "src": "/icons/icon-192.svg",
+          "sizes": "192x192",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
+  ]
+}

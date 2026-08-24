@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input";
 import { formatRupiah } from "@/lib/currency";
 import { createTransaction } from "../actions";
 import { TransactionType } from "../schema";
+import { useOffline } from "@/context/offline-context";
 
 interface AddTransactionModalProps {
   isOpen: boolean;
@@ -51,6 +52,7 @@ export function AddTransactionModal({
   defaultType = "EXPENSE",
 }: AddTransactionModalProps) {
   const router = useRouter();
+  const { isOnline, addOfflineTx } = useOffline();
   const [type, setType] = React.useState<TransactionType>(defaultType);
   const [amount, setAmount] = React.useState("");
   const [accountId, setAccountId] = React.useState(defaultAccountId || accounts[0]?.id || "");
@@ -156,26 +158,66 @@ export function AddTransactionModal({
       return;
     }
 
-    setIsLoading(true);
+    // Jika sedang Offline, simpan langsung ke Offline Queue lokal HP
+    if (!isOnline) {
+      addOfflineTx({
+        accountId,
+        targetAccountId: type === "TRANSFER" ? targetAccountId : undefined,
+        categoryId: type !== "TRANSFER" ? categoryId : undefined,
+        type,
+        amount: numericAmount,
+        date: new Date(date).toISOString(),
+        description: description.trim() || (type === "TRANSFER" ? "Transfer Saldo (Offline)" : "Transaksi Offline"),
+        accountName: accounts.find((a) => a.id === accountId)?.name,
+        categoryName: categories.find((c) => c.id === categoryId)?.name,
+      });
 
-    const res = await createTransaction({
-      accountId,
-      targetAccountId: type === "TRANSFER" ? targetAccountId : undefined,
-      categoryId: type !== "TRANSFER" ? categoryId : undefined,
-      type,
-      amount: numericAmount,
-      date: new Date(date),
-      description: description.trim() || undefined,
-    });
-
-    setIsLoading(false);
-
-    if (!res.success) {
-      setError(res.message || "Gagal mencatat transaksi");
-    } else {
       setAmount("");
       setDescription("");
-      router.refresh();
+      onClose();
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const res = await createTransaction({
+        accountId,
+        targetAccountId: type === "TRANSFER" ? targetAccountId : undefined,
+        categoryId: type !== "TRANSFER" ? categoryId : undefined,
+        type,
+        amount: numericAmount,
+        date: new Date(date),
+        description: description.trim() || undefined,
+      });
+
+      setIsLoading(false);
+
+      if (!res.success) {
+        setError(res.message || "Gagal mencatat transaksi");
+      } else {
+        setAmount("");
+        setDescription("");
+        router.refresh();
+        onClose();
+      }
+    } catch {
+      // Fallback jika koneksi terputus saat request sedang berjalan
+      addOfflineTx({
+        accountId,
+        targetAccountId: type === "TRANSFER" ? targetAccountId : undefined,
+        categoryId: type !== "TRANSFER" ? categoryId : undefined,
+        type,
+        amount: numericAmount,
+        date: new Date(date).toISOString(),
+        description: description.trim() || (type === "TRANSFER" ? "Transfer Saldo (Offline)" : "Transaksi Offline"),
+        accountName: accounts.find((a) => a.id === accountId)?.name,
+        categoryName: categories.find((c) => c.id === categoryId)?.name,
+      });
+
+      setIsLoading(false);
+      setAmount("");
+      setDescription("");
       onClose();
     }
   }

@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="48" height="48">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#09090b" />
+      <stop offset="100%" stop-color="#18181b" />
+    </linearGradient>
+    <linearGradient id="bagBody" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="50%" stop-color="#059669" />
+      <stop offset="100%" stop-color="#047857" />
+    </linearGradient>
+    <linearGradient id="goldTie" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fde047" />
+      <stop offset="100%" stop-color="#eab308" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="12" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="512" height="512" rx="11" fill="url(#bgGrad)" />
+
+  <!-- Ambient Glow Behind Bag -->
+  <circle cx="256" cy="280" r="160" fill="#10b981" opacity="0.18" filter="url(#glow)" />
+
+  <!-- Money Bag Top Flared Collar / Ruffles -->
+  <path d="M176 160 C160 120, 200 90, 230 110 C245 96, 267 96, 282 110 C312 90, 352 120, 336 160 Z" 
+        fill="url(#bagBody)" stroke="#34d399" stroke-width="8" stroke-linejoin="round" />
+
+  <!-- Cinched Tie Ribbon (Golden) -->
+  <path d="M170 160 C210 178, 302 178, 342 160 C332 188, 180 188, 170 160 Z" 
+        fill="url(#goldTie)" stroke="#ffffff" stroke-width="4" />
+
+  <!-- Hanging Golden Drawstring Beads -->
+  <path d="M236 175 Q215 205 220 230" stroke="#fde047" stroke-width="6" stroke-linecap="round" fill="none" />
+  <circle cx="220" cy="232" r="9" fill="#fef08a" stroke="#eab308" stroke-width="3" />
+
+  <path d="M276 175 Q297 205 292 230" stroke="#fde047" stroke-width="6" stroke-linecap="round" fill="none" />
+  <circle cx="292" cy="232" r="9" fill="#fef08a" stroke="#eab308" stroke-width="3" />
+
+  <!-- Main Plump Money Bag Body -->
+  <path d="M170 168 C130 200, 96 265, 116 350 C136 430, 200 448, 256 448 C312 448, 376 430, 396 350 C416 265, 382 200, 342 168 Z" 
+        fill="url(#bagBody)" stroke="#6ee7b7" stroke-width="10" stroke-linejoin="round" />
+
+  <!-- Center Dollar Sign ($) Emblem -->
+  <line x1="256" y1="232" x2="256" y2="382" stroke="#ffffff" stroke-width="16" stroke-linecap="round" />
+  <path d="M290 270 C290 246, 222 246, 222 290 C222 342, 290 326, 290 365 C290 405, 222 405, 222 376" 
+        fill="none" stroke="#ffffff" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" />
+
+  <!-- Sparkle Accent in Upper Right -->
+  <path d="M380 150 Q395 150 395 135 Q395 150 410 150 Q395 150 395 165 Q395 150 380 150 Z" fill="#fde047" />
+  <circle cx="395" cy="150" r="3" fill="#ffffff" />
+</svg>

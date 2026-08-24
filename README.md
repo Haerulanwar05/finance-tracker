@@ -4,45 +4,51 @@
 
 [![Status Produksi](https://img.shields.io/badge/Status-Production%20Ready-emerald.svg)](https://finance-tracker-two-teal-14.vercel.app)
 [![Next.js 16](https://img.shields.io/badge/Framework-Next.js%2016-blue.svg)](https://nextjs.org/)
+[![PWA Ready](https://img.shields.io/badge/PWA-Offline%20Ready-blueviolet.svg)](./docs/TODO_TRACKER.md)
 [![Database](https://img.shields.io/badge/Database-Supabase%20PostgreSQL-3ecf8e.svg)](https://supabase.com/)
-[![QA Tests](https://img.shields.io/badge/Tests-92%2F92%20Passed%20(100%25)-brightgreen.svg)](./docs/TEST_PLAN.md)
+[![QA Tests](https://img.shields.io/badge/Tests-98%2F98%20Passed%20(100%25)-brightgreen.svg)](./docs/TEST_PLAN.md)
 
 ---
 
 ## 📢 Apa yang Baru di Pembaruan Terkini? (Untuk Pengguna)
 
-Berikut adalah rangkuman peningkatan dan perbaikan terbaru yang membuat pengalaman Anda mengelola keuangan harian semakin cepat, rapi, dan praktis:
+Berikut adalah rangkuman peningkatan dan fitur terbaru yang membuat pengalaman Anda mengelola keuangan harian semakin cepat, rapi, dan praktis:
 
-### ⚡ 1. Perpindahan Menu Instan Tanpa Jeda (*Zero-Lag*)
+### 📲 1. Pasang Aplikasi di Layar HP (PWA) & Catat Offline Tanpa Internet
+* **Bisa Dipasang di Android & iPhone**: Anda sekarang dapat memasang FinanceTracker ke Layar Utama (*Home Screen*) HP layaknya aplikasi bawaan toko aplikasi melalui banner *"Pasang Aplikasi"* atau menu Pengaturan.
+* **Tetap Bisa Mencatat Saat Offline**: Sedang di tempat tanpa sinyal atau kuota internet habis? Anda tetap dapat mencatat pengeluaran harian seperti biasa. Catatan Anda akan disimpan dengan aman di **Antrean Lokal HP** dan **otomatis tersinkronisasi (*auto-sync*)** ke server cloud begitu koneksi internet terhubung kembali!
+* **Akses Cepat (*App Shortcuts*)**: Ikon aplikasi di layar HP mendukung *Long-Press Shortcut* untuk langsung membuka fitur "Catat Transaksi" atau "Ringkasan Keuangan".
+
+### ⚡ 2. Perpindahan Menu Instan Tanpa Jeda (*Zero-Lag*)
 * **Sebelumnya**: Saat berpindah antar halaman (misal dari *Ringkasan* ke *Transaksi* atau *Analitik*), terdapat jeda sekitar 2–3 detik sebelum layar terbuka.
 * **Sekarang**: Sistem telah dioptimalkan untuk memuat data di latar belakang. Begitu menu ditekan, layar langsung berganti seketika (**secepat kilat**) tanpa rasa menunggu.
 
-### 🏷️ 2. Tampilan "Batas Belanja Bulanan" Lebih Rapi & Elegan
+### 🏷️ 3. Tampilan "Batas Belanja Bulanan" Lebih Rapi & Elegan
 * **Sebelumnya**: Kartu anggaran di halaman Ringkasan (*Overview*) terlihat agak penuh dan terbagi dua kotak.
 * **Sekarang**: Tampilannya telah didesain ulang menjadi sangat minimalis dan mewah:
   * Dilengkapi **garis batas warna gradien (*Indigo to Cyan*)** yang menunjukkan sisa anggaran belanja Anda.
   * Terdapat **lampu status berdenyut halus** (*Batas Aman*, *Waspada*, atau *Batas Kritis*).
   * **Cukup 1 kali klik pada kartu**, Anda dapat langsung mengatur batas belanja bulanan dan melihat rekomendasi batas belanja harian yang aman.
 
-### ✨ 3. Logo Baru Kantong Uang Beranimasi & Navigasi Cerdas
+### ✨ 4. Logo Baru Kantong Uang Beranimasi & Navigasi Cerdas
 * **Desain Logo Baru**: Logo resmi aplikasi kini menggunakan lambang **Kantong Uang Emas-Zamrud (`$`)** yang melayang lembut dengan efek kilau elegan, tampil jernih di semua jenis HP (Android & iPhone).
 * **Navigasi 1-Klik**:
   * Saat **sudah login**: Mengklik logo atau tulisan *FinanceTracker* akan **langsung membawa Anda kembali ke halaman Ringkasan (*Overview*)**.
   * Saat **di halaman Login / Daftar**: Mengklik logo atau tautan *"Kembali ke Halaman Utama"* akan mengarahkan Anda langsung ke beranda depan aplikasi.
 
-### 📄 4. Nama Pengguna Otomatis Sesuai Saat Cetak Laporan PDF
+### 📄 5. Nama Pengguna Otomatis Sesuai Saat Cetak Laporan PDF
 * Saat mencetak rekening koran atau bukti transaksi berformat PDF, nama pemilik akun kini **100% otomatis menampilkan nama lengkap / username Anda yang sedang login**, baik saat dicetak dari menu *Transaksi* maupun menu *Analitik*.
 * Dokumen PDF dirancang resmi dan bersih berstandar kertas A4 siap print/arsip (*ink-friendly*).
 
-### 📊 5. Tampilan Grafik Belanja yang Nyaman & Bebas Gangguan
+### 📊 6. Tampilan Grafik Belanja yang Nyaman & Bebas Gangguan
 * Diagram donat pengeluaran per kategori kini tampil rapi tanpa kotak putih yang mengganggu saat disentuh, dan keterangan total nominal belanja tidak lagi tertutup atau tumpang tindih.
 
-### 📱 6. Desain Khusus Layar HP (Ergonomis untuk Jempol)
+### 📱 7. Desain Khusus Layar HP (Ergonomis untuk Jempol)
 * Seluruh tombol aksi utama (*Catat Transaksi, Scan Struk, Tambah Rekening*) tersusun simetris 2-kolom yang pas di layar HP.
 * Filter kategori transaksi kini dapat **digeser ke samping (*swipeable*)** dengan sangat mulus di layar sentuh.
 * Menu navigasi utama berada di bagian bawah layar (*Bottom Bar*) agar mudah dijangkau satu tangan.
 
-### 🎯 7. Halaman Depan (*Landing Page*) yang Lebih Bersih & Fokus
+### 🎯 8. Halaman Depan (*Landing Page*) yang Lebih Bersih & Fokus
 * Menghapus tombol demo yang membingungkan dan menggantinya dengan satu tombol utama yang jelas: **`Mulai Sekarang (Gratis) →`** untuk langsung mendaftar atau masuk menggunakan akun Google.
 
 ---
@@ -51,12 +57,12 @@ Berikut adalah rangkuman peningkatan dan perbaikan terbaru yang membuat pengalam
 
 Semua perencanaan sistem dan panduan teknis telah disusun secara terstruktur di folder [`docs/`](./docs):
 
-* 🏛️ **[docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md)**: Arsitektur sistem (C4 Model), Tech Stack Decision Matrix, Data Flow transaksi & OCR, integrasi Supabase PostgreSQL & Google OAuth, mesin cetak dokumen PDF, serta standar keamanan finansial.
-* 🎨 **[docs/UI_UX_DESIGN_SYSTEM.md](./docs/UI_UX_DESIGN_SYSTEM.md)**: Sistem desain visual modern (Bento Grid, Glassmorphism, Color Tokens, Mobile Thumb Navigation, Google Sign-in Buttons, CSS Print Optimization, & Aksesibilitas WCAG AA).
+* 🏛️ **[docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md)**: Arsitektur sistem (C4 Model), PWA & Service Worker Cache, Offline Queue Engine, integrasi Supabase PostgreSQL & Google OAuth, mesin cetak dokumen PDF, serta standar keamanan finansial.
+* 🎨 **[docs/UI_UX_DESIGN_SYSTEM.md](./docs/UI_UX_DESIGN_SYSTEM.md)**: Sistem desain visual modern (Bento Grid, Glassmorphism, Color Tokens, PWA Install Banner, Mobile Thumb Navigation, Google Sign-in Buttons, CSS Print Optimization, & Aksesibilitas WCAG AA).
 * 🗄️ **[docs/DATABASE_DESIGN.md](./docs/DATABASE_DESIGN.md)**: Skema cloud database lengkap (Supabase PostgreSQL + Prisma ORM + `@prisma/adapter-pg`), relasi entitas, tipe enum, dan strategi indexing.
 * 📁 **[docs/FOLDER_STRUCTURE.md](./docs/FOLDER_STRUCTURE.md)**: Tata letak direktori proyek Next.js App Router dengan pemisahan tegas Feature-Sliced Architecture.
-* 🧪 **[docs/TEST_PLAN.md](./docs/TEST_PLAN.md)**: Rencana pengujian QA komprehensif (Unit Test, Integration Test, E2E QA Matrix, AI OCR Testing, & Keamanan Isolasi Data - **11 Test Suites, 92/92 Tests Passing 100%**).
-* 📋 **[docs/TODO_TRACKER.md](./docs/TODO_TRACKER.md)**: Roadmap pengerjaan 9 fase bertahap (*Step-by-step checklist*) dan rencana inovasi masa depan (*Phase 10 Future Horizon*).
+* 🧪 **[docs/TEST_PLAN.md](./docs/TEST_PLAN.md)**: Rencana pengujian QA komprehensif (Unit Test, Offline Queue Test, Integration Test, E2E QA Matrix, AI OCR Testing, & Keamanan Isolasi Data - **12 Test Suites, 98/98 Tests Passing 100%**).
+* 📋 **[docs/TODO_TRACKER.md](./docs/TODO_TRACKER.md)**: Roadmap pengerjaan 10 fase bertahap (*Step-by-step checklist*) dan rencana inovasi masa depan (*Phase 10 Future Horizon*).
 
 ---
 

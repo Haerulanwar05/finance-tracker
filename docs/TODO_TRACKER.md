@@ -182,12 +182,18 @@
 ---
 
 ## 🔮 Fase 10: Future Horizons & Next-Gen Innovations (Roadmap Selanjutnya)
+- [x] **10.2 Progressive Web App (PWA) & Resilient Offline Queue (Selesai)**
+  - [x] Web App Manifest (`public/manifest.json`) & Ikon Vektor Lengkap (192px, 512px, Maskable, Apple Touch Icon).
+  - [x] Service Worker Caching (`public/sw.js`) dengan strategi Stale-While-Revalidate untuk static assets dan Network-First untuk HTML navigasi.
+  - [x] PWA Install Prompt Banner (`pwa-install-banner.tsx`) dengan dukungan native Android prompt dan panduan langkah mudah untuk iPhone/iPad Safari.
+  - [x] Client-Side Offline Queue Engine (`src/lib/offline-queue.ts`) & React Context (`src/context/offline-context.tsx`).
+  - [x] Integrasi modal tambah transaksi (`add-transaction-modal.tsx`) dengan fallback otomatis ke antrean lokal HP saat tidak ada koneksi internet.
+  - [x] Auto-Sync background dispatcher yang otomatis mengirim transaksi tersimpan ke server cloud saat perangkat kembali online.
+  - [x] Banner status offline, modal daftar antrean transaksi offline, dan kontrol PWA di menu Pengaturan.
+  - [x] Unit test suite khusus (`tests/unit/offline-queue.test.ts`) dengan cakupan 6 pengujian lengkap.
 - [ ] **10.1 Telegram & WhatsApp AI Ingestion Bot**
   - [ ] Webhook bot Telegram / WhatsApp untuk menerima pesan teks ("Makan 35rb Gopay") atau foto struk langsung dari smartphone.
   - [ ] Auto-reply konfirmasi instan dan pencatatan otomatis ke database tanpa perlu membuka browser.
-- [ ] **10.2 Progressive Web App (PWA) & Offline Queue**
-  - [ ] Web App Manifest (`manifest.json`) & Service Worker caching untuk kemampuan "Install to Home Screen" di Android dan iOS.
-  - [ ] Offline transaction queue yang otomatis tersinkronisasi saat perangkat kembali online.
 - [ ] **10.3 Manajemen Tagihan Rutin & Pengingat (*Recurring Subscriptions & Bills*)**
   - [ ] Modul pencatatan langganan berkala (Netflix, Spotify, WiFi Indihome/Biznet, Listrik PLN, BPJS, Cicilan).
   - [ ] Kalkulator total komitmen biaya bulanan dan notifikasi H-3 sebelum tanggal jatuh tempo.

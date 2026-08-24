@@ -34,9 +34,10 @@ graph TD
 | 7 | `analytics.test.ts` | Health score, Safe-to-Spend (30 hari), dan rasio tabungan | 8 | ✅ Passed |
 | 8 | `qa-matrix.test.ts` | Matriks integritas multi-rekening dan skenario batas nominal | 17 | ✅ Passed |
 | 9 | `e2e-comprehensive-qa.test.ts` | Simulasi alur lengkap pengguna nyata dari hulu ke hilir | 18 | ✅ Passed |
-| 10 | `settings.test.ts` | Update profil, sanitasi limit belanja, proteksi kategori default | 3 | ✅ Passed |
-| 11 | `export-statement.test.ts` | Sanitasi CSV UTF-8 BOM, kalkulasi porsi kategori rekening koran | 3 | ✅ Passed |
-| **TOTAL** | **11 Berkas Uji** | **Seluruh Modul & Invarian Finansial** | **90 Tests** | **✅ 100% Passed** |
+| 10 | `settings.test.ts` | Update profil, sanitasi limit belanja, proteksi kategori default | 4 | ✅ Passed |
+| 11 | `export-statement.test.ts` | Sanitasi CSV UTF-8 BOM, kalkulasi porsi kategori rekening koran | 4 | ✅ Passed |
+| 12 | `offline-queue.test.ts` | Antrean transaksi offline, auto-sync background, dan failover | 6 | ✅ Passed |
+| **TOTAL** | **12 Berkas Uji** | **Seluruh Modul & Invarian Finansial** | **98 Tests** | **✅ 100% Passed** |
 
 ---
 

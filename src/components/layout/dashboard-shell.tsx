@@ -17,7 +17,11 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PrivacyProvider, usePrivacy } from "@/context/privacy-context";
+import { OfflineProvider } from "@/context/offline-context";
 import { BrandLogo, BrandLogoIcon } from "@/components/shared/brand-logo";
+import { PwaRegister } from "@/components/pwa/pwa-register";
+import { PwaInstallBanner } from "@/components/pwa/pwa-install-banner";
+import { OfflineIndicatorBanner } from "@/components/pwa/offline-indicator-banner";
 
 interface DashboardShellProps {
   user: {
@@ -215,6 +219,11 @@ function DashboardShellInner({ user, children }: DashboardShellProps) {
           );
         })}
       </div>
+
+      {/* PWA Lifecycle & Floating Notifications */}
+      <PwaRegister />
+      <PwaInstallBanner />
+      <OfflineIndicatorBanner />
     </div>
   );
 }
@@ -222,7 +231,9 @@ function DashboardShellInner({ user, children }: DashboardShellProps) {
 export function DashboardShell(props: DashboardShellProps) {
   return (
     <PrivacyProvider>
-      <DashboardShellInner {...props} />
+      <OfflineProvider>
+        <DashboardShellInner {...props} />
+      </OfflineProvider>
     </PrivacyProvider>
   );
 }

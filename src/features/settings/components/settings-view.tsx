@@ -18,10 +18,17 @@ import {
   CheckCircle2,
   AlertCircle,
   KeyRound,
+  Smartphone,
+  CloudOff,
+  Wifi,
+  RefreshCw,
+  Layers,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { usePrivacy } from "@/context/privacy-context";
+import { useOffline } from "@/context/offline-context";
+import { OfflineQueueModal } from "@/components/pwa/offline-queue-modal";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { CategoryBadgeIcon } from "@/components/shared/category-badge-icon";
@@ -59,6 +66,8 @@ const CATEGORY_COLORS = [
 export function SettingsView({ data }: SettingsViewProps) {
   const router = useRouter();
   const { isPrivate, togglePrivacy } = usePrivacy();
+  const { isOnline, offlineCount, isSyncing, syncNow } = useOffline();
+  const [isOfflineModalOpen, setIsOfflineModalOpen] = React.useState(false);
 
   // Profile & Budget state
   const [name, setName] = React.useState(data.user.name || "");
@@ -632,8 +641,53 @@ export function SettingsView({ data }: SettingsViewProps) {
               ● Aktif & Siap
             </span>
           </div>
+
+          {/* PWA & Offline Sync Engine status */}
+          <div className="p-4 rounded-2xl bg-zinc-950/60 border border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="space-y-0.5">
+              <div className="flex items-center gap-2">
+                <Smartphone className="h-4 w-4 text-emerald-400" />
+                <p className="text-xs font-bold text-white">Progressive Web App (PWA) & Offline Queue</p>
+              </div>
+              <p className="text-[11px] text-zinc-400">
+                Aplikasi dapat dipasang di layar utama dan mencatat transaksi tanpa internet (auto-sync).
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2 shrink-0">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setIsOfflineModalOpen(true)}
+                className="text-xs border-zinc-800 hover:bg-zinc-900 rounded-xl cursor-pointer"
+              >
+                <Layers className="h-3.5 w-3.5 mr-1.5 text-amber-400" />
+                <span>{offlineCount} Antrean</span>
+              </Button>
+
+              {offlineCount > 0 && isOnline && (
+                <Button
+                  type="button"
+                  size="sm"
+                  disabled={isSyncing}
+                  onClick={() => syncNow()}
+                  className="bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold text-xs rounded-xl cursor-pointer"
+                >
+                  <RefreshCw className={`h-3.5 w-3.5 mr-1 ${isSyncing ? "animate-spin" : ""}`} />
+                  <span>Sync</span>
+                </Button>
+              )}
+            </div>
+          </div>
         </div>
       </div>
+
+      {/* Offline Queue Modal */}
+      <OfflineQueueModal
+        isOpen={isOfflineModalOpen}
+        onClose={() => setIsOfflineModalOpen(false)}
+      />
 
       {/* 4. Keluar dari Akun */}
       <div className="rounded-3xl border border-rose-500/20 bg-gradient-to-br from-rose-950/20 via-zinc-900/60 to-zinc-950/80 backdrop-blur-xl p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl">
