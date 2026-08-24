@@ -45,12 +45,14 @@ interface TransactionsViewProps {
     icon?: string | null;
     color?: string | null;
   }>;
+  userName?: string | null;
 }
 
 export function TransactionsView({
   initialTransactions,
   accounts,
   categories,
+  userName = "Pengguna",
 }: TransactionsViewProps) {
   const { isPrivate } = usePrivacy();
 
@@ -154,6 +156,7 @@ export function TransactionsView({
     printFinancialStatement({
       transactions: filteredTransactions,
       periodLabel,
+      userName: userName || "Pengguna",
     });
   };
 

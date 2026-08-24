@@ -4,7 +4,7 @@ import { TransactionsView } from "@/features/transactions/components/transaction
 export const dynamic = "force-dynamic";
 
 export default async function TransactionsPage() {
-  const { transactions, summary, accounts, categories } = await getTransactionsData();
+  const { transactions, summary, accounts, categories, userName } = await getTransactionsData();
 
   return (
     <TransactionsView
@@ -12,6 +12,7 @@ export default async function TransactionsPage() {
       summary={summary}
       accounts={accounts}
       categories={categories}
+      userName={userName}
     />
   );
 }

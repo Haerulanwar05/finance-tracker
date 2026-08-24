@@ -166,6 +166,17 @@ export async function getTransactionsData(filters?: TransactionFilterInput) {
     balance: Number(acc.balance),
   }));
 
+  let dbUserName: string | null = session?.user?.name || null;
+  if (!dbUserName && userId) {
+    const userDoc = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { name: true },
+    });
+    dbUserName = userDoc?.name || null;
+  }
+
+  const userName = dbUserName || session?.user?.name || "Pengguna";
+
   return {
     transactions,
     summary: {
@@ -176,6 +187,7 @@ export async function getTransactionsData(filters?: TransactionFilterInput) {
     },
     accounts: sanitizedAccounts,
     categories,
+    userName,
   };
 }
 

@@ -47,6 +47,7 @@ export function AnalyticsView({ data }: AnalyticsViewProps) {
     printAnalyticsReport({
       data,
       periodLabel: currentPeriodLabel,
+      userName: data.userName || "Pengguna",
     });
   };
 

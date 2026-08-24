@@ -98,6 +98,7 @@ export interface DashboardAnalyticsData {
     icon?: string | null;
     color?: string | null;
   }>;
+  userName?: string | null;
 }
 
 const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agt", "Sep", "Okt", "Nov", "Des"];
@@ -150,6 +151,7 @@ export async function getDashboardAnalyticsData(): Promise<DashboardAnalyticsDat
       topGoals: [],
       accounts: [],
       categories: [],
+      userName: session?.user?.name || "Pengguna",
     };
   }
   const now = new Date();
@@ -345,12 +347,13 @@ export async function getDashboardAnalyticsData(): Promise<DashboardAnalyticsDat
 
   const avgDailySpend = Math.round(monthlyExpense / Math.max(1, currentDay));
 
-  // Fetch User Custom Spending Limit
+  // Fetch User Custom Spending Limit & User Name
   const userRecord = await prisma.user.findUnique({
     where: { id: userId },
-    select: { monthlySpendingLimit: true },
+    select: { name: true, monthlySpendingLimit: true },
   });
 
+  const userName = userRecord?.name || session?.user?.name || "Pengguna";
   const customLimit = Number(userRecord?.monthlySpendingLimit) || 0;
   const isCustom = customLimit > 0;
 
@@ -478,6 +481,7 @@ export async function getDashboardAnalyticsData(): Promise<DashboardAnalyticsDat
     topGoals,
     accounts,
     categories,
+    userName,
   };
 }
 
