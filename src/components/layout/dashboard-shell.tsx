@@ -74,8 +74,9 @@ function DashboardShellInner({ user, children }: DashboardShellProps) {
                 <Link
                   key={item.href}
                   href={item.href}
+                  prefetch={true}
                   className={cn(
-                    "relative flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-sm font-medium transition-all group",
+                    "relative flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-sm font-medium transition-all group cursor-pointer",
                     isActive
                       ? cn("border shadow-sm font-semibold", item.activeBg)
                       : "text-zinc-400 hover:text-zinc-100 hover:bg-zinc-900/60"
@@ -190,8 +191,9 @@ function DashboardShellInner({ user, children }: DashboardShellProps) {
             <Link
               key={item.href}
               href={item.href}
+              prefetch={true}
               className={cn(
-                "flex-1 flex flex-col items-center justify-center gap-0.5 py-1 rounded-xl text-[9px] font-medium transition-all relative min-w-0 max-w-[62px]",
+                "flex-1 flex flex-col items-center justify-center gap-0.5 py-1 rounded-xl text-[9px] font-medium transition-all relative min-w-0 max-w-[62px] cursor-pointer active:scale-95",
                 isActive
                   ? cn("font-bold", item.color)
                   : "text-zinc-400 hover:text-zinc-200"
