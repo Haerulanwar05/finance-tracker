@@ -90,7 +90,7 @@ export function GoalsView({ initialGoals, summary, accounts }: GoalsViewProps) {
         <Button
           onClick={() => setIsAddModalOpen(true)}
           size="sm"
-          className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold shadow-lg shadow-blue-500/25 self-start sm:self-auto cursor-pointer group"
+          className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold shadow-lg shadow-blue-500/25 cursor-pointer group h-10 sm:h-9"
         >
           <Plus className="h-4 w-4 mr-1.5 transition-transform group-hover:rotate-90 duration-200" />
           <span>Buat Target Baru</span>

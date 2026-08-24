@@ -68,28 +68,28 @@ export function AnalyticsView({ data }: AnalyticsViewProps) {
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5 flex-wrap self-start sm:self-auto">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full sm:w-auto">
           {/* Print PDF Button */}
           <Button
             type="button"
             variant="outline"
             size="sm"
             onClick={handlePrint}
-            className="border-zinc-800 bg-zinc-900/80 hover:bg-zinc-800 text-zinc-200 text-xs shadow-sm print:hidden cursor-pointer group"
+            className="border-zinc-800 bg-zinc-900/80 hover:bg-zinc-800 text-zinc-200 text-xs shadow-sm print:hidden cursor-pointer group h-10 sm:h-9"
           >
             <Printer className="h-4 w-4 text-blue-400 mr-1.5 transition-transform group-hover:scale-110" />
             <span>Cetak Dokumen</span>
           </Button>
 
           {/* Period Switcher Tabs */}
-          <div className="flex items-center p-1 bg-zinc-900/80 border border-zinc-800 rounded-2xl shadow-inner print:hidden">
+          <div className="flex items-center justify-between sm:justify-start p-1 bg-zinc-900/80 border border-zinc-800 rounded-2xl shadow-inner print:hidden overflow-x-auto">
             {PERIOD_OPTIONS.map((p) => {
               const isActive = selectedPeriod === p.id;
               return (
                 <button
                   key={p.id}
                   onClick={() => setSelectedPeriod(p.id)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                  className={`flex-1 sm:flex-initial text-center px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                     isActive
                       ? "bg-blue-600 text-white shadow-md shadow-blue-900/40 font-bold"
                       : "text-zinc-400 hover:text-zinc-200"

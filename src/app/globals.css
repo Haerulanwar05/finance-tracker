@@ -38,6 +38,34 @@ body {
   animation: cursor-blink 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
+@keyframes float-money-bag {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-3px) rotate(1.5deg);
+  }
+}
+
+@keyframes money-shimmer {
+  0%, 100% {
+    opacity: 0.8;
+    filter: drop-shadow(0 0 4px rgba(16, 185, 129, 0.5));
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 10px rgba(52, 211, 153, 0.9));
+  }
+}
+
+.animate-money-bag {
+  animation: float-money-bag 3.5s ease-in-out infinite;
+}
+
+.animate-money-shimmer {
+  animation: money-shimmer 2.5s ease-in-out infinite;
+}
+
 /* ==========================================================================
    RECHARTS SVG FOCUS & OUTLINE ELIMINATION
    ========================================================================== */

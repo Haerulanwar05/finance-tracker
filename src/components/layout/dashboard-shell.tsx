@@ -169,13 +169,13 @@ function DashboardShellInner({ user, children }: DashboardShellProps) {
         </header>
 
         {/* Dynamic Page Content */}
-        <main className="flex-1 p-4 pb-24 sm:p-8 max-w-7xl w-full mx-auto relative z-0">
+        <main className="flex-1 p-3.5 sm:p-8 pb-24 sm:pb-8 max-w-7xl w-full mx-auto relative z-0 overflow-x-hidden">
           {children}
         </main>
       </div>
 
       {/* Mobile Bottom Navigation Bar (Thumb Zone) */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-zinc-950/95 backdrop-blur-2xl border-t border-zinc-800/80 px-1 flex items-center justify-around z-30 shadow-2xl shadow-black">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 h-[64px] pb-1.5 pt-1 bg-zinc-950/95 backdrop-blur-2xl border-t border-zinc-800/80 px-1.5 flex items-center justify-between z-30 shadow-2xl shadow-black">
         {NAV_ITEMS.map((item) => {
           const Icon = item.icon;
           const isActive =
@@ -186,7 +186,7 @@ function DashboardShellInner({ user, children }: DashboardShellProps) {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex flex-col items-center justify-center gap-0.5 py-1 px-1.5 rounded-xl text-[9.5px] font-medium transition-all relative min-w-[48px]",
+                "flex-1 flex flex-col items-center justify-center gap-0.5 py-1 rounded-xl text-[9px] font-medium transition-all relative min-w-0 max-w-[62px]",
                 isActive
                   ? cn("font-bold", item.color)
                   : "text-zinc-400 hover:text-zinc-200"
@@ -200,9 +200,9 @@ function DashboardShellInner({ user, children }: DashboardShellProps) {
               >
                 <Icon className={cn("h-4 w-4 transition-transform", isActive && "scale-115")} />
               </div>
-              <span className="truncate max-w-[54px]">{item.label.split(" ")[0]}</span>
+              <span className="truncate w-full text-center px-0.5">{item.label.split(" ")[0]}</span>
               {isActive && (
-                <div className="absolute -bottom-1 h-0.5 w-4 rounded-full bg-current shadow-[0_0_8px_currentColor]" />
+                <div className="absolute -bottom-0.5 h-0.5 w-4 rounded-full bg-current shadow-[0_0_8px_currentColor]" />
               )}
             </Link>
           );

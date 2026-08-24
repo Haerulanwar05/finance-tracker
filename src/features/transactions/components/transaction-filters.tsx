@@ -138,8 +138,8 @@ export function TransactionFilters({
       {/* Middle Row: Period Filter Tabs & Custom Date Pickers */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 pt-1 border-t border-zinc-800/60">
         {/* Preset Period Pills */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs scrollbar-none">
-          <span className="text-[11px] text-zinc-400 font-semibold flex items-center gap-1 mr-1">
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs -mx-1 px-1 touch-pan-x scrollbar-none">
+          <span className="text-[11px] text-zinc-400 font-semibold flex items-center gap-1 mr-1 shrink-0">
             <Calendar className="h-3.5 w-3.5 text-zinc-400" />
             <span>Periode:</span>
           </span>
@@ -161,7 +161,7 @@ export function TransactionFilters({
 
         {/* Custom Start & End Date Inputs */}
         {period === "CUSTOM" && (
-          <div className="flex items-center gap-2 text-xs animate-in fade-in duration-200">
+          <div className="flex items-center gap-2 text-xs animate-in fade-in duration-200 flex-wrap">
             <div className="flex items-center gap-1 bg-zinc-950/80 border border-zinc-800 rounded-xl px-2.5 py-1">
               <span className="text-[10px] text-zinc-400">Dari:</span>
               <input
@@ -186,11 +186,11 @@ export function TransactionFilters({
       </div>
 
       {/* Bottom Row: Type Pills Filter */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs pt-1 border-t border-zinc-800/60">
+      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs pt-1 border-t border-zinc-800/60 -mx-1 px-1 touch-pan-x scrollbar-none">
         <button
           type="button"
           onClick={() => onTypeChange("ALL")}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-medium transition-all cursor-pointer ${
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-medium transition-all cursor-pointer shrink-0 ${
             type === "ALL"
               ? "bg-blue-600/20 text-blue-400 border border-blue-500/30"
               : "bg-zinc-950/60 text-zinc-400 hover:text-white border border-transparent"
@@ -203,7 +203,7 @@ export function TransactionFilters({
         <button
           type="button"
           onClick={() => onTypeChange("EXPENSE")}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-medium transition-all cursor-pointer ${
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-medium transition-all cursor-pointer shrink-0 ${
             type === "EXPENSE"
               ? "bg-rose-500/20 text-rose-400 border border-rose-500/30"
               : "bg-zinc-950/60 text-zinc-400 hover:text-white border border-transparent"
@@ -216,7 +216,7 @@ export function TransactionFilters({
         <button
           type="button"
           onClick={() => onTypeChange("INCOME")}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-medium transition-all cursor-pointer ${
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-medium transition-all cursor-pointer shrink-0 ${
             type === "INCOME"
               ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
               : "bg-zinc-950/60 text-zinc-400 hover:text-white border border-transparent"
@@ -229,7 +229,7 @@ export function TransactionFilters({
         <button
           type="button"
           onClick={() => onTypeChange("TRANSFER")}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-medium transition-all cursor-pointer ${
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-medium transition-all cursor-pointer shrink-0 ${
             type === "TRANSFER"
               ? "bg-purple-500/20 text-purple-400 border border-purple-500/30"
               : "bg-zinc-950/60 text-zinc-400 hover:text-white border border-transparent"

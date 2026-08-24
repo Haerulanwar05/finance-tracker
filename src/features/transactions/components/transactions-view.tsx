@@ -189,14 +189,14 @@ export function TransactionsView({
           </p>
         </div>
 
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="grid grid-cols-2 sm:flex sm:items-center gap-2 w-full sm:w-auto">
           {/* Direct 1-Click Print PDF */}
           <Button
             type="button"
             onClick={handlePrintPdf}
             variant="outline"
             size="sm"
-            className="border-zinc-800 bg-zinc-900/80 hover:bg-zinc-800 text-zinc-200 text-xs shadow-sm cursor-pointer group"
+            className="border-zinc-800 bg-zinc-900/80 hover:bg-zinc-800 text-zinc-200 text-xs shadow-sm cursor-pointer group h-10 sm:h-9"
           >
             <Printer className="h-4 w-4 text-blue-400 mr-1.5 transition-transform group-hover:scale-110" />
             <span>Cetak PDF</span>
@@ -208,10 +208,10 @@ export function TransactionsView({
             onClick={handleDownloadCsv}
             variant="outline"
             size="sm"
-            className="border-zinc-800 bg-zinc-900/80 hover:bg-zinc-800 text-zinc-200 text-xs shadow-sm cursor-pointer group"
+            className="border-zinc-800 bg-zinc-900/80 hover:bg-zinc-800 text-zinc-200 text-xs shadow-sm cursor-pointer group h-10 sm:h-9"
           >
             <FileSpreadsheet className="h-4 w-4 text-emerald-400 mr-1.5 transition-transform group-hover:scale-110" />
-            <span className="hidden sm:inline">Unduh CSV</span>
+            <span>Unduh CSV</span>
           </Button>
 
           {/* AI Scan Receipt */}
@@ -219,7 +219,7 @@ export function TransactionsView({
             onClick={() => setIsScanModalOpen(true)}
             variant="secondary"
             size="sm"
-            className="border border-indigo-500/30 bg-indigo-500/15 hover:bg-indigo-500/25 text-indigo-300 shadow-md shadow-indigo-500/10 text-xs font-semibold cursor-pointer group"
+            className="border border-indigo-500/30 bg-indigo-500/15 hover:bg-indigo-500/25 text-indigo-300 shadow-md shadow-indigo-500/10 text-xs font-semibold cursor-pointer group h-10 sm:h-9"
           >
             <Sparkles className="h-4 w-4 text-indigo-400 mr-1.5 transition-transform group-hover:scale-110" />
             <span>Foto Struk AI</span>
@@ -230,7 +230,7 @@ export function TransactionsView({
             onClick={() => setIsImportModalOpen(true)}
             variant="secondary"
             size="sm"
-            className="border border-zinc-800 bg-zinc-900/80 hover:bg-zinc-800 text-zinc-200 text-xs cursor-pointer group"
+            className="border border-zinc-800 bg-zinc-900/80 hover:bg-zinc-800 text-zinc-200 text-xs cursor-pointer group h-10 sm:h-9"
           >
             <FileSpreadsheet className="h-4 w-4 text-zinc-400 group-hover:text-emerald-400 mr-1.5 transition-colors" />
             <span>Import CSV</span>
@@ -240,7 +240,7 @@ export function TransactionsView({
           <Button
             onClick={() => setIsAddModalOpen(true)}
             size="sm"
-            className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white shadow-lg shadow-blue-500/25 text-xs font-bold cursor-pointer group"
+            className="col-span-2 sm:col-span-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white shadow-lg shadow-blue-500/25 text-xs font-bold cursor-pointer group h-10 sm:h-9"
           >
             <Plus className="h-4 w-4 mr-1.5 transition-transform group-hover:rotate-90 duration-200" />
             <span>Catat Transaksi</span>

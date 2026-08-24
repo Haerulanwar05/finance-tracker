@@ -47,9 +47,9 @@ export function TransactionItem({ transaction, onEdit }: TransactionItemProps) {
 
   return (
     <>
-      <div className="group flex items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-zinc-900/50 border border-zinc-800/60 hover:border-zinc-700/80 hover:bg-zinc-900/80 transition-all duration-200">
+      <div className="group flex items-center justify-between p-3 sm:p-4 rounded-2xl bg-zinc-900/50 border border-zinc-800/60 hover:border-zinc-700/80 hover:bg-zinc-900/80 transition-all duration-200 gap-2">
         {/* Left: Type Icon & Info */}
-        <div className="flex items-center gap-3.5 min-w-0">
+        <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0 flex-1">
           <CategoryBadgeIcon
             categoryName={transaction.category?.name}
             categoryIcon={transaction.category?.icon}
@@ -58,32 +58,32 @@ export function TransactionItem({ transaction, onEdit }: TransactionItemProps) {
             size="md"
           />
 
-          <div className="min-w-0">
-            <p className="text-sm font-semibold text-white truncate">
+          <div className="min-w-0 flex-1">
+            <p className="text-xs sm:text-sm font-semibold text-white truncate">
               {transaction.description ||
                 (isTransfer
                   ? `Transfer ke ${transaction.targetAccount?.name || "Tujuan"}`
                   : transaction.category?.name || "Transaksi")}
             </p>
-            <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-zinc-400 mt-0.5">
+            <div className="flex flex-wrap items-center gap-1 sm:gap-1.5 text-[10px] sm:text-[11px] text-zinc-400 mt-0.5">
               {/* Account badge */}
-              <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-zinc-800 border border-zinc-700/50 font-medium">
+              <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-zinc-800 border border-zinc-700/50 font-medium text-[10px] truncate max-w-[120px]">
                 <span
-                  className="h-1.5 w-1.5 rounded-full"
+                  className="h-1.5 w-1.5 rounded-full shrink-0"
                   style={{ backgroundColor: transaction.account.color || "#3B82F6" }}
                 />
-                <span className="text-zinc-300">{transaction.account.name}</span>
+                <span className="text-zinc-300 truncate">{transaction.account.name}</span>
                 {isTransfer && transaction.targetAccount && (
                   <>
                     <span className="text-zinc-500">&rarr;</span>
-                    <span className="text-zinc-300">{transaction.targetAccount.name}</span>
+                    <span className="text-zinc-300 truncate">{transaction.targetAccount.name}</span>
                   </>
                 )}
               </span>
 
               {/* Category badge */}
               {transaction.category && !isTransfer && (
-                <span className="px-1.5 py-0.5 rounded-md bg-zinc-800/80 text-zinc-400">
+                <span className="px-1.5 py-0.5 rounded-md bg-zinc-800/80 text-zinc-400 text-[10px] truncate max-w-[110px]">
                   {transaction.category.name}
                 </span>
               )}
@@ -94,7 +94,7 @@ export function TransactionItem({ transaction, onEdit }: TransactionItemProps) {
                   type="button"
                   onClick={() => setIsReceiptPreviewOpen(true)}
                   title="Lihat Foto Struk Belanja"
-                  className="flex items-center gap-1 text-indigo-400 bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/20 px-2 py-0.5 rounded-md text-[10px] font-semibold transition-colors cursor-pointer"
+                  className="flex items-center gap-1 text-indigo-400 bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/20 px-1.5 py-0.5 rounded-md text-[9.5px] font-semibold transition-colors cursor-pointer shrink-0"
                 >
                   <Receipt className="h-3 w-3" />
                   <span>Foto Struk</span>
@@ -105,10 +105,10 @@ export function TransactionItem({ transaction, onEdit }: TransactionItemProps) {
         </div>
 
         {/* Right: Amount & Actions */}
-        <div className="flex items-center gap-3 shrink-0 ml-3">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0 ml-1 sm:ml-3">
           <div className="text-right">
             <p
-              className={`text-sm sm:text-base font-extrabold font-mono tabular-nums tracking-tight ${
+              className={`text-xs sm:text-base font-extrabold font-mono tabular-nums tracking-tight whitespace-nowrap ${
                 isIncome
                   ? "text-emerald-400"
                   : isExpense
@@ -124,7 +124,7 @@ export function TransactionItem({ transaction, onEdit }: TransactionItemProps) {
                 ? `-${formatRupiah(transaction.amount)}`
                 : formatRupiah(transaction.amount)}
             </p>
-            <span className="text-[10px] text-zinc-500 block">
+            <span className="text-[9.5px] sm:text-[10px] text-zinc-500 block">
               {new Date(transaction.date).toLocaleDateString("id-ID", {
                 day: "numeric",
                 month: "short",
