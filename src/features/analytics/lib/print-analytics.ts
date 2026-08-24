@@ -1,21 +1,20 @@
-import { TransactionWithRelations } from "../actions";
+import { DashboardAnalyticsData } from "@/features/dashboard/actions";
 import { formatRupiah } from "@/lib/currency";
 
-interface PrintStatementOptions {
-  transactions: TransactionWithRelations[];
+interface PrintAnalyticsOptions {
+  data: DashboardAnalyticsData;
   periodLabel: string;
   userName?: string | null;
 }
 
-export function printFinancialStatement({
-  transactions,
+export function printAnalyticsReport({
+  data,
   periodLabel,
-  userName = "Pengguna",
-}: PrintStatementOptions) {
+  userName = "Pengguna FinanceTracker",
+}: PrintAnalyticsOptions) {
   const d = new Date();
   const yearMonth = `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, "0")}`;
-  const hash = (transactions.length * 137 + 1000) % 9000;
-  const documentId = `FT-${yearMonth}-${1000 + hash}`;
+  const documentId = `FA-${yearMonth}-${Math.floor(1000 + Math.random() * 9000)}`;
   const printDateStr = d.toLocaleDateString("id-ID", {
     day: "numeric",
     month: "long",
@@ -26,36 +25,13 @@ export function printFinancialStatement({
     minute: "2-digit",
   });
 
-  const totalIncome = transactions
-    .filter((t) => t.type === "INCOME")
-    .reduce((sum, t) => sum + Number(t.amount), 0);
+  const netCashflow = data.monthlyIncome - data.monthlyExpense;
 
-  const totalExpense = transactions
-    .filter((t) => t.type === "EXPENSE")
-    .reduce((sum, t) => sum + Number(t.amount), 0);
-
-  const netCashflow = totalIncome - totalExpense;
-
-  // Category Breakdown
-  const categoryMap = new Map<string, { name: string; amount: number; count: number }>();
-  transactions
-    .filter((t) => t.type === "EXPENSE")
-    .forEach((t) => {
-      const catName = t.category?.name || "Lainnya";
-      const existing = categoryMap.get(catName) || { name: catName, amount: 0, count: 0 };
-      existing.amount += Number(t.amount);
-      existing.count += 1;
-      categoryMap.set(catName, existing);
-    });
-
-  const categoryBreakdown = Array.from(categoryMap.values()).sort((a, b) => b.amount - a.amount);
-
-  // HTML Generation for Print
   const html = `<!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Laporan Keuangan - ${periodLabel}</title>
+  <title>Laporan Analitik & Kesehatan Finansial - ${periodLabel}</title>
   <style>
     @page {
       size: A4 portrait;
@@ -85,12 +61,6 @@ export function printFinancialStatement({
     }
 
     /* HEADER */
-    .header-table {
-      width: 100%;
-      border-bottom: 2.5px solid #0f172a;
-      padding-bottom: 12px;
-      margin-bottom: 16px;
-    }
     .brand-title {
       font-size: 18pt;
       font-weight: 900;
@@ -143,6 +113,7 @@ export function printFinancialStatement({
       text-transform: uppercase;
       letter-spacing: 0.8px;
       color: #0f172a;
+      margin-top: 14px;
       margin-bottom: 8px;
       border-bottom: 1.5px solid #e2e8f0;
       padding-bottom: 4px;
@@ -154,15 +125,19 @@ export function printFinancialStatement({
     /* SUMMARY TILES */
     .summary-grid {
       display: flex;
-      gap: 12px;
-      margin-bottom: 18px;
+      gap: 10px;
+      margin-bottom: 14px;
     }
     .summary-card {
       flex: 1;
-      border-radius: 6px;
+      border-radius: 8px;
       padding: 10px 12px;
       border: 1.5px solid #e2e8f0;
       background: #fafafa;
+    }
+    .summary-card.score {
+      border-color: #93c5fd;
+      background: #eff6ff;
     }
     .summary-card.income {
       border-color: #86efac;
@@ -172,9 +147,9 @@ export function printFinancialStatement({
       border-color: #fca5a5;
       background: #fef2f2;
     }
-    .summary-card.cashflow {
-      border-color: #93c5fd;
-      background: #eff6ff;
+    .summary-card.savings {
+      border-color: #c4b5fd;
+      background: #faf5ff;
     }
     .card-label {
       font-size: 7.5pt;
@@ -183,24 +158,26 @@ export function printFinancialStatement({
       letter-spacing: 0.5px;
       margin-bottom: 2px;
     }
+    .score .card-label { color: #1e40af; }
     .income .card-label { color: #166534; }
     .expense .card-label { color: #991b1b; }
-    .cashflow .card-label { color: #1e40af; }
+    .savings .card-label { color: #6b21a8; }
     .card-value {
       font-size: 13pt;
       font-weight: 900;
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
       letter-spacing: -0.3px;
     }
+    .score .card-value { color: #1d4ed8; }
     .income .card-value { color: #15803d; }
     .expense .card-value { color: #b91c1c; }
-    .cashflow .card-value { color: #1d4ed8; }
+    .savings .card-value { color: #7e22ce; }
 
     /* TABLES */
     .data-table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 18px;
+      margin-bottom: 14px;
       font-size: 8.5pt;
     }
     .data-table th {
@@ -229,9 +206,6 @@ export function printFinancialStatement({
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
       font-weight: 700;
     }
-    .amount-income { color: #15803d; font-weight: 800; }
-    .amount-expense { color: #b91c1c; font-weight: 800; }
-    .amount-transfer { color: #1d4ed8; font-weight: 800; }
 
     /* FOOTER */
     .statement-footer {
@@ -336,7 +310,7 @@ export function printFinancialStatement({
 <body>
   <div class="no-print-toolbar">
     <div style="font-weight: 600; display: flex; align-items: center; gap: 8px;">
-      <span>📄 Pratinjau Cetak Laporan Keuangan (${periodLabel})</span>
+      <span>📊 Pratinjau Cetak Laporan Analitik & Kesehatan Finansial (${periodLabel})</span>
     </div>
     <div>
       <button onclick="window.print()" class="toolbar-btn-print">🖨️ Cetak / Simpan PDF</button>
@@ -350,13 +324,13 @@ export function printFinancialStatement({
       <tr>
         <td style="vertical-align: top;">
           <div class="brand-title">FINANCETRACKER</div>
-          <div class="brand-subtitle">Personal Financial Statement</div>
-          <div class="brand-desc">Laporan Rekapitulasi Arus Kas, Mutasi & Anggaran Finansial</div>
+          <div class="brand-subtitle">Financial Health & Intelligence Report</div>
+          <div class="brand-desc">Laporan Evaluasi Arus Kas, Rasio Tabungan, dan Skor Kesehatan Keuangan</div>
         </td>
         <td style="vertical-align: top; width: 240px;">
           <div class="meta-box">
             <div class="meta-row">
-              <span class="meta-label">No. Dokumen</span>
+              <span class="meta-label">No. Laporan</span>
               <span class="meta-val">${documentId}</span>
             </div>
             <div class="meta-row">
@@ -376,119 +350,94 @@ export function printFinancialStatement({
       </tr>
     </table>
 
-    <!-- EXECUTIVE CASHFLOW SUMMARY -->
+    <!-- 4 EXECUTIVE METRIC CARDS -->
     <div class="summary-grid">
+      <div class="summary-card score">
+        <div class="card-label">Skor Kesehatan</div>
+        <div class="card-value">${data.healthScore}/100 <span style="font-size: 9pt;">(${data.healthGrade})</span></div>
+      </div>
       <div class="summary-card income">
         <div class="card-label">Total Pemasukan</div>
-        <div class="card-value">+${formatRupiah(totalIncome)}</div>
+        <div class="card-value">+${formatRupiah(data.monthlyIncome)}</div>
       </div>
       <div class="summary-card expense">
         <div class="card-label">Total Pengeluaran</div>
-        <div class="card-value">-${formatRupiah(totalExpense)}</div>
+        <div class="card-value">-${formatRupiah(data.monthlyExpense)}</div>
       </div>
-      <div class="summary-card cashflow">
-        <div class="card-label">Arus Kas Bersih (Net)</div>
-        <div class="card-value">${netCashflow >= 0 ? "+" : ""}${formatRupiah(netCashflow)}</div>
+      <div class="summary-card savings">
+        <div class="card-label">Rasio Tabungan</div>
+        <div class="card-value">${Math.max(0, Math.round(data.savingsRate))}%</div>
       </div>
     </div>
 
-    <!-- CATEGORY BREAKDOWN -->
-    ${
-      categoryBreakdown.length > 0
-        ? `
-      <div class="section-title">
-        <span>Rincian Pengeluaran per Kategori</span>
-        <span style="font-size: 7.5pt; font-weight: normal; color: #64748b;">${categoryBreakdown.length} Kategori</span>
-      </div>
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>Kategori Belanja</th>
-            <th class="text-center" style="width: 90px;">Frekuensi</th>
-            <th class="text-right" style="width: 140px;">Total Pengeluaran</th>
-            <th class="text-right" style="width: 70px;">Porsi</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${categoryBreakdown
-            .map((cat) => {
-              const pct = totalExpense > 0 ? Math.round((cat.amount / totalExpense) * 100) : 0;
-              return `
-            <tr>
-              <td style="font-weight: 600;">${cat.name}</td>
-              <td class="text-center" style="color: #64748b;">${cat.count}x</td>
-              <td class="text-right font-mono" style="color: #b91c1c;">${formatRupiah(cat.amount)}</td>
-              <td class="text-right font-mono" style="color: #475569;">${pct}%</td>
-            </tr>
-          `;
-            })
-            .join("")}
-        </tbody>
-      </table>
-    `
-        : ""
-    }
-
-    <!-- TRANSACTION LEDGER TABLE -->
+    <!-- ANGGARAN & BATAS BELANJA -->
     <div class="section-title">
-      <span>Buku Mutasi Transaksi</span>
-      <span style="font-size: 7.5pt; font-weight: normal; color: #64748b;">${transactions.length} Mutasi Tercatat</span>
+      <span>Evaluasi Anggaran & Batas Belanja Aman</span>
+      <span style="font-size: 7.5pt; font-weight: normal; color: #64748b;">Target Bulanan: ${formatRupiah(data.monthlyBudget.monthlyLimit)}</span>
     </div>
     <table class="data-table">
       <thead>
         <tr>
-          <th style="width: 95px;">Tanggal</th>
-          <th>Keterangan / Transaksi</th>
-          <th style="width: 120px;">Kategori</th>
-          <th style="width: 110px;">Rekening</th>
-          <th class="text-right" style="width: 130px;">Nominal (Rp)</th>
+          <th>Indikator Anggaran</th>
+          <th class="text-right">Nominal Realisasi</th>
+          <th class="text-right">Status / Keterangan</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Batas Anggaran Bulanan</strong></td>
+          <td class="text-right font-mono">${formatRupiah(data.monthlyBudget.monthlyLimit)}</td>
+          <td class="text-right" style="color: #475569;">Target Anggaran Aktif</td>
+        </tr>
+        <tr>
+          <td><strong>Realisasi Pengeluaran</strong></td>
+          <td class="text-right font-mono" style="color: #b91c1c;">${formatRupiah(data.monthlyBudget.monthlySpent)}</td>
+          <td class="text-right font-mono" style="color: ${data.monthlyBudget.usagePercentage > 90 ? '#b91c1c' : '#15803d'};">
+            ${Math.round(data.monthlyBudget.usagePercentage)}% Terpakai
+          </td>
+        </tr>
+        <tr>
+          <td><strong>Sisa Anggaran Belanja</strong></td>
+          <td class="text-right font-mono" style="color: #1d4ed8;">${formatRupiah(data.monthlyBudget.monthlyRemaining)}</td>
+          <td class="text-right" style="color: #64748b;">Sisa untuk ${data.monthlyBudget.daysRemaining} hari ke depan</td>
+        </tr>
+        <tr>
+          <td><strong>Batas Belanja Harian Aman</strong></td>
+          <td class="text-right font-mono" style="color: #15803d; font-weight: 900;">${formatRupiah(data.monthlyBudget.dailySafeAmount)} / hari</td>
+          <td class="text-right font-mono" style="color: ${data.monthlyBudget.status === 'SAFE' ? '#15803d' : '#d97706'}; font-weight: 700;">
+            ${data.monthlyBudget.status === 'SAFE' ? '● AMAN & SEHAT' : '● PERLU PERHATIAN'}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- DISTRIBUSI PENGELUARAN PER KATEGORI -->
+    <div class="section-title">
+      <span>Distribusi Pengeluaran per Kategori</span>
+      <span style="font-size: 7.5pt; font-weight: normal; color: #64748b;">${data.categoryExpenses.length} Kategori Belanja</span>
+    </div>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Kategori</th>
+          <th class="text-right">Total Biaya</th>
+          <th class="text-right">Proporsi</th>
         </tr>
       </thead>
       <tbody>
         ${
-          transactions.length === 0
-            ? `
-          <tr>
-            <td colspan="5" style="text-align: center; padding: 20px; color: #94a3b8;">
-              Tidak ada catatan transaksi pada periode ini.
-            </td>
-          </tr>
-        `
-            : transactions
-                .map((tx) => {
-                  const dateObj = new Date(tx.date);
-                  const dateStr = dateObj.toLocaleDateString("id-ID", {
-                    day: "2-digit",
-                    month: "short",
-                    year: "numeric",
-                  });
-                  const amountClass =
-                    tx.type === "INCOME"
-                      ? "amount-income"
-                      : tx.type === "EXPENSE"
-                      ? "amount-expense"
-                      : "amount-transfer";
-                  const prefix = tx.type === "INCOME" ? "+" : tx.type === "EXPENSE" ? "-" : "";
-
-                  return `
+          data.categoryExpenses.length === 0
+            ? `<tr><td colspan="3" class="text-center" style="padding: 16px; color: #94a3b8;">Belum ada data pengeluaran pada periode ini.</td></tr>`
+            : data.categoryExpenses
+                .map(
+                  (cat) => `
             <tr>
-              <td class="font-mono" style="color: #475569; font-size: 8pt; white-space: nowrap;">${dateStr}</td>
-              <td style="font-weight: 600; color: #0f172a;">${
-                tx.description ||
-                (tx.type === "TRANSFER"
-                  ? "Transfer Antar Rekening"
-                  : tx.category?.name || "Transaksi")
-              }</td>
-              <td style="color: #64748b;">${tx.type === "TRANSFER" ? "Transfer" : tx.category?.name || "Lainnya"}</td>
-              <td style="color: #475569; font-size: 8pt;">${tx.account.name}${
-                    tx.targetAccount ? ` ➔ ${tx.targetAccount.name}` : ""
-                  }</td>
-              <td class="text-right font-mono ${amountClass}" style="white-space: nowrap;">${prefix}${formatRupiah(
-                    Number(tx.amount)
-                  )}</td>
+              <td style="font-weight: 600;">${cat.name}</td>
+              <td class="text-right font-mono" style="color: #b91c1c;">${formatRupiah(cat.amount)}</td>
+              <td class="text-right font-mono" style="color: #475569;">${cat.percentage}%</td>
             </tr>
-          `;
-                })
+          `
+                )
                 .join("")
         }
       </tbody>
@@ -496,14 +445,13 @@ export function printFinancialStatement({
 
     <!-- FOOTER -->
     <div class="statement-footer">
-      <div>✓ Dokumen Resmi Diterbitkan Otomatis oleh Sistem FinanceTracker</div>
+      <div>✓ Dokumen Analitik Diterbitkan Resmi oleh FinanceTracker Intelligence Engine</div>
       <div style="font-family: ui-monospace, monospace;">Dicetak: ${printDateStr} ${printTimeStr} WIB</div>
     </div>
   </div>
 </body>
 </html>`;
 
-  // 1. Primary Method: Open clean standalone printable window (Works on Chrome, iOS Safari, Android, Edge, Firefox)
   try {
     const printWindow = window.open("", "_blank");
     if (printWindow) {
@@ -511,7 +459,6 @@ export function printFinancialStatement({
       printWindow.document.write(html);
       printWindow.document.close();
 
-      // Trigger auto-print after document layout stabilizes
       setTimeout(() => {
         try {
           printWindow.focus();
@@ -526,9 +473,8 @@ export function printFinancialStatement({
     console.warn("window.open failed, falling back to iframe print:", e);
   }
 
-  // 2. Fallback Method: Isolated iframe injection if popups are strictly blocked
   const iframe = document.createElement("iframe");
-  iframe.setAttribute("title", "Print Statement");
+  iframe.setAttribute("title", "Print Analytics");
   iframe.style.position = "fixed";
   iframe.style.top = "0";
   iframe.style.left = "0";

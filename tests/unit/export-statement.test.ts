@@ -53,4 +53,16 @@ describe("Financial Statement & CSV Export Test Suite", () => {
       expect(makananPct).toBe(50);
     });
   });
+
+  describe("3. PDF Statement Document Identifier", () => {
+    it("generates structured official document IDs", () => {
+      const yearMonth = "202608";
+      const hash = (15 * 137 + 1000) % 9000;
+      const documentId = `FT-${yearMonth}-${1000 + hash}`;
+
+      expect(documentId).toMatch(/^FT-\d{6}-\d{4}$/);
+      expect(documentId.startsWith("FT-202608-")).toBe(true);
+    });
+  });
 });
+

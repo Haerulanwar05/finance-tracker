@@ -19,6 +19,7 @@ import { usePrivacy } from "@/context/privacy-context";
 import { CashflowChart } from "@/features/dashboard/components/cashflow-chart";
 import { CategoryDonutChart } from "@/features/dashboard/components/category-donut-chart";
 import { EditBudgetModal } from "@/features/dashboard/components/edit-budget-modal";
+import { printAnalyticsReport } from "../lib/print-analytics";
 
 interface AnalyticsViewProps {
   data: DashboardAnalyticsData;
@@ -39,8 +40,14 @@ export function AnalyticsView({ data }: AnalyticsViewProps) {
   // Top spending category
   const topCategory = data.categoryExpenses[0] || null;
 
+  const currentPeriodLabel =
+    PERIOD_OPTIONS.find((p) => p.id === selectedPeriod)?.label || "Bulan Ini";
+
   const handlePrint = () => {
-    window.print();
+    printAnalyticsReport({
+      data,
+      periodLabel: currentPeriodLabel,
+    });
   };
 
   return (
