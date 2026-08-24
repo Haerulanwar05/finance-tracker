@@ -230,49 +230,56 @@ export function printAnalyticsReport({
         position: sticky;
         top: 12px;
         z-index: 9999;
-        max-width: 800px;
+        max-width: 820px;
         margin: 0 auto 20px;
-        padding: 12px 18px;
-        background: #182234;
-        border: 1px solid #334155;
-        border-radius: 14px;
+        padding: 12px 20px;
+        background: #131b2b;
+        border: 1px solid #283548;
+        border-radius: 16px;
         color: #f8fafc;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        box-shadow: 0 10px 30px -5px rgba(0,0,0,0.6);
+        box-shadow: 0 12px 36px -4px rgba(0,0,0,0.7);
         font-size: 13px;
+        gap: 12px;
       }
       .toolbar-btn-print {
         background: #2563eb;
         color: #ffffff;
         border: none;
-        padding: 8px 16px;
+        padding: 9px 18px;
         border-radius: 10px;
         font-weight: 700;
         font-size: 12px;
         cursor: pointer;
         transition: all 0.15s ease;
+        white-space: nowrap;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
       }
       .toolbar-btn-print:hover {
         background: #1d4ed8;
       }
       .toolbar-btn-close {
-        background: #334155;
-        color: #e2e8f0;
-        border: none;
-        padding: 8px 14px;
+        background: #243044;
+        color: #cbd5e1;
+        border: 1px solid #334155;
+        padding: 9px 15px;
         border-radius: 10px;
         font-weight: 600;
         font-size: 12px;
         cursor: pointer;
-        margin-left: 8px;
+        transition: all 0.15s ease;
+        white-space: nowrap;
       }
       .toolbar-btn-close:hover {
-        background: #475569;
+        background: #334155;
+        color: #ffffff;
       }
       .statement-container {
-        max-width: 800px;
+        max-width: 820px;
         margin: 0 auto;
         background: #ffffff;
         padding: 40px 48px;
@@ -309,10 +316,16 @@ export function printAnalyticsReport({
 </head>
 <body>
   <div class="no-print-toolbar">
-    <div style="font-weight: 600; display: flex; align-items: center; gap: 8px;">
-      <span>📊 Pratinjau Cetak Laporan Analitik & Kesehatan Finansial (${periodLabel})</span>
+    <div style="display: flex; flex-direction: column; gap: 2px;">
+      <div style="font-weight: 800; font-size: 14px; color: #ffffff; display: flex; align-items: center; gap: 8px;">
+        <span>📊 Pratinjau Laporan Analitik & Kesehatan Finansial</span>
+        <span style="font-size: 11px; background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4); padding: 2px 8px; border-radius: 9999px;">${periodLabel}</span>
+      </div>
+      <div style="font-size: 11px; color: #94a3b8;">
+        Silakan periksa evaluasi analitik di bawah ini. Klik tombol cetak jika sudah siap.
+      </div>
     </div>
-    <div>
+    <div style="display: flex; align-items: center; gap: 8px;">
       <button onclick="window.print()" class="toolbar-btn-print">🖨️ Cetak / Simpan PDF</button>
       <button onclick="window.close()" class="toolbar-btn-close">✕ Tutup</button>
     </div>
