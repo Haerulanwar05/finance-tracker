@@ -132,11 +132,10 @@ function DashboardShellInner({ user, children }: DashboardShellProps) {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 pb-20 md:pb-8">
         {/* Top Header Bar */}
-        <header className="h-16 border-b border-zinc-800/60 bg-zinc-950/70 backdrop-blur-xl px-4 sm:px-8 flex items-center justify-between sticky top-0 z-10">
-          <div className="flex items-center gap-2 md:hidden">
-            <BrandLogoIcon size="sm" />
-            <span className="font-bold text-sm text-white">FinanceTracker</span>
-          </div>
+        <header className="h-16 border-b border-zinc-800/60 bg-zinc-950/80 backdrop-blur-xl px-3.5 sm:px-8 flex items-center justify-between sticky top-0 z-20">
+          <Link href="/dashboard" className="flex items-center gap-2.5 md:hidden cursor-pointer">
+            <BrandLogo size="sm" showText={true} />
+          </Link>
 
           <div className="hidden md:block">
             <p className="text-xs text-zinc-400">Halo, <span className="text-zinc-100 font-semibold">{user.name || "Kawan"}</span> 👋</p>
