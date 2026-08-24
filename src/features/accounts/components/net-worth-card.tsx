@@ -62,7 +62,7 @@ export function NetWorthCard({
             className="flex-1 sm:flex-initial bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold shadow-lg shadow-blue-500/25 group cursor-pointer"
           >
             <Plus className="h-4 w-4 mr-1.5 transition-transform group-hover:rotate-90 duration-200" />
-            <span>+ Tambah Akun</span>
+            <span>Tambah Akun</span>
           </Button>
         </div>
       </div>

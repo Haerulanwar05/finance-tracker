@@ -243,7 +243,7 @@ export function TransactionsView({
             className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white shadow-lg shadow-blue-500/25 text-xs font-bold cursor-pointer group"
           >
             <Plus className="h-4 w-4 mr-1.5 transition-transform group-hover:rotate-90 duration-200" />
-            <span>+ Catat Transaksi</span>
+            <span>Catat Transaksi</span>
           </Button>
         </div>
       </div>

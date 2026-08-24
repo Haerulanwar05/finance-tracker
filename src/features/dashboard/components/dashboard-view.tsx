@@ -60,10 +60,10 @@ export function DashboardView({ data }: DashboardViewProps) {
           <Button
             onClick={() => setIsAddTxOpen(true)}
             size="sm"
-            className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold shadow-lg shadow-blue-500/25 group"
+            className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold shadow-lg shadow-blue-500/25 group cursor-pointer"
           >
             <Plus className="h-4 w-4 mr-1.5 transition-transform group-hover:rotate-90 duration-200" />
-            <span>+ Catat Transaksi</span>
+            <span>Catat Transaksi</span>
           </Button>
         </div>
       </div>

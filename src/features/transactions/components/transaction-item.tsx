@@ -3,9 +3,6 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import {
-  ArrowDownRight,
-  ArrowUpRight,
-  ArrowRightLeft,
   Pencil,
   Trash2,
   Receipt,
@@ -15,6 +12,7 @@ import {
 import { formatRupiah } from "@/lib/currency";
 import { usePrivacy } from "@/context/privacy-context";
 import { deleteTransaction, TransactionWithRelations } from "../actions";
+import { CategoryBadgeIcon } from "@/components/shared/category-badge-icon";
 
 interface TransactionItemProps {
   transaction: TransactionWithRelations;
@@ -51,24 +49,14 @@ export function TransactionItem({ transaction, onEdit }: TransactionItemProps) {
     <>
       <div className="group flex items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-zinc-900/50 border border-zinc-800/60 hover:border-zinc-700/80 hover:bg-zinc-900/80 transition-all duration-200">
         {/* Left: Type Icon & Info */}
-        <div className="flex items-center gap-3 min-w-0">
-          <div
-            className={`h-10 w-10 rounded-xl flex items-center justify-center border shrink-0 transition-transform group-hover:scale-105 ${
-              isExpense
-                ? "bg-rose-500/10 border-rose-500/30 text-rose-400"
-                : isIncome
-                ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
-                : "bg-purple-500/10 border-purple-500/30 text-purple-400"
-            }`}
-          >
-            {isExpense ? (
-              <ArrowDownRight className="h-5 w-5" />
-            ) : isIncome ? (
-              <ArrowUpRight className="h-5 w-5" />
-            ) : (
-              <ArrowRightLeft className="h-5 w-5" />
-            )}
-          </div>
+        <div className="flex items-center gap-3.5 min-w-0">
+          <CategoryBadgeIcon
+            categoryName={transaction.category?.name}
+            categoryIcon={transaction.category?.icon}
+            type={transaction.type}
+            color={transaction.category?.color}
+            size="md"
+          />
 
           <div className="min-w-0">
             <p className="text-sm font-semibold text-white truncate">

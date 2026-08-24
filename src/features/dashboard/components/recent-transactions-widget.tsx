@@ -4,9 +4,6 @@ import * as React from "react";
 import Link from "next/link";
 import {
   ReceiptText,
-  ArrowUpRight,
-  ArrowDownLeft,
-  ArrowRightLeft,
   Receipt,
   ArrowRight,
 } from "lucide-react";
@@ -14,6 +11,7 @@ import { RecentTransactionItem } from "../actions";
 import { formatRupiah } from "@/lib/currency";
 import { usePrivacy } from "@/context/privacy-context";
 import { Button } from "@/components/ui/button";
+import { CategoryBadgeIcon } from "@/components/shared/category-badge-icon";
 
 interface RecentTransactionsWidgetProps {
   transactions: RecentTransactionItem[];
@@ -64,23 +62,13 @@ export function RecentTransactionsWidget({ transactions }: RecentTransactionsWid
               >
                 {/* Left: Icon & Description */}
                 <div className="flex items-center gap-3 min-w-0">
-                  <div
-                    className={`h-9 w-9 rounded-xl flex items-center justify-center shrink-0 border ${
-                      isIncome
-                        ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400"
-                        : isExpense
-                        ? "bg-rose-500/10 border-rose-500/20 text-rose-400"
-                        : "bg-purple-500/10 border-purple-500/20 text-purple-400"
-                    }`}
-                  >
-                    {isIncome ? (
-                      <ArrowDownLeft className="h-4 w-4" />
-                    ) : isExpense ? (
-                      <ArrowUpRight className="h-4 w-4" />
-                    ) : (
-                      <ArrowRightLeft className="h-4 w-4" />
-                    )}
-                  </div>
+                  <CategoryBadgeIcon
+                    categoryName={tx.category?.name}
+                    categoryIcon={tx.category?.icon}
+                    type={tx.type}
+                    color={tx.category?.color}
+                    size="sm"
+                  />
 
                   <div className="min-w-0">
                     <p className="text-xs sm:text-sm font-semibold text-zinc-100 truncate">

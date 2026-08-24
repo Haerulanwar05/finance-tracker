@@ -24,6 +24,7 @@ import { Input } from "@/components/ui/input";
 import { usePrivacy } from "@/context/privacy-context";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { CategoryBadgeIcon } from "@/components/shared/category-badge-icon";
 import {
   SettingsData,
   updateProfile,
@@ -539,12 +540,15 @@ export function SettingsView({ data }: SettingsViewProps) {
           {filteredCategories.map((cat) => (
             <div
               key={cat.id}
-              className="p-3 rounded-2xl bg-zinc-950/50 border border-zinc-800/80 flex items-center justify-between gap-2 group hover:border-zinc-700 transition-all"
+              className="p-3 rounded-2xl bg-zinc-950/50 border border-zinc-800/80 flex items-center justify-between gap-2.5 group hover:border-zinc-700/80 hover:bg-zinc-900/60 transition-all"
             >
-              <div className="flex items-center gap-2.5 min-w-0">
-                <span
-                  className="h-3 w-3 rounded-full shrink-0"
-                  style={{ backgroundColor: cat.color || "#3B82F6" }}
+              <div className="flex items-center gap-3 min-w-0">
+                <CategoryBadgeIcon
+                  categoryName={cat.name}
+                  categoryIcon={cat.icon}
+                  type={cat.type}
+                  color={cat.color}
+                  size="sm"
                 />
                 <div className="min-w-0">
                   <p className="text-xs font-semibold text-zinc-200 truncate">{cat.name}</p>
