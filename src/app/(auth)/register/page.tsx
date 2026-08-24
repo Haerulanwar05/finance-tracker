@@ -4,11 +4,12 @@ import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
-import { Wallet, ShieldCheck, ArrowRight } from "lucide-react";
+import { ShieldCheck, ArrowRight } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { registerUser } from "@/features/auth/actions";
+import { BrandLogo } from "@/components/shared/brand-logo";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -27,27 +28,24 @@ export default function RegisterPage() {
     setIsLoading(true);
 
     try {
-      const res = await registerUser({
-        name,
-        email,
-        password,
-      });
+      const result = await registerUser({ name, email, password });
 
-      if (!res.success) {
-        setError(res.message || "Gagal membuat akun");
+      if (!result.success) {
+        setError(result.message || "Gagal mendaftarkan akun.");
       } else {
-        setSuccess("Akun berhasil dibuat! Mengalihkan ke halaman login...");
+        setSuccess("Pendaftaran berhasil! Mengarahkan ke login...");
         setTimeout(() => {
           router.push("/login");
         }, 1500);
       }
     } catch {
-      setError("Terjadi kesalahan saat mendaftar");
+      setError("Terjadi kesalahan jaringan.");
     } finally {
       setIsLoading(false);
     }
   }
 
+  // Google OAuth Sign Up
   async function handleGoogleSignUp() {
     setError(null);
     setIsGoogleLoading(true);
@@ -70,11 +68,8 @@ export default function RegisterPage() {
       <div className="w-full max-w-md relative z-10 space-y-6">
         {/* Brand Header */}
         <div className="flex flex-col items-center text-center space-y-2">
-          <div className="h-12 w-12 rounded-2xl bg-emerald-600/20 border border-emerald-500/30 flex items-center justify-center shadow-lg shadow-emerald-500/10">
-            <Wallet className="h-6 w-6 text-emerald-400" />
-          </div>
-          <h1 className="text-2xl font-bold tracking-tight text-white">FinanceTracker</h1>
-          <p className="text-xs text-zinc-400">Daftar sekarang untuk mulai mengontrol keuangan harianmu.</p>
+          <BrandLogo size="lg" subtitle="Create Your Wealth Engine" />
+          <p className="text-xs text-zinc-400 max-w-xs">Daftar sekarang untuk mulai mengontrol keuangan harianmu.</p>
         </div>
 
         <Card className="border-zinc-800/80 bg-zinc-900/70 backdrop-blur-xl">

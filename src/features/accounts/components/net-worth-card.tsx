@@ -46,14 +46,23 @@ export function NetWorthCard({
 
         {/* Action Buttons */}
         <div className="flex flex-wrap items-center gap-3 pt-2 md:pt-0">
-          <Button onClick={onOpenTransferModal} variant="secondary" size="md" className="flex-1 sm:flex-initial">
-            <ArrowRightLeft className="h-4 w-4 text-purple-400" />
-            <span>Transfer Dana</span>
+          <Button
+            onClick={onOpenTransferModal}
+            variant="secondary"
+            size="md"
+            className="flex-1 sm:flex-initial border border-zinc-800 bg-zinc-900/80 hover:bg-zinc-800 text-zinc-200 group cursor-pointer"
+          >
+            <ArrowRightLeft className="h-4 w-4 text-purple-400 mr-1.5 transition-transform group-hover:rotate-180 duration-300" />
+            <span>Pindah Saldo</span>
           </Button>
 
-          <Button onClick={onOpenAddModal} variant="primary" size="md" className="flex-1 sm:flex-initial">
-            <Plus className="h-4 w-4" />
-            <span>Tambah Akun</span>
+          <Button
+            onClick={onOpenAddModal}
+            size="md"
+            className="flex-1 sm:flex-initial bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold shadow-lg shadow-blue-500/25 group cursor-pointer"
+          >
+            <Plus className="h-4 w-4 mr-1.5 transition-transform group-hover:rotate-90 duration-200" />
+            <span>+ Tambah Akun</span>
           </Button>
         </div>
       </div>

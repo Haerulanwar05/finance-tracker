@@ -41,29 +41,29 @@ export function DashboardView({ data }: DashboardViewProps) {
             onClick={() => setIsScanReceiptOpen(true)}
             variant="secondary"
             size="sm"
-            className="border border-indigo-500/30 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-300 shadow-sm"
+            className="border border-indigo-500/30 bg-indigo-500/15 hover:bg-indigo-500/25 text-indigo-300 shadow-md shadow-indigo-500/10 font-semibold group"
           >
-            <Sparkles className="h-4 w-4 text-indigo-400 mr-1.5" />
-            <span>Foto Struk</span>
+            <Sparkles className="h-4 w-4 text-indigo-400 mr-1.5 transition-transform group-hover:scale-110" />
+            <span>Foto Struk AI</span>
           </Button>
 
           <Button
             onClick={() => setIsTransferOpen(true)}
             variant="secondary"
             size="sm"
-            className="border border-zinc-800 hover:border-zinc-700"
+            className="border border-zinc-800 bg-zinc-900/80 hover:bg-zinc-800 text-zinc-200 group"
           >
-            <ArrowRightLeft className="h-4 w-4 text-purple-400 mr-1.5" />
-            <span>Transfer</span>
+            <ArrowRightLeft className="h-4 w-4 text-purple-400 mr-1.5 transition-transform group-hover:rotate-180 duration-300" />
+            <span>Pindah Saldo</span>
           </Button>
 
           <Button
             onClick={() => setIsAddTxOpen(true)}
             size="sm"
-            className="bg-blue-600 hover:bg-blue-500 text-white font-semibold shadow-lg shadow-blue-900/30"
+            className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold shadow-lg shadow-blue-500/25 group"
           >
-            <Plus className="h-4 w-4 mr-1.5" />
-            <span>Catat Transaksi</span>
+            <Plus className="h-4 w-4 mr-1.5 transition-transform group-hover:rotate-90 duration-200" />
+            <span>+ Catat Transaksi</span>
           </Button>
         </div>
       </div>

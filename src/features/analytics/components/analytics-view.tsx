@@ -5,12 +5,13 @@ import {
   TrendingUp,
   Lightbulb,
   CheckCircle2,
-  Wallet,
+  Target,
   Sparkles,
   Layers,
   ShoppingBag,
   SlidersHorizontal,
   Printer,
+  Activity,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DashboardAnalyticsData } from "@/features/dashboard/actions";
@@ -74,9 +75,9 @@ export function AnalyticsView({ data }: AnalyticsViewProps) {
             variant="outline"
             size="sm"
             onClick={handlePrint}
-            className="border-zinc-800 bg-zinc-900/80 hover:bg-zinc-800 text-zinc-200 text-xs shadow-sm print:hidden"
+            className="border-zinc-800 bg-zinc-900/80 hover:bg-zinc-800 text-zinc-200 text-xs shadow-sm print:hidden cursor-pointer group"
           >
-            <Printer className="h-4 w-4 text-blue-400 mr-1.5" />
+            <Printer className="h-4 w-4 text-blue-400 mr-1.5 transition-transform group-hover:scale-110" />
             <span>Cetak Dokumen</span>
           </Button>
 
@@ -105,12 +106,17 @@ export function AnalyticsView({ data }: AnalyticsViewProps) {
       {/* 1. Four Financial Health KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* KPI 1: Financial Health Score */}
-        <div className="relative overflow-hidden rounded-3xl border border-zinc-800/80 bg-gradient-to-br from-blue-950/20 via-zinc-900/60 to-zinc-950/80 backdrop-blur-xl p-5 space-y-3 flex flex-col justify-between shadow-lg group hover:border-blue-500/30 transition-all">
+        <div className="relative overflow-hidden rounded-3xl border border-zinc-800/80 bg-gradient-to-br from-blue-950/20 via-zinc-900/60 to-zinc-950/80 backdrop-blur-xl p-5 space-y-3 flex flex-col justify-between shadow-lg group hover:border-blue-500/40 hover:scale-[1.01] transition-all duration-200">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-zinc-400">Skor Kesehatan Finansial</span>
-            <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 font-semibold">
-              {data.healthGrade}
-            </span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 font-semibold">
+                {data.healthGrade}
+              </span>
+              <div className="h-7 w-7 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center">
+                <Activity className="h-3.5 w-3.5" />
+              </div>
+            </div>
           </div>
 
           <div className="flex items-baseline gap-2">
@@ -136,10 +142,10 @@ export function AnalyticsView({ data }: AnalyticsViewProps) {
         </div>
 
         {/* KPI 2: Savings Rate */}
-        <div className="relative overflow-hidden rounded-3xl border border-zinc-800/80 bg-zinc-900/60 backdrop-blur-xl p-5 space-y-3 flex flex-col justify-between shadow-lg group hover:border-emerald-500/30 transition-all">
+        <div className="relative overflow-hidden rounded-3xl border border-zinc-800/80 bg-gradient-to-br from-emerald-950/20 via-zinc-900/60 to-zinc-950/80 backdrop-blur-xl p-5 space-y-3 flex flex-col justify-between shadow-lg group hover:border-emerald-500/40 hover:scale-[1.01] transition-all duration-200">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-zinc-400">Rasio Tabungan</span>
-            <div className="h-7 w-7 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+            <div className="h-8 w-8 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shadow-sm shadow-emerald-500/10 group-hover:scale-110 transition-transform">
               <TrendingUp className="h-4 w-4" />
             </div>
           </div>
@@ -162,7 +168,7 @@ export function AnalyticsView({ data }: AnalyticsViewProps) {
         </div>
 
         {/* KPI 3: User Determined Monthly Spending Budget & Sub-Daily Limit */}
-        <div className="relative overflow-hidden rounded-3xl border border-indigo-500/20 bg-gradient-to-br from-indigo-950/30 via-zinc-900/60 to-zinc-950/80 backdrop-blur-xl p-5 space-y-3 flex flex-col justify-between shadow-lg group hover:border-indigo-500/40 transition-all">
+        <div className="relative overflow-hidden rounded-3xl border border-indigo-500/25 bg-gradient-to-br from-indigo-950/30 via-zinc-900/60 to-zinc-950/80 backdrop-blur-xl p-5 space-y-3 flex flex-col justify-between shadow-lg group hover:border-indigo-500/50 hover:scale-[1.01] transition-all duration-200">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-zinc-300">Batas Belanja Bulanan</span>
             <button
@@ -216,11 +222,11 @@ export function AnalyticsView({ data }: AnalyticsViewProps) {
         </div>
 
         {/* KPI 4: Total Goal Savings Reserved */}
-        <div className="relative overflow-hidden rounded-3xl border border-zinc-800/80 bg-zinc-900/60 backdrop-blur-xl p-5 space-y-3 flex flex-col justify-between shadow-lg group hover:border-purple-500/30 transition-all">
+        <div className="relative overflow-hidden rounded-3xl border border-zinc-800/80 bg-gradient-to-br from-purple-950/20 via-zinc-900/60 to-zinc-950/80 backdrop-blur-xl p-5 space-y-3 flex flex-col justify-between shadow-lg group hover:border-purple-500/40 hover:scale-[1.01] transition-all duration-200">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-zinc-400">Tabungan Terencana (Target)</span>
-            <div className="h-7 w-7 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center">
-              <Wallet className="h-4 w-4" />
+            <div className="h-8 w-8 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center shadow-sm shadow-purple-500/10 group-hover:scale-110 transition-transform">
+              <Target className="h-4 w-4" />
             </div>
           </div>
 

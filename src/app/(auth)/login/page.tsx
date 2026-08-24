@@ -4,11 +4,12 @@ import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
-import { Wallet, ShieldCheck, ArrowRight, Sparkles, Zap } from "lucide-react";
+import { ShieldCheck, ArrowRight, Sparkles, Zap } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ensureDemoAdminAccount } from "@/features/auth/actions";
+import { BrandLogo } from "@/components/shared/brand-logo";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -95,11 +96,8 @@ export default function LoginPage() {
       <div className="w-full max-w-md relative z-10 space-y-6">
         {/* Brand Header */}
         <div className="flex flex-col items-center text-center space-y-2">
-          <div className="h-12 w-12 rounded-2xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center shadow-lg shadow-blue-500/10">
-            <Wallet className="h-6 w-6 text-blue-400" />
-          </div>
-          <h1 className="text-2xl font-bold tracking-tight text-white">FinanceTracker</h1>
-          <p className="text-xs text-zinc-400">Kelola aset, pantau target tabungan & scan struk belanja.</p>
+          <BrandLogo size="lg" subtitle="Personal Financial Freedom" />
+          <p className="text-xs text-zinc-400 max-w-xs">Kelola aset, pantau target tabungan & scan struk belanja.</p>
         </div>
 
         <Card className="border-zinc-800/80 bg-zinc-900/70 backdrop-blur-xl">

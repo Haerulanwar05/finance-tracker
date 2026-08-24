@@ -90,21 +90,21 @@ export function GoalsView({ initialGoals, summary, accounts }: GoalsViewProps) {
         <Button
           onClick={() => setIsAddModalOpen(true)}
           size="sm"
-          className="bg-blue-600 hover:bg-blue-500 text-white font-semibold shadow-lg shadow-blue-900/30 self-start sm:self-auto"
+          className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold shadow-lg shadow-blue-500/25 self-start sm:self-auto cursor-pointer group"
         >
-          <Plus className="h-4 w-4 mr-1.5" />
-          <span>Buat Target Baru</span>
+          <Plus className="h-4 w-4 mr-1.5 transition-transform group-hover:rotate-90 duration-200" />
+          <span>+ Buat Target Baru</span>
         </Button>
       </div>
 
       {/* Bento Summary Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Total Terkumpul */}
-        <div className="rounded-3xl border border-zinc-800/80 bg-zinc-900/60 backdrop-blur-xl p-5 space-y-2">
+        <div className="rounded-3xl border border-zinc-800/80 bg-gradient-to-br from-blue-950/20 via-zinc-900/70 to-zinc-950/90 backdrop-blur-xl p-5 space-y-2 shadow-lg hover:border-blue-500/40 hover:scale-[1.01] transition-all duration-200 group">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-zinc-400">Tabungan Terkumpul</span>
-            <div className="h-8 w-8 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center">
-              <PiggyBank className="h-4 w-4" />
+            <div className="h-9 w-9 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center shadow-sm shadow-blue-500/10 group-hover:scale-110 transition-transform">
+              <PiggyBank className="h-4.5 w-4.5" />
             </div>
           </div>
           <p className="text-xl sm:text-2xl font-extrabold text-white font-mono tracking-tight">
@@ -114,11 +114,11 @@ export function GoalsView({ initialGoals, summary, accounts }: GoalsViewProps) {
         </div>
 
         {/* Total Target */}
-        <div className="rounded-3xl border border-zinc-800/80 bg-zinc-900/60 backdrop-blur-xl p-5 space-y-2">
+        <div className="rounded-3xl border border-zinc-800/80 bg-gradient-to-br from-purple-950/20 via-zinc-900/70 to-zinc-950/90 backdrop-blur-xl p-5 space-y-2 shadow-lg hover:border-purple-500/40 hover:scale-[1.01] transition-all duration-200 group">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-zinc-400">Total Target Impian</span>
-            <div className="h-8 w-8 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center">
-              <Target className="h-4 w-4" />
+            <div className="h-9 w-9 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center shadow-sm shadow-purple-500/10 group-hover:scale-110 transition-transform">
+              <Target className="h-4.5 w-4.5" />
             </div>
           </div>
           <p className="text-xl sm:text-2xl font-extrabold text-zinc-200 font-mono tracking-tight">
@@ -128,11 +128,11 @@ export function GoalsView({ initialGoals, summary, accounts }: GoalsViewProps) {
         </div>
 
         {/* Overall Progress */}
-        <div className="rounded-3xl border border-zinc-800/80 bg-zinc-900/60 backdrop-blur-xl p-5 space-y-2">
+        <div className="rounded-3xl border border-zinc-800/80 bg-gradient-to-br from-emerald-950/20 via-zinc-900/70 to-zinc-950/90 backdrop-blur-xl p-5 space-y-2 shadow-lg hover:border-emerald-500/40 hover:scale-[1.01] transition-all duration-200 group">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-zinc-400">Rata-rata Pencapaian</span>
-            <div className="h-8 w-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center">
-              <TrendingUp className="h-4 w-4" />
+            <div className="h-9 w-9 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shadow-sm shadow-emerald-500/10 group-hover:scale-110 transition-transform">
+              <TrendingUp className="h-4.5 w-4.5" />
             </div>
           </div>
           <p className="text-xl sm:text-2xl font-extrabold text-emerald-400 font-mono tracking-tight">
@@ -147,11 +147,11 @@ export function GoalsView({ initialGoals, summary, accounts }: GoalsViewProps) {
         </div>
 
         {/* Goals Count */}
-        <div className="rounded-3xl border border-zinc-800/80 bg-zinc-900/60 backdrop-blur-xl p-5 space-y-2">
+        <div className="rounded-3xl border border-zinc-800/80 bg-gradient-to-br from-amber-950/20 via-zinc-900/70 to-zinc-950/90 backdrop-blur-xl p-5 space-y-2 shadow-lg hover:border-amber-500/40 hover:scale-[1.01] transition-all duration-200 group">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-zinc-400">Status Target</span>
-            <div className="h-8 w-8 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center">
-              <Trophy className="h-4 w-4" />
+            <div className="h-9 w-9 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center shadow-sm shadow-amber-500/10 group-hover:scale-110 transition-transform">
+              <Trophy className="h-4.5 w-4.5" />
             </div>
           </div>
           <div className="flex items-baseline gap-2">

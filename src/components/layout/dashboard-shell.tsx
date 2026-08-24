@@ -5,18 +5,19 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import {
-  LayoutDashboard,
-  ReceiptText,
+  LayoutGrid,
+  ArrowLeftRight,
+  TrendingUp,
+  Target,
   WalletCards,
-  PiggyBank,
-  PieChart,
-  Settings,
+  SlidersHorizontal,
   LogOut,
   Eye,
   EyeOff,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PrivacyProvider, usePrivacy } from "@/context/privacy-context";
+import { BrandLogo, BrandLogoIcon } from "@/components/shared/brand-logo";
 
 interface DashboardShellProps {
   user: {
@@ -28,12 +29,12 @@ interface DashboardShellProps {
 }
 
 const NAV_ITEMS = [
-  { label: "Overview", href: "/dashboard", icon: LayoutDashboard },
-  { label: "Transaksi", href: "/transactions", icon: ReceiptText },
-  { label: "Analitik", href: "/analytics", icon: PieChart },
-  { label: "Target Tabungan", href: "/vaults", icon: PiggyBank },
-  { label: "Rekening", href: "/accounts", icon: WalletCards },
-  { label: "Pengaturan", href: "/settings", icon: Settings },
+  { label: "Overview", href: "/dashboard", icon: LayoutGrid, color: "text-blue-400", activeBg: "bg-blue-600/15 border-blue-500/30 text-blue-400" },
+  { label: "Transaksi", href: "/transactions", icon: ArrowLeftRight, color: "text-emerald-400", activeBg: "bg-emerald-600/15 border-emerald-500/30 text-emerald-400" },
+  { label: "Analitik", href: "/analytics", icon: TrendingUp, color: "text-purple-400", activeBg: "bg-purple-600/15 border-purple-500/30 text-purple-400" },
+  { label: "Target Tabungan", href: "/vaults", icon: Target, color: "text-amber-400", activeBg: "bg-amber-600/15 border-amber-500/30 text-amber-400" },
+  { label: "Rekening", href: "/accounts", icon: WalletCards, color: "text-cyan-400", activeBg: "bg-cyan-600/15 border-cyan-500/30 text-cyan-400" },
+  { label: "Pengaturan", href: "/settings", icon: SlidersHorizontal, color: "text-zinc-400", activeBg: "bg-zinc-800/60 border-zinc-700/60 text-zinc-200" },
 ];
 
 function DashboardShellInner({ user, children }: DashboardShellProps) {
@@ -52,14 +53,8 @@ function DashboardShellInner({ user, children }: DashboardShellProps) {
       <aside className="hidden md:flex w-64 flex-col justify-between border-r border-zinc-800/80 bg-zinc-950/80 backdrop-blur-xl p-5 sticky top-0 h-screen z-20">
         <div className="space-y-6">
           {/* Logo Brand */}
-          <div className="flex items-center gap-3 px-2">
-            <div className="h-10 w-10 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center shadow-lg shadow-blue-500/10">
-              <WalletCards className="h-5 w-5 text-blue-400" />
-            </div>
-            <div>
-              <h2 className="text-base font-bold text-white tracking-tight">Finance Tracker</h2>
-              <p className="text-[10px] text-zinc-500 font-medium">Catatan Keuangan Pribadi</p>
-            </div>
+          <div className="px-2">
+            <BrandLogo subtitle="Personal Finance Hub" />
           </div>
 
           {/* Navigation Links */}
@@ -76,22 +71,31 @@ function DashboardShellInner({ user, children }: DashboardShellProps) {
                   className={cn(
                     "relative flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-sm font-medium transition-all group",
                     isActive
-                      ? "bg-blue-600/15 text-blue-400 border border-blue-500/25 shadow-sm font-semibold"
+                      ? cn("border shadow-sm font-semibold", item.activeBg)
                       : "text-zinc-400 hover:text-zinc-100 hover:bg-zinc-900/60"
                   )}
                 >
                   <div className="flex items-center gap-3">
-                    <Icon
+                    <div
                       className={cn(
-                        "h-4 w-4 transition-transform group-hover:scale-110",
-                        isActive ? "text-blue-400" : "text-zinc-400 group-hover:text-zinc-200"
+                        "h-7 w-7 rounded-xl flex items-center justify-center transition-all duration-200",
+                        isActive
+                          ? "bg-white/10 shadow-sm"
+                          : "bg-zinc-900/60 group-hover:bg-zinc-800"
                       )}
-                    />
+                    >
+                      <Icon
+                        className={cn(
+                          "h-4 w-4 transition-transform group-hover:scale-110",
+                          isActive ? item.color : "text-zinc-400 group-hover:text-zinc-200"
+                        )}
+                      />
+                    </div>
                     <span>{item.label}</span>
                   </div>
 
                   {isActive && (
-                    <div className="h-2 w-2 rounded-full bg-blue-400 shadow-[0_0_8px_#60a5fa]" />
+                    <div className="h-2 w-2 rounded-full bg-current shadow-[0_0_8px_currentColor]" />
                   )}
                 </Link>
               );
@@ -130,10 +134,8 @@ function DashboardShellInner({ user, children }: DashboardShellProps) {
         {/* Top Header Bar */}
         <header className="h-16 border-b border-zinc-800/60 bg-zinc-950/70 backdrop-blur-xl px-4 sm:px-8 flex items-center justify-between sticky top-0 z-10">
           <div className="flex items-center gap-2 md:hidden">
-            <div className="h-8 w-8 rounded-lg bg-blue-600/20 border border-blue-500/30 flex items-center justify-center">
-              <WalletCards className="h-4 w-4 text-blue-400" />
-            </div>
-            <span className="font-bold text-sm text-white">Finance Tracker</span>
+            <BrandLogoIcon size="sm" />
+            <span className="font-bold text-sm text-white">FinanceTracker</span>
           </div>
 
           <div className="hidden md:block">
@@ -161,7 +163,7 @@ function DashboardShellInner({ user, children }: DashboardShellProps) {
               className="md:hidden flex items-center justify-center h-8 w-8 rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-400 hover:text-white transition-colors"
               title="Pengaturan"
             >
-              <Settings className="h-3.5 w-3.5" />
+              <SlidersHorizontal className="h-3.5 w-3.5" />
             </Link>
           </div>
         </header>
@@ -184,16 +186,23 @@ function DashboardShellInner({ user, children }: DashboardShellProps) {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex flex-col items-center justify-center gap-0.5 py-1 px-1.5 rounded-xl text-[9px] font-medium transition-all relative min-w-[48px]",
+                "flex flex-col items-center justify-center gap-0.5 py-1 px-1.5 rounded-xl text-[9.5px] font-medium transition-all relative min-w-[48px]",
                 isActive
-                  ? "text-blue-400 font-semibold"
+                  ? cn("font-bold", item.color)
                   : "text-zinc-400 hover:text-zinc-200"
               )}
             >
-              <Icon className={cn("h-4 w-4 transition-transform", isActive && "scale-110 text-blue-400")} />
-              <span className="truncate max-w-[50px]">{item.label.split(" ")[0]}</span>
+              <div
+                className={cn(
+                  "h-7 w-7 rounded-lg flex items-center justify-center transition-all duration-200",
+                  isActive ? "bg-white/10 shadow-sm" : ""
+                )}
+              >
+                <Icon className={cn("h-4 w-4 transition-transform", isActive && "scale-115")} />
+              </div>
+              <span className="truncate max-w-[54px]">{item.label.split(" ")[0]}</span>
               {isActive && (
-                <div className="absolute -bottom-1 h-0.5 w-3 rounded-full bg-blue-500 shadow-[0_0_8px_#3b82f6]" />
+                <div className="absolute -bottom-1 h-0.5 w-4 rounded-full bg-current shadow-[0_0_8px_currentColor]" />
               )}
             </Link>
           );

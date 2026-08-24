@@ -196,9 +196,9 @@ export function TransactionsView({
             onClick={handlePrintPdf}
             variant="outline"
             size="sm"
-            className="border-zinc-800 bg-zinc-900/80 hover:bg-zinc-800 text-zinc-200 text-xs shadow-sm cursor-pointer"
+            className="border-zinc-800 bg-zinc-900/80 hover:bg-zinc-800 text-zinc-200 text-xs shadow-sm cursor-pointer group"
           >
-            <Printer className="h-4 w-4 text-blue-400 mr-1.5" />
+            <Printer className="h-4 w-4 text-blue-400 mr-1.5 transition-transform group-hover:scale-110" />
             <span>Cetak PDF</span>
           </Button>
 
@@ -208,9 +208,9 @@ export function TransactionsView({
             onClick={handleDownloadCsv}
             variant="outline"
             size="sm"
-            className="border-zinc-800 bg-zinc-900/80 hover:bg-zinc-800 text-zinc-200 text-xs shadow-sm cursor-pointer"
+            className="border-zinc-800 bg-zinc-900/80 hover:bg-zinc-800 text-zinc-200 text-xs shadow-sm cursor-pointer group"
           >
-            <FileSpreadsheet className="h-4 w-4 text-emerald-400 mr-1.5" />
+            <FileSpreadsheet className="h-4 w-4 text-emerald-400 mr-1.5 transition-transform group-hover:scale-110" />
             <span className="hidden sm:inline">Unduh CSV</span>
           </Button>
 
@@ -219,10 +219,10 @@ export function TransactionsView({
             onClick={() => setIsScanModalOpen(true)}
             variant="secondary"
             size="sm"
-            className="border border-indigo-500/30 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-300 shadow-sm text-xs cursor-pointer"
+            className="border border-indigo-500/30 bg-indigo-500/15 hover:bg-indigo-500/25 text-indigo-300 shadow-md shadow-indigo-500/10 text-xs font-semibold cursor-pointer group"
           >
-            <Sparkles className="h-4 w-4 text-indigo-400 mr-1.5" />
-            <span>Foto Struk</span>
+            <Sparkles className="h-4 w-4 text-indigo-400 mr-1.5 transition-transform group-hover:scale-110" />
+            <span>Foto Struk AI</span>
           </Button>
 
           {/* Import CSV */}
@@ -230,9 +230,9 @@ export function TransactionsView({
             onClick={() => setIsImportModalOpen(true)}
             variant="secondary"
             size="sm"
-            className="border border-zinc-800 hover:border-zinc-700 text-xs cursor-pointer"
+            className="border border-zinc-800 bg-zinc-900/80 hover:bg-zinc-800 text-zinc-200 text-xs cursor-pointer group"
           >
-            <FileSpreadsheet className="h-4 w-4 text-emerald-400 mr-1.5" />
+            <FileSpreadsheet className="h-4 w-4 text-zinc-400 group-hover:text-emerald-400 mr-1.5 transition-colors" />
             <span>Import CSV</span>
           </Button>
 
@@ -240,10 +240,10 @@ export function TransactionsView({
           <Button
             onClick={() => setIsAddModalOpen(true)}
             size="sm"
-            className="bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-900/30 text-xs font-semibold cursor-pointer"
+            className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white shadow-lg shadow-blue-500/25 text-xs font-bold cursor-pointer group"
           >
-            <Plus className="h-4 w-4 mr-1.5" />
-            <span>Catat Transaksi</span>
+            <Plus className="h-4 w-4 mr-1.5 transition-transform group-hover:rotate-90 duration-200" />
+            <span>+ Catat Transaksi</span>
           </Button>
         </div>
       </div>
@@ -251,11 +251,11 @@ export function TransactionsView({
       {/* Bento Stats Summary Banner (Dynamically reflects active filter) */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {/* Total Income */}
-        <div className="rounded-3xl border border-zinc-800/80 bg-zinc-900/60 backdrop-blur-xl p-5 space-y-2 shadow-lg">
+        <div className="rounded-3xl border border-zinc-800/80 bg-gradient-to-br from-emerald-950/20 via-zinc-900/70 to-zinc-950/90 backdrop-blur-xl p-5 space-y-2 shadow-lg hover:border-emerald-500/40 hover:scale-[1.01] transition-all duration-200 group">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-zinc-400">Total Pemasukan</span>
-            <div className="h-8 w-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center">
-              <TrendingUp className="h-4 w-4" />
+            <div className="h-9 w-9 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shadow-sm shadow-emerald-500/10 group-hover:scale-110 transition-transform">
+              <TrendingUp className="h-4.5 w-4.5" />
             </div>
           </div>
           <p className="text-xl sm:text-2xl font-extrabold text-emerald-400 font-mono tabular-nums tracking-tight">
@@ -265,11 +265,11 @@ export function TransactionsView({
         </div>
 
         {/* Total Expense */}
-        <div className="rounded-3xl border border-zinc-800/80 bg-zinc-900/60 backdrop-blur-xl p-5 space-y-2 shadow-lg">
+        <div className="rounded-3xl border border-zinc-800/80 bg-gradient-to-br from-rose-950/20 via-zinc-900/70 to-zinc-950/90 backdrop-blur-xl p-5 space-y-2 shadow-lg hover:border-rose-500/40 hover:scale-[1.01] transition-all duration-200 group">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-zinc-400">Total Pengeluaran</span>
-            <div className="h-8 w-8 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 flex items-center justify-center">
-              <TrendingDown className="h-4 w-4" />
+            <div className="h-9 w-9 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-400 flex items-center justify-center shadow-sm shadow-rose-500/10 group-hover:scale-110 transition-transform">
+              <TrendingDown className="h-4.5 w-4.5" />
             </div>
           </div>
           <p className="text-xl sm:text-2xl font-extrabold text-rose-400 font-mono tabular-nums tracking-tight">
@@ -279,11 +279,11 @@ export function TransactionsView({
         </div>
 
         {/* Net Cashflow */}
-        <div className="rounded-3xl border border-zinc-800/80 bg-zinc-900/60 backdrop-blur-xl p-5 space-y-2 shadow-lg">
+        <div className="rounded-3xl border border-zinc-800/80 bg-gradient-to-br from-blue-950/20 via-zinc-900/70 to-zinc-950/90 backdrop-blur-xl p-5 space-y-2 shadow-lg hover:border-blue-500/40 hover:scale-[1.01] transition-all duration-200 group">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-zinc-400">Arus Kas Bersih (Net)</span>
-            <div className="h-8 w-8 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center">
-              <Scale className="h-4 w-4" />
+            <div className="h-9 w-9 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center shadow-sm shadow-blue-500/10 group-hover:scale-110 transition-transform">
+              <Scale className="h-4.5 w-4.5" />
             </div>
           </div>
           <p
