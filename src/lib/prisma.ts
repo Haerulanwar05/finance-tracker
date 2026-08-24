@@ -2,12 +2,20 @@ import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
 
-// Prevent multiple instances of Prisma Client in development (Hot Reload safe)
+// Prevent multiple instances of Prisma Client across hot reloads & serverless invocations
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
 
 function createPrismaClient() {
   const connectionString = process.env.DATABASE_URL;
-  const pool = new Pool({ connectionString });
+  
+  // Configure lightweight pg.Pool tailored for Serverless Lambdas & Supabase connection limits
+  const pool = new Pool({
+    connectionString,
+    max: 1, // 1 connection per serverless lambda instance prevents pool exhaustion
+    idleTimeoutMillis: 5000, // Release idle connection quickly after request finishes
+    connectionTimeoutMillis: 8000,
+  });
+
   const adapter = new PrismaPg(pool);
 
   return new PrismaClient({
@@ -18,6 +26,8 @@ function createPrismaClient() {
 
 export const prisma = globalForPrisma.prisma || createPrismaClient();
 
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+// Cache client globally in both dev and production serverless execution contexts
+globalForPrisma.prisma = prisma;
 
 export default prisma;
+
