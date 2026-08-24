@@ -66,16 +66,11 @@ export default function HomePage() {
           Catat pengeluaran harian cukup dengan foto struk belanja otomatis, satukan semua saldo bank & e-wallet, dan kumpulkan tabungan impian dengan target yang terukur.
         </p>
 
-        <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
+        <div className="flex items-center justify-center pt-2">
           <Link href="/register">
-            <Button size="lg" className="w-full sm:w-auto px-8 bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold shadow-xl shadow-blue-500/25">
+            <Button size="lg" className="w-full sm:w-auto px-8 py-6 text-base bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold shadow-xl shadow-blue-500/25 rounded-2xl cursor-pointer group">
               Mulai Sekarang (Gratis)
-              <ArrowRight className="h-4 w-4 ml-2" />
-            </Button>
-          </Link>
-          <Link href="/login">
-            <Button variant="outline" size="lg" className="w-full sm:w-auto px-8 border-zinc-800 bg-zinc-900/60 hover:bg-zinc-800 hover:border-zinc-700 text-zinc-200">
-              Buka Dashboard Demo
+              <ArrowRight className="h-4 w-4 ml-2 transition-transform group-hover:translate-x-1" />
             </Button>
           </Link>
         </div>
