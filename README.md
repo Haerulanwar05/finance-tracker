@@ -1,10 +1,53 @@
-# 💰 Personal Finance, Multi-Asset & Goal Tracker
+# 💰 FinanceTracker — Smart Personal Finance & Wealth Engine
 
-Aplikasi modern *full-stack* pencatatan keuangan harian, manajemen multi-aset (bank, e-wallet, cash, investasi), target tabungan finansial (*financial goals*), input pintar berbasis **AI Vision OCR** untuk struk belanja, ekspor laporan keuangan profesional, serta siap produksi dengan **Cloud Database Supabase & Google OAuth**.
+> **Aplikasi Pintar Pengelola Keuangan Pribadi, Multi-Rekening, Target Tabungan Impian, dan Pencatatan Struk Otomatis Berbasis AI Vision.**
+
+[![Status Produksi](https://img.shields.io/badge/Status-Production%20Ready-emerald.svg)](https://finance-tracker-two-teal-14.vercel.app)
+[![Next.js 16](https://img.shields.io/badge/Framework-Next.js%2016-blue.svg)](https://nextjs.org/)
+[![Database](https://img.shields.io/badge/Database-Supabase%20PostgreSQL-3ecf8e.svg)](https://supabase.com/)
+[![QA Tests](https://img.shields.io/badge/Tests-92%2F92%20Passed%20(100%25)-brightgreen.svg)](./docs/TEST_PLAN.md)
 
 ---
 
-## 📚 Dokumentasi Proyek Lengkap
+## 📢 Apa yang Baru di Pembaruan Terkini? (Untuk Pengguna)
+
+Berikut adalah rangkuman peningkatan dan perbaikan terbaru yang membuat pengalaman Anda mengelola keuangan harian semakin cepat, rapi, dan praktis:
+
+### ⚡ 1. Perpindahan Menu Instan Tanpa Jeda (*Zero-Lag*)
+* **Sebelumnya**: Saat berpindah antar halaman (misal dari *Ringkasan* ke *Transaksi* atau *Analitik*), terdapat jeda sekitar 2–3 detik sebelum layar terbuka.
+* **Sekarang**: Sistem telah dioptimalkan untuk memuat data di latar belakang. Begitu menu ditekan, layar langsung berganti seketika (**secepat kilat**) tanpa rasa menunggu.
+
+### 🏷️ 2. Tampilan "Batas Belanja Bulanan" Lebih Rapi & Elegan
+* **Sebelumnya**: Kartu anggaran di halaman Ringkasan (*Overview*) terlihat agak penuh dan terbagi dua kotak.
+* **Sekarang**: Tampilannya telah didesain ulang menjadi sangat minimalis dan mewah:
+  * Dilengkapi **garis batas warna gradien (*Indigo to Cyan*)** yang menunjukkan sisa anggaran belanja Anda.
+  * Terdapat **lampu status berdenyut halus** (*Batas Aman*, *Waspada*, atau *Batas Kritis*).
+  * **Cukup 1 kali klik pada kartu**, Anda dapat langsung mengatur batas belanja bulanan dan melihat rekomendasi batas belanja harian yang aman.
+
+### ✨ 3. Logo Baru Kantong Uang Beranimasi & Navigasi Cerdas
+* **Desain Logo Baru**: Logo resmi aplikasi kini menggunakan lambang **Kantong Uang Emas-Zamrud (`$`)** yang melayang lembut dengan efek kilau elegan, tampil jernih di semua jenis HP (Android & iPhone).
+* **Navigasi 1-Klik**:
+  * Saat **sudah login**: Mengklik logo atau tulisan *FinanceTracker* akan **langsung membawa Anda kembali ke halaman Ringkasan (*Overview*)**.
+  * Saat **di halaman Login / Daftar**: Mengklik logo atau tautan *"Kembali ke Halaman Utama"* akan mengarahkan Anda langsung ke beranda depan aplikasi.
+
+### 📄 4. Nama Pengguna Otomatis Sesuai Saat Cetak Laporan PDF
+* Saat mencetak rekening koran atau bukti transaksi berformat PDF, nama pemilik akun kini **100% otomatis menampilkan nama lengkap / username Anda yang sedang login**, baik saat dicetak dari menu *Transaksi* maupun menu *Analitik*.
+* Dokumen PDF dirancang resmi dan bersih berstandar kertas A4 siap print/arsip (*ink-friendly*).
+
+### 📊 5. Tampilan Grafik Belanja yang Nyaman & Bebas Gangguan
+* Diagram donat pengeluaran per kategori kini tampil rapi tanpa kotak putih yang mengganggu saat disentuh, dan keterangan total nominal belanja tidak lagi tertutup atau tumpang tindih.
+
+### 📱 6. Desain Khusus Layar HP (Ergonomis untuk Jempol)
+* Seluruh tombol aksi utama (*Catat Transaksi, Scan Struk, Tambah Rekening*) tersusun simetris 2-kolom yang pas di layar HP.
+* Filter kategori transaksi kini dapat **digeser ke samping (*swipeable*)** dengan sangat mulus di layar sentuh.
+* Menu navigasi utama berada di bagian bawah layar (*Bottom Bar*) agar mudah dijangkau satu tangan.
+
+### 🎯 7. Halaman Depan (*Landing Page*) yang Lebih Bersih & Fokus
+* Menghapus tombol demo yang membingungkan dan menggantinya dengan satu tombol utama yang jelas: **`Mulai Sekarang (Gratis) →`** untuk langsung mendaftar atau masuk menggunakan akun Google.
+
+---
+
+## 📚 Dokumentasi Proyek Lengkap (Untuk Pengembang & Teknis)
 
 Semua perencanaan sistem dan panduan teknis telah disusun secara terstruktur di folder [`docs/`](./docs):
 
