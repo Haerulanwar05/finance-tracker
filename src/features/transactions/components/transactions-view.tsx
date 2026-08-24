@@ -8,7 +8,7 @@ import {
   TrendingDown,
   Scale,
   Sparkles,
-  FileText,
+  Printer,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatRupiah } from "@/lib/currency";
@@ -20,7 +20,8 @@ import { AddTransactionModal } from "./add-transaction-modal";
 import { EditTransactionModal } from "./edit-transaction-modal";
 import { ImportCsvModal } from "./import-csv-modal";
 import { ReceiptScannerModal } from "@/features/ocr/components/receipt-scanner-modal";
-import { ExportStatementModal } from "./export-statement-modal";
+import { printFinancialStatement } from "../lib/print-statement";
+import { exportTransactionsToCsv } from "../lib/export-csv";
 
 interface TransactionsViewProps {
   initialTransactions: TransactionWithRelations[];
@@ -66,7 +67,6 @@ export function TransactionsView({
   const [isAddModalOpen, setIsAddModalOpen] = React.useState(false);
   const [isImportModalOpen, setIsImportModalOpen] = React.useState(false);
   const [isScanModalOpen, setIsScanModalOpen] = React.useState(false);
-  const [isExportModalOpen, setIsExportModalOpen] = React.useState(false);
   const [editingTx, setEditingTx] = React.useState<TransactionWithRelations | null>(null);
 
   // Filter Transactions dynamically
@@ -140,7 +140,7 @@ export function TransactionsView({
     };
   }, [filteredTransactions]);
 
-  // Computed period label for export modal
+  // Computed period label for export
   const periodLabel = React.useMemo(() => {
     if (period === "THIS_MONTH") return "Bulan Ini";
     if (period === "LAST_MONTH") return "Bulan Lalu";
@@ -149,6 +149,19 @@ export function TransactionsView({
     if (period === "CUSTOM" && startDate && endDate) return `${startDate} s/d ${endDate}`;
     return "Semua Waktu";
   }, [period, startDate, endDate]);
+
+  const handlePrintPdf = () => {
+    printFinancialStatement({
+      transactions: filteredTransactions,
+      periodLabel,
+    });
+  };
+
+  const handleDownloadCsv = () => {
+    const safePeriod = periodLabel.toLowerCase().replace(/\s+/g, "-").replace(/\//g, "-");
+    const filename = `laporan-transaksi-${safePeriod}-${new Date().toISOString().slice(0, 10)}.csv`;
+    exportTransactionsToCsv(filteredTransactions, filename);
+  };
 
   function handleResetFilters() {
     setSearch("");
@@ -173,17 +186,29 @@ export function TransactionsView({
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5 flex-wrap">
-          {/* Export Statement Button */}
+        <div className="flex items-center gap-2 flex-wrap">
+          {/* Direct 1-Click Print PDF */}
           <Button
             type="button"
-            onClick={() => setIsExportModalOpen(true)}
+            onClick={handlePrintPdf}
             variant="outline"
             size="sm"
-            className="border-zinc-800 bg-zinc-900/80 hover:bg-zinc-800 text-zinc-200 text-xs shadow-sm"
+            className="border-zinc-800 bg-zinc-900/80 hover:bg-zinc-800 text-zinc-200 text-xs shadow-sm cursor-pointer"
           >
-            <FileText className="h-4 w-4 text-blue-400 mr-1.5" />
-            <span>Ekspor Laporan</span>
+            <Printer className="h-4 w-4 text-blue-400 mr-1.5" />
+            <span>Cetak PDF</span>
+          </Button>
+
+          {/* Direct 1-Click Export CSV */}
+          <Button
+            type="button"
+            onClick={handleDownloadCsv}
+            variant="outline"
+            size="sm"
+            className="border-zinc-800 bg-zinc-900/80 hover:bg-zinc-800 text-zinc-200 text-xs shadow-sm cursor-pointer"
+          >
+            <FileSpreadsheet className="h-4 w-4 text-emerald-400 mr-1.5" />
+            <span className="hidden sm:inline">Unduh CSV</span>
           </Button>
 
           {/* AI Scan Receipt */}
@@ -191,7 +216,7 @@ export function TransactionsView({
             onClick={() => setIsScanModalOpen(true)}
             variant="secondary"
             size="sm"
-            className="border border-indigo-500/30 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-300 shadow-sm text-xs"
+            className="border border-indigo-500/30 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-300 shadow-sm text-xs cursor-pointer"
           >
             <Sparkles className="h-4 w-4 text-indigo-400 mr-1.5" />
             <span>Foto Struk</span>
@@ -202,7 +227,7 @@ export function TransactionsView({
             onClick={() => setIsImportModalOpen(true)}
             variant="secondary"
             size="sm"
-            className="border border-zinc-800 hover:border-zinc-700 text-xs"
+            className="border border-zinc-800 hover:border-zinc-700 text-xs cursor-pointer"
           >
             <FileSpreadsheet className="h-4 w-4 text-emerald-400 mr-1.5" />
             <span>Import CSV</span>
@@ -212,7 +237,7 @@ export function TransactionsView({
           <Button
             onClick={() => setIsAddModalOpen(true)}
             size="sm"
-            className="bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-900/30 text-xs font-semibold"
+            className="bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-900/30 text-xs font-semibold cursor-pointer"
           >
             <Plus className="h-4 w-4 mr-1.5" />
             <span>Catat Transaksi</span>
@@ -342,16 +367,6 @@ export function TransactionsView({
         accounts={accounts}
         categories={categories}
       />
-
-      {/* Export Financial Statement Modal */}
-      {isExportModalOpen && (
-        <ExportStatementModal
-          isOpen={isExportModalOpen}
-          onClose={() => setIsExportModalOpen(false)}
-          transactions={filteredTransactions}
-          periodLabel={periodLabel}
-        />
-      )}
     </div>
   );
 }
