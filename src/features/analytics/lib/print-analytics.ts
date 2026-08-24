@@ -462,11 +462,10 @@ export function printAnalyticsReport({
       setTimeout(() => {
         try {
           printWindow.focus();
-          printWindow.print();
         } catch (err) {
-          console.warn("Print window trigger error:", err);
+          console.warn("Print window focus error:", err);
         }
-      }, 350);
+      }, 100);
       return;
     }
   } catch (e) {

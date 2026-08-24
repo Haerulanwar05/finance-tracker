@@ -511,15 +511,13 @@ export function printFinancialStatement({
       printWindow.document.write(html);
       printWindow.document.close();
 
-      // Trigger auto-print after document layout stabilizes
       setTimeout(() => {
         try {
           printWindow.focus();
-          printWindow.print();
         } catch (err) {
-          console.warn("Print window trigger error:", err);
+          console.warn("Print window focus error:", err);
         }
-      }, 350);
+      }, 100);
       return;
     }
   } catch (e) {
