@@ -647,10 +647,10 @@ export function SettingsView({ data }: SettingsViewProps) {
             <div className="space-y-0.5">
               <div className="flex items-center gap-2">
                 <Smartphone className="h-4 w-4 text-emerald-400" />
-                <p className="text-xs font-bold text-white">Progressive Web App (PWA) & Offline Queue</p>
+                <p className="text-xs font-bold text-white">Aplikasi Mandiri (HP & Laptop) & Catat Offline</p>
               </div>
               <p className="text-[11px] text-zinc-400">
-                Aplikasi dapat dipasang di layar utama dan mencatat transaksi tanpa internet (auto-sync).
+                Pasang di layar HP atau PC/Laptop untuk akses cepat dan tetap bisa mencatat pengeluaran tanpa internet.
               </p>
             </div>
 
