@@ -66,7 +66,28 @@ pie title Distribusi Warna Visual Antarmuka
 5. **Recent Transactions Feed**:
    * List transaksi dengan filter rentang waktu (Bulan Ini, Bulan Lalu, 3 Bulan, Tahun Ini, Kustom Kalender) dan modal ekspor laporan keuangan.
 
-### 4.2. Mobile Ergonomics (Thumb-Zone Navigation)
+### 4.2. Animated Luxury Dollar Bag Brand Logo
+* **Vektor Murni & Scoped SVG IDs**: Menjamin logo kantong uang emas-zamrud (`$`) selalu tampil tajam 100% tanpa distorsi gradien di browser Android, iOS Safari, maupun Desktop.
+* **Micro-Interactions**: Animasi melayang lembut (*floating bobbing*) dengan aksen kilau berkilap (*golden shimmer*) di sudut kanan atas.
+* **Routing Cerdas**: Mengklik logo mengarahkan pengguna yang sudah login ke `/dashboard` (Overview) dan pengguna tamu/login ke `/` (Landing Page).
+
+### 4.3. Minimalist "Batas Belanja Bulanan" Bento Card
+* **Simetris & Rapi**: Menyelaraskan tata letak kartu anggaran dengan kartu Net Worth, Pemasukan, dan Pengeluaran.
+* **Slim Gradient Progress Bar (6px)**: Gradien halus *Indigo to Cyan* menggantikan inset gelap lama untuk visualisasi sisa anggaran yang elegan.
+* **Pulsating Status Badge**: Indikator lampu berdenyut halus (*Batas Aman*, *Waspada*, *Batas Kritis*) yang memberikan sinyal visual instan.
+* **Interactive Surface**: Seluruh permukaan kartu dapat diklik untuk membuka modal pengaturan batas belanja bulanan dan rekomendasi belanja harian.
+
+### 4.4. PWA Installation & Multi-Device Floating Banner
+* **Dual-Device Visual Badge**: Ikon kombinasi `Laptop` & `Smartphone` dengan latar gradien halus *Emerald-to-Teal*.
+* **Natural Copywriting**: Bahasa Indonesia ramah dan alami yang menginformasikan pemasangan di HP maupun PC/Laptop serta kemampuan mencatat offline.
+* **Smart Device Detection**: Membuka *Native Android Install Prompt* atau menampilkan panduan visual 2 langkah khusus untuk *iOS Safari* dan *Desktop Chrome/Edge*.
+
+### 4.5. Offline State & Queue Indicators
+* **Mode Offline Banner**: Indikator mengambang di atas layar saat koneksi terputus: *"Mode Offline — Transaksi disimpan di antrean HP"*.
+* **Pending Queue Floating Pill**: Pill mengambang di sudut kiri bawah saat terdapat transaksi belum tersinkron dengan tombol pintas *"Lihat Antrean"* dan *"Sync"*.
+* **Auto-Dismiss Sync Toast**: Notifikasi hijau halus yang muncul otomatis dan menghilang dalam 4 detik begitu sinkronisasi background selesai.
+
+### 4.6. Mobile Ergonomics (Thumb-Zone Navigation)
 * **Bottom Navigation Bar 6-Item**: Memuat item *Overview, Transaksi, Analitik, Target, Rekening, dan Pengaturan* dengan ukuran target sentuh nyaman.
 * **Safe Area Spacing (`pb-24`)**: Memastikan konten paling bawah tidak tertutup oleh bilah navigasi melayang.
 * **Header Quick Gear Action**: Tombol jalan pintas pengaturan di samping sensor privasi saldo.
@@ -89,3 +110,4 @@ Untuk keperluan pencetakan PDF dan fisik, sistem menggunakan **Isolated Print Re
 - [x] **Touch Target**: Semua tombol aksi di mobile memiliki ukuran area sentuh minimal **44x44px**.
 - [x] **Color Accessibility**: Informasi keuangan tidak hanya mengandalkan warna hijau/merah, tetapi selalu disertai simbol `+` atau `-` dan ikon panah.
 - [x] **Keyboard Navigation**: Modal form dapat ditutup dengan tombol `Escape` dan navigasi field form dapat menggunakan tombol `Tab`.
+- [x] **PWA Standalone Compliance**: Lolos audit PWA Lighthouse dengan Web App Manifest lengkap, ikon maskable, dan Service Worker caching.

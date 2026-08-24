@@ -50,7 +50,8 @@ C4Context
 | **Authentication** | **NextAuth.js (Auth.js v5)** | Mendukung ganda: Google OAuth 2.0 dan Credentials (bcrypt), JWT session stateless berkinerja tinggi. |
 | **AI / OCR Engine** | **Gemini Flash Vision API (@google/genai)** | Ekstraksi teks nota berkecepatan tinggi, akurasi tinggi membaca struk bahasa Indonesia, biaya efisien (token-based). |
 | **Print & Export Engine** | **Isolated Iframe DOM + UTF-8 BOM CSV** | Menjamin hasil cetak PDF A4 bersih (*top-aligned, high-contrast, zero dark-mode artifacts*) dan kompatibel dengan Excel/Google Sheets. |
-| **State Management** | **Zustand + React Server Actions + Context API** | State UI lokal yang sangat ringan untuk sensor privasi saldo dan filter data. |
+| **State Management** | **Zustand + React Server Actions + Context API** | State UI lokal yang sangat ringan untuk sensor privasi saldo, offline queue, dan filter data. |
+| **PWA & Offline Engine** | **Web App Manifest + Service Worker + Local Queue** | Standalone installability (HP & PC/Laptop), Stale-While-Revalidate static cache, dan zero-connection transaction queue auto-sync. |
 
 ---
 
@@ -78,25 +79,53 @@ sequenceDiagram
     UI-->>U: Redirect ke /dashboard
 ```
 
-### 4.2. Alur Transaksi Harian & Transfer Saldo (ACID)
+### 4.2. Alur Transaksi Harian & Parallel Database Batching (ACID)
 ```mermaid
 sequenceDiagram
     autonumber
     actor U as User
     participant UI as Next.js Client Page
-    participant SA as Server Action (Mutation)
+    participant SA as Server Action (Parallel Mutation)
     participant DB as Supabase PostgreSQL (Prisma $transaction)
 
     U->>UI: Input transaksi (Pengeluaran / Pemasukan / Transfer)
     UI->>SA: Submit FormData dengan Zod Validation
-    SA->>DB: Jalankan Prisma $transaction
-    Note over DB: 1. Simpan baris Transaction<br/>2. Update balance di tabel Account (Asal & Tujuan)<br/>3. Update alokasi Target jika ada
-    DB-->>SA: Commit Transaction Success
-    SA-->>UI: Revalidate Path & Update Cache
-    UI-->>U: Tampilkan notifikasi berhasil & saldo terupdate
+    SA->>DB: Jalankan Prisma $transaction dengan Promise.all Parallel Batch
+    Note over DB: 1. Verifikasi Rekening Sumber, Tujuan & Kategori bersamaan (1 RT)<br/>2. Mutasi Saldo & Create Record Transaction bersamaan (1 RT)
+    DB-->>SA: Commit Transaction Success (Total 2 RT vs 6 RT lama)
+    SA-->>UI: Revalidate Path & Instant Client Feedback
+    UI-->>U: Modal tertutup instan & saldo terupdate
 ```
 
-### 4.3. Alur Smart OCR Receipt Ingestion
+### 4.3. Alur PWA & Resilient Offline Queue (Catat Tanpa Sinyal)
+```mermaid
+sequenceDiagram
+    autonumber
+    actor U as User
+    participant UI as Add Transaction Modal
+    participant OQ as Offline Queue Engine (localStorage)
+    participant EV as Event Dispatcher
+    participant SA as Server Action Sync
+    participant DB as Supabase PostgreSQL
+
+    alt Kondisi Offline (!navigator.onLine)
+        U->>UI: Simpan Transaksi Saat Offline
+        UI->>OQ: Simpan ke Antrean Lokal HP (ID: offline_*)
+        OQ->>EV: Dispatch event 'offline-queue-changed'
+        UI-->>U: Tutup modal seketika + Tampilkan floating pill "X Antrean"
+    else Kondisi Kembali Online (window.ononline)
+        EV->>SA: Trigger Auto-Sync Background Dispatcher
+        loop Setiap Item Antrean
+            SA->>DB: createTransaction(item)
+            DB-->>SA: Commit Success
+            SA->>OQ: Hapus item dari Antrean Lokal
+        end
+        OQ->>EV: Dispatch event 'offline-sync-complete'
+        EV-->>U: Tampilkan toast sukses "X transaksi berhasil disinkronkan ke cloud!"
+    end
+```
+
+### 4.4. Alur Smart OCR Receipt Ingestion
 ```mermaid
 sequenceDiagram
     autonumber
@@ -115,7 +144,7 @@ sequenceDiagram
     UI->>DB: Simpan Transaksi Permanen
 ```
 
-### 4.4. Alur Cetak Laporan Keuangan PDF & CSV
+### 4.5. Alur Cetak Laporan Keuangan PDF & CSV
 ```mermaid
 sequenceDiagram
     autonumber
@@ -141,8 +170,11 @@ sequenceDiagram
    * Akses langsung ke ID transaksi, akun, target, atau kategori pengguna lain dicegah di level Server Actions middleware.
 2. **Financial Precision & Integrity**:
    * Nominal uang disimpan dalam format integer (`Int` / `Float` bulat) dalam satuan Rupiah untuk menghindari *floating-point arithmetic error*.
-   * Transfer saldo dan alokasi target wajib dieksekusi dalam **Database Transaction (`prisma.$transaction`)** untuk menjamin konsistensi saldo.
+   * Transfer saldo dan alokasi target wajib dieksekusi dalam **Database Transaction (`prisma.$transaction`)** dengan parallel batching untuk menjamin konsistensi saldo dan kecepatan tinggi.
 3. **Production Secrets & Environment Protection**:
    * Kunci rahasia (`AUTH_SECRET`, `AUTH_GOOGLE_SECRET`, `DATABASE_URL`, `GEMINI_API_KEY`) dikelola secara aman melalui Vercel Environment Secrets dan tidak pernah disimpan dalam repository publik.
 4. **Receipt Storage & Privacy**:
    * Modus sensor privasi (`PrivacyProvider`) menyembunyikan nominal saldo di layar saat digunakan di ruang publik.
+5. **Offline Queue Encryption & Local Security**:
+   * Antrean transaksi lokal disimpan di storage klien terisolasi dan hanya dapat disinkronkan oleh sesi akun pengguna yang sah.
+

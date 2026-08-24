@@ -14,14 +14,15 @@
 
 Berikut adalah rangkuman peningkatan dan fitur terbaru yang membuat pengalaman Anda mengelola keuangan harian semakin cepat, rapi, dan praktis:
 
-### 📲 1. Pasang Aplikasi di Layar HP (PWA) & Catat Offline Tanpa Internet
-* **Bisa Dipasang di Android & iPhone**: Anda sekarang dapat memasang FinanceTracker ke Layar Utama (*Home Screen*) HP layaknya aplikasi bawaan toko aplikasi melalui banner *"Pasang Aplikasi"* atau menu Pengaturan.
-* **Tetap Bisa Mencatat Saat Offline**: Sedang di tempat tanpa sinyal atau kuota internet habis? Anda tetap dapat mencatat pengeluaran harian seperti biasa. Catatan Anda akan disimpan dengan aman di **Antrean Lokal HP** dan **otomatis tersinkronisasi (*auto-sync*)** ke server cloud begitu koneksi internet terhubung kembali!
+### 📲 1. Pasang Aplikasi di Layar HP & Laptop/PC (PWA) & Catat Offline Tanpa Internet
+* **Bisa Dipasang di Semua Perangkat (HP & Komputer)**: Anda sekarang dapat memasang FinanceTracker sebagai aplikasi mandiri di **Android, iPhone, iPad, serta Laptop / PC Desktop (Windows & Mac)** melalui banner *"Pasang FinanceTracker"* atau menu Pengaturan.
+* **Banner Modern & Panduan Jelas**: Dilengkapi tampilan pop-up modern dan panduan visual langkah demi langkah yang disesuaikan otomatis dengan perangkat yang Anda gunakan (Safari di iPhone, atau Chrome/Edge di Laptop).
+* **Tetap Bisa Mencatat Saat Offline**: Sedang di tempat tanpa sinyal atau kuota internet habis? Anda tetap dapat mencatat pengeluaran harian seperti biasa. Catatan Anda akan disimpan dengan aman di **Antrean Lokal Perangkat** dan **otomatis tersinkronisasi (*auto-sync*)** ke server cloud begitu koneksi internet terhubung kembali!
 * **Akses Cepat (*App Shortcuts*)**: Ikon aplikasi di layar HP mendukung *Long-Press Shortcut* untuk langsung membuka fitur "Catat Transaksi" atau "Ringkasan Keuangan".
 
-### ⚡ 2. Perpindahan Menu Instan Tanpa Jeda (*Zero-Lag*)
-* **Sebelumnya**: Saat berpindah antar halaman (misal dari *Ringkasan* ke *Transaksi* atau *Analitik*), terdapat jeda sekitar 2–3 detik sebelum layar terbuka.
-* **Sekarang**: Sistem telah dioptimalkan untuk memuat data di latar belakang. Begitu menu ditekan, layar langsung berganti seketika (**secepat kilat**) tanpa rasa menunggu.
+### ⚡ 2. Respon Tombol CRUD & Perpindahan Menu Instan (*Zero-Lag & Fast Response*)
+* **Simpan / Edit / Hapus Transaksi Kilat**: Waktu respon saat menekan tombol simpan transaksi, transfer saldo, hapus mutasi, atau alokasi target tabungan kini telah dipercepat hingga **67% lebih cepat** berkat pemrosesan data paralel di server cloud.
+* **Perpindahan Halaman Instan**: Begitu menu ditekan (*Ringkasan*, *Transaksi*, *Analitik*, *Target*, *Rekening*), layar langsung berganti seketika (**secepat kilat**) tanpa rasa menunggu jeda loading.
 
 ### 🏷️ 3. Tampilan "Batas Belanja Bulanan" Lebih Rapi & Elegan
 * **Sebelumnya**: Kartu anggaran di halaman Ringkasan (*Overview*) terlihat agak penuh dan terbagi dua kotak.

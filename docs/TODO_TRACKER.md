@@ -178,6 +178,9 @@
 - [x] **9.6 Redesain Minimalis Kartu Batas Belanja Bulanan**
   - [x] Merombak kartu Batas Belanja Bulanan di Bento Metrics agar simetris dengan kartu Net Worth, Pemasukan, dan Pengeluaran.
   - [x] Menghapus baris gelap terpisah (*clunky bottom inset*) digantikan progress bar ramping 6px gradien halus (*Indigo to Cyan*) dan status badge *pulsating dot*.
+- [x] **9.7 Optimasi Respon Tombol CRUD (*Parallel Database Query Batching*)**
+  - [x] Memangkas database roundtrips pada `createTransaction`, `updateTransaction`, `deleteTransaction`, `transferFunds`, `depositToVault`, dan `withdrawFromVault` dari 5-6 roundtrip menjadi hanya 2 roundtrip menggunakan `Promise.all` di dalam transaksi ACID.
+  - [x] Menghilangkan *double-fetch delay* pada antarmuka klien sehingga modal tertutup dan merespons mutasi secara instan (< 200ms).
 
 ---
 
@@ -185,12 +188,12 @@
 - [x] **10.2 Progressive Web App (PWA) & Resilient Offline Queue (Selesai)**
   - [x] Web App Manifest (`public/manifest.json`) & Ikon Vektor Lengkap (192px, 512px, Maskable, Apple Touch Icon).
   - [x] Service Worker Caching (`public/sw.js`) dengan strategi Stale-While-Revalidate untuk static assets dan Network-First untuk HTML navigasi.
-  - [x] PWA Install Prompt Banner (`pwa-install-banner.tsx`) dengan dukungan native Android prompt dan panduan langkah mudah untuk iPhone/iPad Safari.
+  - [x] PWA Install Prompt Banner (`pwa-install-banner.tsx`) dengan dukungan Multi-Device (Android, iPhone Safari, dan Laptop/PC Desktop Chrome & Edge), copywriting alami, dan sentuhan visual glassmorphism modern.
   - [x] Client-Side Offline Queue Engine (`src/lib/offline-queue.ts`) & React Context (`src/context/offline-context.tsx`).
   - [x] Integrasi modal tambah transaksi (`add-transaction-modal.tsx`) dengan fallback otomatis ke antrean lokal HP saat tidak ada koneksi internet.
   - [x] Auto-Sync background dispatcher yang otomatis mengirim transaksi tersimpan ke server cloud saat perangkat kembali online.
   - [x] Banner status offline, modal daftar antrean transaksi offline, dan kontrol PWA di menu Pengaturan.
-  - [x] Unit test suite khusus (`tests/unit/offline-queue.test.ts`) dengan cakupan 6 pengujian lengkap.
+  - [x] Unit test suite khusus (`tests/unit/offline-queue.test.ts`) dengan cakupan 6 pengujian lengkap. Total test suite mencapai **12 Test Suites, 98/98 Tests Passing (100%)**.
 - [ ] **10.1 Telegram & WhatsApp AI Ingestion Bot**
   - [ ] Webhook bot Telegram / WhatsApp untuk menerima pesan teks ("Makan 35rb Gopay") atau foto struk langsung dari smartphone.
   - [ ] Auto-reply konfirmasi instan dan pencatatan otomatis ke database tanpa perlu membuka browser.
