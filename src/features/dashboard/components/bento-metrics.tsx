@@ -4,14 +4,9 @@ import * as React from "react";
 import {
   TrendingUp,
   TrendingDown,
-  ShieldCheck,
-  AlertTriangle,
-  AlertOctagon,
-  Calendar,
   Landmark,
   ArrowDownLeft,
   ArrowUpRight,
-  Sparkles,
   SlidersHorizontal,
 } from "lucide-react";
 import { formatRupiah } from "@/lib/currency";
@@ -50,21 +45,19 @@ export function BentoMetrics({
     SAFE: {
       label: "Batas Aman",
       color: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
-      icon: ShieldCheck,
+      dot: "bg-emerald-400",
     },
     WARNING: {
-      label: "Perlu Hati-hati",
+      label: "Waspada",
       color: "text-amber-400 bg-amber-500/10 border-amber-500/20",
-      icon: AlertTriangle,
+      dot: "bg-amber-400",
     },
     CRITICAL: {
       label: "Batas Kritis",
       color: "text-rose-400 bg-rose-500/10 border-rose-500/20",
-      icon: AlertOctagon,
+      dot: "bg-rose-400",
     },
   }[monthlyBudget.status];
-
-  const StatusIcon = statusConfig.icon;
 
   return (
     <>
@@ -131,80 +124,63 @@ export function BentoMetrics({
           </div>
         </div>
 
-        {/* 4. Batas Belanja Bulanan & Harian (User-Determined) */}
-        <div className="relative overflow-hidden rounded-3xl border border-indigo-500/25 bg-gradient-to-br from-indigo-950/40 via-zinc-900/80 to-zinc-950/90 backdrop-blur-xl p-5 flex flex-col justify-between group hover:border-indigo-500/50 hover:scale-[1.01] transition-all duration-200 shadow-lg space-y-3.5">
-          {/* Card Header with Edit Trigger */}
+        {/* 4. Batas Belanja Bulanan (Minimalis, Elegan & Simetris) */}
+        <div
+          onClick={() => setIsEditModalOpen(true)}
+          className="relative overflow-hidden rounded-3xl border border-zinc-800/80 bg-gradient-to-br from-indigo-950/20 via-zinc-900/70 to-zinc-950/90 backdrop-blur-xl p-5 space-y-3 flex flex-col justify-between group hover:border-indigo-500/40 hover:scale-[1.01] transition-all duration-200 shadow-lg cursor-pointer"
+        >
+          {/* Card Header matching Cards 1, 2, 3 */}
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1.5">
-              <Sparkles className="h-3.5 w-3.5 text-indigo-400" />
-              <span className="text-xs font-bold text-zinc-200">Batas Belanja Bulanan</span>
-            </div>
-            <button
-              onClick={() => setIsEditModalOpen(true)}
-              className="text-[11px] font-medium text-indigo-400 hover:text-indigo-300 bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/30 px-2 py-0.5 rounded-lg flex items-center gap-1 transition-all cursor-pointer"
+            <span className="text-xs font-semibold text-zinc-400">Batas Belanja Bulanan</span>
+            <div
+              title="Klik untuk mengatur batas belanja"
+              className="h-9 w-9 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center shadow-sm shadow-indigo-500/10 group-hover:scale-110 group-hover:bg-indigo-500/20 transition-all"
             >
-              <SlidersHorizontal className="h-3 w-3" />
-              <span>{monthlyBudget.isCustom ? "Ubah" : "Atur"}</span>
-            </button>
+              <SlidersHorizontal className="h-4.5 w-4.5" />
+            </div>
           </div>
 
-          {/* Primary Metric: Batas Belanja Bulanan */}
-          <div className="space-y-1.5">
-            <div className="flex items-baseline justify-between">
-              <p className="text-xl sm:text-2xl font-extrabold text-white font-mono tabular-nums tracking-tight">
+          {/* Primary Metric & Progress */}
+          <div className="space-y-2">
+            <div className="flex items-baseline justify-between gap-2">
+              <p className="text-2xl sm:text-3xl font-extrabold text-white font-mono tabular-nums tracking-tight">
                 {isPrivate
                   ? "Rp ••••••••"
                   : monthlyBudget.isCustom
                   ? formatRupiah(monthlyBudget.monthlyLimit)
-                  : "Belum Diatur"}
-                {monthlyBudget.isCustom && (
-                  <span className="text-xs font-normal text-zinc-400 font-sans"> / bln</span>
-                )}
+                  : formatRupiah(5000000)}
               </p>
-              <span className={`text-[10px] px-1.5 py-0.5 rounded-md border font-medium flex items-center gap-1 ${statusConfig.color}`}>
-                <StatusIcon className="h-2.5 w-2.5" />
+              <span className={`text-[10px] px-2 py-0.5 rounded-full border font-semibold inline-flex items-center gap-1 shrink-0 ${statusConfig.color}`}>
+                <span className={`h-1.5 w-1.5 rounded-full ${statusConfig.dot} animate-pulse`} />
                 <span>{statusConfig.label}</span>
               </span>
             </div>
 
-            {/* Progress meter bar */}
-            {monthlyBudget.isCustom && (
-              <div className="space-y-1">
-                <div className="h-1.5 w-full bg-zinc-800/80 rounded-full overflow-hidden">
-                  <div
-                    className={`h-full rounded-full transition-all duration-500 ${
-                      monthlyBudget.usagePercentage >= 90
-                        ? "bg-rose-500"
-                        : monthlyBudget.usagePercentage >= 75
-                        ? "bg-amber-400"
-                        : "bg-indigo-500"
-                    }`}
-                    style={{ width: `${Math.min(100, monthlyBudget.usagePercentage)}%` }}
-                  />
-                </div>
-                <div className="flex items-center justify-between text-[10px] text-zinc-400">
-                  <span>Terpakai {isPrivate ? "•••" : formatRupiah(monthlyBudget.monthlySpent)} ({monthlyBudget.usagePercentage}%)</span>
-                  <span>Sisa {isPrivate ? "•••" : formatRupiah(monthlyBudget.monthlyRemaining)}</span>
-                </div>
+            {/* Minimal Slim Progress Meter */}
+            <div className="space-y-1.5">
+              <div className="h-1.5 w-full bg-zinc-800/80 rounded-full overflow-hidden">
+                <div
+                  className={`h-full rounded-full transition-all duration-500 ${
+                    monthlyBudget.usagePercentage >= 90
+                      ? "bg-rose-500"
+                      : monthlyBudget.usagePercentage >= 75
+                      ? "bg-amber-400"
+                      : "bg-gradient-to-r from-indigo-500 to-cyan-400"
+                  }`}
+                  style={{ width: `${Math.min(100, monthlyBudget.usagePercentage)}%` }}
+                />
               </div>
-            )}
-          </div>
 
-          {/* Secondary Sub-Metric DIRECTLY BELOW: Batas Belanja Harian (Safe-to-Spend) */}
-          <div className="pt-2.5 border-t border-zinc-800/80 space-y-1 bg-zinc-950/40 -mx-5 -mb-5 p-3.5 px-5 rounded-b-3xl">
-            <div className="flex items-center justify-between">
-              <span className="text-[11px] font-semibold text-indigo-300">
-                Batas Belanja Harian
-              </span>
-              <span className="text-[10px] text-zinc-400 flex items-center gap-1">
-                <Calendar className="h-3 w-3 text-zinc-500" />
-                <span>Rata-rata 30 hari</span>
-              </span>
+              {/* Clean Minimalist Subline */}
+              <div className="flex items-center justify-between text-[11px] text-zinc-400 font-medium">
+                <span>
+                  Sisa {isPrivate ? "•••" : formatRupiah(monthlyBudget.monthlyRemaining)}
+                </span>
+                <span className="text-zinc-500">
+                  Aman {isPrivate ? "•••" : formatRupiah(monthlyBudget.dailySafeAmount)}/hr
+                </span>
+              </div>
             </div>
-            <p className="text-base sm:text-lg font-extrabold text-indigo-200 font-mono tabular-nums">
-              {isPrivate ? "Rp •••••" : formatRupiah(monthlyBudget.dailySafeAmount)}
-              <span className="text-xs font-normal text-zinc-400 font-sans"> / hari</span>
-            </p>
           </div>
         </div>
       </div>
