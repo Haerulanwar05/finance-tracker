@@ -322,10 +322,15 @@ export async function depositToVault(input: AllocateFundsInput): Promise<ActionR
 
   try {
     await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
-      // 1. Verify Account and Balance
-      const account = await tx.account.findFirst({
-        where: { id: sourceAccountId, userId, isArchived: false },
-      });
+      // 1. Verify Account and Goal Vault concurrently
+      const [account, vault] = await Promise.all([
+        tx.account.findFirst({
+          where: { id: sourceAccountId, userId, isArchived: false },
+        }),
+        tx.goalVault.findFirst({
+          where: { id: vaultId, userId },
+        }),
+      ]);
 
       if (!account) {
         throw new Error("Rekening sumber tidak ditemukan atau sedang diarsipkan.");
@@ -337,11 +342,6 @@ export async function depositToVault(input: AllocateFundsInput): Promise<ActionR
         );
       }
 
-      // 2. Verify Goal Vault
-      const vault = await tx.goalVault.findFirst({
-        where: { id: vaultId, userId },
-      });
-
       if (!vault) {
         throw new Error("Target tabungan tidak ditemukan.");
       }
@@ -349,30 +349,28 @@ export async function depositToVault(input: AllocateFundsInput): Promise<ActionR
       const newCurrentAmount = vault.currentAmount + amount;
       const isAchieved = newCurrentAmount >= vault.targetAmount;
 
-      // 3. Decrement source account balance
-      await tx.account.update({
-        where: { id: sourceAccountId },
-        data: { balance: { decrement: amount } },
-      });
-
-      // 4. Increment vault balance & update status if reached
-      await tx.goalVault.update({
-        where: { id: vaultId },
-        data: {
-          currentAmount: { increment: amount },
-          status: isAchieved ? "ACHIEVED" : vault.status,
-        },
-      });
-
-      // 5. Create Vault Allocation Log
-      await tx.vaultAllocation.create({
-        data: {
-          vaultId,
-          amount,
-          type: "DEPOSIT",
-          note: note || `Alokasi dari ${account.name}`,
-        },
-      });
+      // 2. Decrement account, increment vault, and create allocation log in parallel
+      await Promise.all([
+        tx.account.update({
+          where: { id: sourceAccountId },
+          data: { balance: { decrement: amount } },
+        }),
+        tx.goalVault.update({
+          where: { id: vaultId },
+          data: {
+            currentAmount: { increment: amount },
+            status: isAchieved ? "ACHIEVED" : vault.status,
+          },
+        }),
+        tx.vaultAllocation.create({
+          data: {
+            vaultId,
+            amount,
+            type: "DEPOSIT",
+            note: note || `Alokasi dari ${account.name}`,
+          },
+        }),
+      ]);
     });
 
     revalidatePath("/vaults");
@@ -413,10 +411,15 @@ export async function withdrawFromVault(input: WithdrawFundsInput): Promise<Acti
 
   try {
     await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
-      // 1. Verify Goal Vault and Saved Balance
-      const vault = await tx.goalVault.findFirst({
-        where: { id: vaultId, userId },
-      });
+      // 1. Verify Goal Vault and Target Account concurrently
+      const [vault, account] = await Promise.all([
+        tx.goalVault.findFirst({
+          where: { id: vaultId, userId },
+        }),
+        tx.account.findFirst({
+          where: { id: targetAccountId, userId, isArchived: false },
+        }),
+      ]);
 
       if (!vault) {
         throw new Error("Target tabungan tidak ditemukan.");
@@ -428,11 +431,6 @@ export async function withdrawFromVault(input: WithdrawFundsInput): Promise<Acti
         );
       }
 
-      // 2. Verify Target Account
-      const account = await tx.account.findFirst({
-        where: { id: targetAccountId, userId, isArchived: false },
-      });
-
       if (!account) {
         throw new Error("Rekening tujuan penarikan tidak ditemukan.");
       }
@@ -440,30 +438,28 @@ export async function withdrawFromVault(input: WithdrawFundsInput): Promise<Acti
       const newCurrentAmount = vault.currentAmount - amount;
       const shouldReactivate = newCurrentAmount < vault.targetAmount && vault.status === "ACHIEVED";
 
-      // 3. Decrement vault balance
-      await tx.goalVault.update({
-        where: { id: vaultId },
-        data: {
-          currentAmount: { decrement: amount },
-          status: shouldReactivate ? "ACTIVE" : vault.status,
-        },
-      });
-
-      // 4. Increment target account balance
-      await tx.account.update({
-        where: { id: targetAccountId },
-        data: { balance: { increment: amount } },
-      });
-
-      // 5. Create Vault Allocation Log
-      await tx.vaultAllocation.create({
-        data: {
-          vaultId,
-          amount,
-          type: "WITHDRAW",
-          note: note || `Penarikan ke ${account.name}`,
-        },
-      });
+      // 2. Decrement vault, increment account, and log allocation in parallel
+      await Promise.all([
+        tx.goalVault.update({
+          where: { id: vaultId },
+          data: {
+            currentAmount: { decrement: amount },
+            status: shouldReactivate ? "ACTIVE" : vault.status,
+          },
+        }),
+        tx.account.update({
+          where: { id: targetAccountId },
+          data: { balance: { increment: amount } },
+        }),
+        tx.vaultAllocation.create({
+          data: {
+            vaultId,
+            amount,
+            type: "WITHDRAW",
+            note: note || `Penarikan ke ${account.name}`,
+          },
+        }),
+      ]);
     });
 
     revalidatePath("/vaults");

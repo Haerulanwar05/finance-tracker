@@ -267,21 +267,21 @@ export async function deleteAccount(id: string): Promise<ActionResult> {
     }
 
     await prisma.$transaction(async (tx) => {
-      // 1. Delete all transactions involving this account (source or target)
-      await tx.transaction.deleteMany({
-        where: {
-          userId,
-          OR: [{ accountId: id }, { targetAccountId: id }],
-        },
-      });
+      // 1. Delete all transactions and unlink goal vaults in parallel
+      await Promise.all([
+        tx.transaction.deleteMany({
+          where: {
+            userId,
+            OR: [{ accountId: id }, { targetAccountId: id }],
+          },
+        }),
+        tx.goalVault.updateMany({
+          where: { userId, linkedAccountId: id },
+          data: { linkedAccountId: null },
+        }),
+      ]);
 
-      // 2. Unlink GoalVaults
-      await tx.goalVault.updateMany({
-        where: { userId, linkedAccountId: id },
-        data: { linkedAccountId: null },
-      });
-
-      // 3. Delete the account
+      // 2. Delete the account
       await tx.account.delete({
         where: { id },
       });
@@ -328,10 +328,15 @@ export async function transferFunds(input: TransferInput): Promise<ActionResult>
 
   try {
     await prisma.$transaction(async (tx) => {
-      // 1. Fetch & verify source account
-      const source = await tx.account.findFirst({
-        where: { id: sourceAccountId, userId, isArchived: false },
-      });
+      // 1. Fetch & verify source and target accounts concurrently
+      const [source, target] = await Promise.all([
+        tx.account.findFirst({
+          where: { id: sourceAccountId, userId, isArchived: false },
+        }),
+        tx.account.findFirst({
+          where: { id: targetAccountId, userId, isArchived: false },
+        }),
+      ]);
 
       if (!source) {
         throw new Error("Akun sumber dana tidak ditemukan.");
@@ -341,39 +346,32 @@ export async function transferFunds(input: TransferInput): Promise<ActionResult>
         throw new Error(`Saldo akun ${source.name} tidak mencukupi untuk transfer ini.`);
       }
 
-      // 2. Fetch & verify target account
-      const target = await tx.account.findFirst({
-        where: { id: targetAccountId, userId, isArchived: false },
-      });
-
       if (!target) {
         throw new Error("Akun tujuan transfer tidak ditemukan.");
       }
 
-      // 3. Decrement source
-      await tx.account.update({
-        where: { id: sourceAccountId },
-        data: { balance: { decrement: amount } },
-      });
-
-      // 4. Increment target
-      await tx.account.update({
-        where: { id: targetAccountId },
-        data: { balance: { increment: amount } },
-      });
-
-      // 5. Create TRANSFER transaction log
-      await tx.transaction.create({
-        data: {
-          userId,
-          accountId: sourceAccountId,
-          targetAccountId: targetAccountId,
-          type: "TRANSFER",
-          amount: amount,
-          date: date || new Date(),
-          description: description || `Transfer dari ${source.name} ke ${target.name}`,
-        },
-      });
+      // 2. Decrement source, increment target, and record transaction in parallel batch
+      await Promise.all([
+        tx.account.update({
+          where: { id: sourceAccountId },
+          data: { balance: { decrement: amount } },
+        }),
+        tx.account.update({
+          where: { id: targetAccountId },
+          data: { balance: { increment: amount } },
+        }),
+        tx.transaction.create({
+          data: {
+            userId,
+            accountId: sourceAccountId,
+            targetAccountId: targetAccountId,
+            type: "TRANSFER",
+            amount: amount,
+            date: date || new Date(),
+            description: description || `Transfer dari ${source.name} ke ${target.name}`,
+          },
+        }),
+      ]);
     });
 
     revalidatePath("/accounts");

@@ -214,78 +214,87 @@ export async function createTransaction(input: CreateTransactionInput): Promise<
 
   try {
     await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
-      // 1. Verify source account exists and belongs to user
-      const source = await tx.account.findFirst({
-        where: { id: accountId, userId, isArchived: false },
-      });
+      // 1. Parallel verification of source account, category, and target account
+      const [source, cat, target] = await Promise.all([
+        tx.account.findFirst({
+          where: { id: accountId, userId, isArchived: false },
+        }),
+        categoryId && type !== "TRANSFER"
+          ? tx.category.findFirst({
+              where: {
+                id: categoryId,
+                OR: [{ userId }, { userId: null, isDefault: true }],
+              },
+            })
+          : Promise.resolve(null),
+        type === "TRANSFER" && targetAccountId
+          ? tx.account.findFirst({
+              where: { id: targetAccountId, userId, isArchived: false },
+            })
+          : Promise.resolve(null),
+      ]);
 
       if (!source) {
         throw new Error("Akun sumber dana tidak ditemukan.");
       }
 
+      if (type === "TRANSFER" && (!targetAccountId || !target)) {
+        throw new Error("Akun tujuan transfer tidak ditemukan atau tidak valid.");
+      }
+
       // 2. Intelligent Auto-Sync: If category is provided, align type with category's actual type
       let finalType = type;
-      if (categoryId && type !== "TRANSFER") {
-        const cat = await tx.category.findFirst({
-          where: {
-            id: categoryId,
-            OR: [{ userId }, { userId: null, isDefault: true }],
-          },
-        });
-        if (cat) {
-          finalType = cat.type as "INCOME" | "EXPENSE" | "TRANSFER";
-        }
+      if (cat) {
+        finalType = cat.type as "INCOME" | "EXPENSE" | "TRANSFER";
       }
 
-      // 3. Execute Balance Mutations according to Transaction Type
+      // 3. Execute Balance Mutations & Transaction Record in parallel batch
+      const mutationPromises: Promise<unknown>[] = [];
+
       if (finalType === "EXPENSE") {
-        await tx.account.update({
-          where: { id: accountId },
-          data: { balance: { decrement: amount } },
-        });
+        mutationPromises.push(
+          tx.account.update({
+            where: { id: accountId },
+            data: { balance: { decrement: amount } },
+          })
+        );
       } else if (finalType === "INCOME") {
-        await tx.account.update({
-          where: { id: accountId },
-          data: { balance: { increment: amount } },
-        });
-      } else if (finalType === "TRANSFER") {
-        if (!targetAccountId) {
-          throw new Error("Akun tujuan transfer wajib dipilih.");
-        }
-
-        const target = await tx.account.findFirst({
-          where: { id: targetAccountId, userId, isArchived: false },
-        });
-
-        if (!target) {
-          throw new Error("Akun tujuan transfer tidak ditemukan.");
-        }
-
-        // Decrement source & Increment target
-        await tx.account.update({
-          where: { id: accountId },
-          data: { balance: { decrement: amount } },
-        });
-        await tx.account.update({
-          where: { id: targetAccountId },
-          data: { balance: { increment: amount } },
-        });
+        mutationPromises.push(
+          tx.account.update({
+            where: { id: accountId },
+            data: { balance: { increment: amount } },
+          })
+        );
+      } else if (finalType === "TRANSFER" && targetAccountId) {
+        mutationPromises.push(
+          tx.account.update({
+            where: { id: accountId },
+            data: { balance: { decrement: amount } },
+          }),
+          tx.account.update({
+            where: { id: targetAccountId },
+            data: { balance: { increment: amount } },
+          })
+        );
       }
 
-      // 4. Create Transaction Record
-      await tx.transaction.create({
-        data: {
-          userId,
-          accountId,
-          targetAccountId: finalType === "TRANSFER" ? targetAccountId : null,
-          categoryId: finalType !== "TRANSFER" ? categoryId : null,
-          type: finalType,
-          amount,
-          date: date || new Date(),
-          description: description || null,
-          receiptUrl: receiptUrl || null,
-        },
-      });
+      mutationPromises.push(
+        tx.transaction.create({
+          data: {
+            userId,
+            accountId,
+            targetAccountId: finalType === "TRANSFER" ? targetAccountId : null,
+            categoryId: finalType !== "TRANSFER" ? categoryId : null,
+            type: finalType,
+            amount,
+            date: date || new Date(),
+            description: description || null,
+            receiptUrl: receiptUrl || null,
+          },
+        })
+      );
+
+      await Promise.all(mutationPromises);
     });
 
     revalidatePath("/transactions");
@@ -326,88 +335,109 @@ export async function updateTransaction(input: UpdateTransactionInput): Promise<
 
   try {
     await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
-      // 1. Fetch old transaction
-      const oldTx = await tx.transaction.findFirst({
-        where: { id, userId },
-      });
+      // 1. Fetch old transaction, category, and accounts concurrently
+      const [oldTx, cat] = await Promise.all([
+        tx.transaction.findFirst({
+          where: { id, userId },
+        }),
+        categoryId && type !== "TRANSFER"
+          ? tx.category.findFirst({
+              where: {
+                id: categoryId,
+                OR: [{ userId }, { userId: null, isDefault: true }],
+              },
+            })
+          : Promise.resolve(null),
+      ]);
 
       if (!oldTx) {
         throw new Error("Transaksi tidak ditemukan.");
       }
 
       const oldAmount = Number(oldTx.amount);
+      const revertPromises: Promise<unknown>[] = [];
 
       // 2. Revert old balance mutation
       if (oldTx.type === "EXPENSE") {
-        await tx.account.update({
-          where: { id: oldTx.accountId },
-          data: { balance: { increment: oldAmount } },
-        });
+        revertPromises.push(
+          tx.account.update({
+            where: { id: oldTx.accountId },
+            data: { balance: { increment: oldAmount } },
+          })
+        );
       } else if (oldTx.type === "INCOME") {
-        await tx.account.update({
-          where: { id: oldTx.accountId },
-          data: { balance: { decrement: oldAmount } },
-        });
+        revertPromises.push(
+          tx.account.update({
+            where: { id: oldTx.accountId },
+            data: { balance: { decrement: oldAmount } },
+          })
+        );
       } else if (oldTx.type === "TRANSFER" && oldTx.targetAccountId) {
-        await tx.account.update({
-          where: { id: oldTx.accountId },
-          data: { balance: { increment: oldAmount } },
-        });
-        await tx.account.update({
-          where: { id: oldTx.targetAccountId },
-          data: { balance: { decrement: oldAmount } },
-        });
+        revertPromises.push(
+          tx.account.update({
+            where: { id: oldTx.accountId },
+            data: { balance: { increment: oldAmount } },
+          }),
+          tx.account.update({
+            where: { id: oldTx.targetAccountId },
+            data: { balance: { decrement: oldAmount } },
+          })
+        );
       }
+
+      await Promise.all(revertPromises);
 
       // 3. Intelligent Auto-Sync: If category is provided, align type with category's actual type
       let finalType = type;
-      if (categoryId && type !== "TRANSFER") {
-        const cat = await tx.category.findFirst({
-          where: {
-            id: categoryId,
-            OR: [{ userId }, { userId: null, isDefault: true }],
-          },
-        });
-        if (cat) {
-          finalType = cat.type as "INCOME" | "EXPENSE" | "TRANSFER";
-        }
+      if (cat) {
+        finalType = cat.type as "INCOME" | "EXPENSE" | "TRANSFER";
       }
 
-      // 4. Apply new balance mutation
+      // 4. Apply new balance mutation and update record in parallel
+      const applyPromises: Promise<unknown>[] = [];
       if (finalType === "EXPENSE") {
-        await tx.account.update({
-          where: { id: accountId },
-          data: { balance: { decrement: amount } },
-        });
+        applyPromises.push(
+          tx.account.update({
+            where: { id: accountId },
+            data: { balance: { decrement: amount } },
+          })
+        );
       } else if (finalType === "INCOME") {
-        await tx.account.update({
-          where: { id: accountId },
-          data: { balance: { increment: amount } },
-        });
+        applyPromises.push(
+          tx.account.update({
+            where: { id: accountId },
+            data: { balance: { increment: amount } },
+          })
+        );
       } else if (finalType === "TRANSFER" && targetAccountId) {
-        await tx.account.update({
-          where: { id: accountId },
-          data: { balance: { decrement: amount } },
-        });
-        await tx.account.update({
-          where: { id: targetAccountId },
-          data: { balance: { increment: amount } },
-        });
+        applyPromises.push(
+          tx.account.update({
+            where: { id: accountId },
+            data: { balance: { decrement: amount } },
+          }),
+          tx.account.update({
+            where: { id: targetAccountId },
+            data: { balance: { increment: amount } },
+          })
+        );
       }
 
-      // 5. Update transaction row
-      await tx.transaction.update({
-        where: { id },
-        data: {
-          accountId,
-          targetAccountId: finalType === "TRANSFER" ? targetAccountId : null,
-          categoryId: finalType !== "TRANSFER" ? categoryId : null,
-          type: finalType,
-          amount,
-          date,
-          description: description || null,
-        },
-      });
+      applyPromises.push(
+        tx.transaction.update({
+          where: { id },
+          data: {
+            accountId,
+            targetAccountId: finalType === "TRANSFER" ? targetAccountId : null,
+            categoryId: finalType !== "TRANSFER" ? categoryId : null,
+            type: finalType,
+            amount,
+            date,
+            description: description || null,
+          },
+        })
+      );
+
+      await Promise.all(applyPromises);
     });
 
     revalidatePath("/transactions");
@@ -444,33 +474,43 @@ export async function deleteTransaction(id: string): Promise<ActionResult> {
       }
 
       const amount = Number(existing.amount);
+      const rollbackPromises: Promise<unknown>[] = [];
 
-      // Refund/Rollback account balance
+      // Refund/Rollback account balance in parallel with transaction deletion
       if (existing.type === "EXPENSE") {
-        await tx.account.update({
-          where: { id: existing.accountId },
-          data: { balance: { increment: amount } },
-        });
+        rollbackPromises.push(
+          tx.account.update({
+            where: { id: existing.accountId },
+            data: { balance: { increment: amount } },
+          })
+        );
       } else if (existing.type === "INCOME") {
-        await tx.account.update({
-          where: { id: existing.accountId },
-          data: { balance: { decrement: amount } },
-        });
+        rollbackPromises.push(
+          tx.account.update({
+            where: { id: existing.accountId },
+            data: { balance: { decrement: amount } },
+          })
+        );
       } else if (existing.type === "TRANSFER" && existing.targetAccountId) {
-        await tx.account.update({
-          where: { id: existing.accountId },
-          data: { balance: { increment: amount } },
-        });
-        await tx.account.update({
-          where: { id: existing.targetAccountId },
-          data: { balance: { decrement: amount } },
-        });
+        rollbackPromises.push(
+          tx.account.update({
+            where: { id: existing.accountId },
+            data: { balance: { increment: amount } },
+          }),
+          tx.account.update({
+            where: { id: existing.targetAccountId },
+            data: { balance: { decrement: amount } },
+          })
+        );
       }
 
-      // Delete record
-      await tx.transaction.delete({
-        where: { id },
-      });
+      rollbackPromises.push(
+        tx.transaction.delete({
+          where: { id },
+        })
+      );
+
+      await Promise.all(rollbackPromises);
     });
 
     revalidatePath("/transactions");
