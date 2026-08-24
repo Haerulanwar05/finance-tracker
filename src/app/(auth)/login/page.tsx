@@ -4,7 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
-import { ShieldCheck, ArrowRight, Sparkles, Zap } from "lucide-react";
+import { ShieldCheck, ArrowRight, ArrowLeft, Sparkles, Zap } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -94,9 +94,15 @@ export default function LoginPage() {
       </div>
 
       <div className="w-full max-w-md relative z-10 space-y-6">
-        {/* Brand Header */}
+        {/* Brand Header with Link back to Landing Page */}
         <div className="flex flex-col items-center text-center space-y-2">
-          <BrandLogo size="lg" subtitle="Personal Financial Freedom" />
+          <Link
+            href="/"
+            className="hover:opacity-90 transition-opacity cursor-pointer flex flex-col items-center"
+            title="Kembali ke Landing Page Finance Tracker"
+          >
+            <BrandLogo size="lg" subtitle="Personal Financial Freedom" />
+          </Link>
           <p className="text-xs text-zinc-400 max-w-xs">Kelola aset, pantau target tabungan & scan struk belanja.</p>
         </div>
 
@@ -201,10 +207,20 @@ export default function LoginPage() {
           </CardContent>
         </Card>
 
-        {/* Security badge */}
-        <div className="flex items-center justify-center gap-1.5 text-xs text-zinc-500">
-          <ShieldCheck className="h-4 w-4 text-emerald-500" />
-          <span>Isolasi data privat per sesi pengguna</span>
+        {/* Security badge & Back to Home */}
+        <div className="flex flex-col items-center gap-3 pt-1">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-1.5 text-xs text-zinc-400 hover:text-zinc-200 transition-colors font-medium cursor-pointer"
+          >
+            <ArrowLeft className="h-3.5 w-3.5" />
+            <span>Kembali ke Halaman Utama</span>
+          </Link>
+
+          <div className="flex items-center justify-center gap-1.5 text-xs text-zinc-500">
+            <ShieldCheck className="h-4 w-4 text-emerald-500" />
+            <span>Isolasi data privat per sesi pengguna</span>
+          </div>
         </div>
       </div>
     </div>

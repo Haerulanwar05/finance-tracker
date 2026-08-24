@@ -52,9 +52,15 @@ function DashboardShellInner({ user, children }: DashboardShellProps) {
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex w-64 flex-col justify-between border-r border-zinc-800/80 bg-zinc-950/80 backdrop-blur-xl p-5 sticky top-0 h-screen z-20">
         <div className="space-y-6">
-          {/* Logo Brand */}
+          {/* Logo Brand (Navigasi langsung ke Overview saat sudah login) */}
           <div className="px-2">
-            <BrandLogo subtitle="Personal Finance Hub" />
+            <Link
+              href="/dashboard"
+              className="block hover:opacity-90 transition-opacity cursor-pointer"
+              title="Menuju ke Overview"
+            >
+              <BrandLogo subtitle="Personal Finance Hub" />
+            </Link>
           </div>
 
           {/* Navigation Links */}
