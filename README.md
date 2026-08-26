@@ -108,9 +108,10 @@ Semua perencanaan sistem dan panduan teknis telah disusun secara terstruktur di 
 6. **Brand Identity & Navigasi Cerdas**:
    * **Animated Luxury Dollar Bag Logo**: Logo kantong dollar vektor interaktif dengan floating physics & shimmer glow.
    * **Smart Routing**: Klik logo mengarahkan ke Overview (`/dashboard`) saat login, atau ke Landing Page (`/`) pada form auth.
-7. **Performa Tinggi (*Zero-Lag Instant Switch*)**:
+7. **Sinkronisasi Navigasi & Integritas Data (*Zero-Stale Real-Time Sync*)**:
    * Optimasi kueri database paralel (*Promise.all*) memangkas waktu load hingga 80%.
-   * Next.js Route Prefetching (`prefetch={true}`) pada desktop sidebar & mobile bottom bar untuk perpindahan menu instan.
+   * **Dynamic Server-Fresh Navigation**: Navigasi desktop dan mobile bottom nav selalu menyajikan saldo, mutasi, dan target tabungan terkini secara sinkron tanpa terjebak data basi (*stale client cache*).
+   * **Global Layout Cache Revalidation**: Setiap mutasi transaksi, mutasi rekening, penyesuaian target tabungan, dan pembuatan kategori langsung menginvaliasi root layout (`revalidatePath("/", "layout")`).
 8. **Autentikasi & Keamanan Produksi**:
    * **Google OAuth**: Masuk 1-klik dengan akun Google (`Lanjutkan dengan Google`) dengan auto-seeding dompet awal & kategori.
    * **Credentials Auth**: Registrasi & login email + password terenkripsi bcrypt.
@@ -121,7 +122,7 @@ Semua perencanaan sistem dan panduan teknis telah disusun secara terstruktur di 
    * Manajemen kategori pemasukan & pengeluaran kustom dengan pemilih warna.
    * Toggle sensor privasi saldo dan status konektivitas AI Vision.
 10. **Mobile-First Experience**:
-    * Bottom navigation bar 6-item responsif di zona jangkauan jempol.
+    * Bottom navigation bar 6-item responsif di zona jangkauan jempol dengan label ringkas (*Overview*, *Transaksi*, *Analitik*, *Tabungan*, *Rekening*, *Pengaturan*).
     * Symmetrical 2-column mobile button grids dan swipeable horizontal category filters.
 
 ---
@@ -134,6 +135,6 @@ Semua perencanaan sistem dan panduan teknis telah disusun secara terstruktur di 
 * **Database & ORM**: Supabase Cloud PostgreSQL + Prisma ORM + `@prisma/adapter-pg`
 * **Authentication**: NextAuth.js (Auth.js v5) with Google OAuth Provider & Credentials
 * **AI Vision API**: Google Gemini Flash Vision API (@google/genai)
-* **Testing**: Vitest (**15 Test Suites, 123/123 Tests Passed 100%**)
+* **Testing**: Vitest (**16 Test Suites, 140/140 Tests Passed 100%**)
 * **Linting**: ESLint (0 errors, 0 warnings)
 * **Hosting / CI-CD**: Vercel Serverless Edge Platform

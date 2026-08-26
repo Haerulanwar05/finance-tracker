@@ -617,9 +617,7 @@ export async function importBulkTransactions(
       });
     });
 
-    revalidatePath("/transactions");
-    revalidatePath("/accounts");
-    revalidatePath("/dashboard");
+    revalidatePath("/", "layout");
 
     return {
       success: true,

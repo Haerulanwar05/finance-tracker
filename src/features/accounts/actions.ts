@@ -193,8 +193,7 @@ export async function updateAccount(input: UpdateAccountInput): Promise<ActionRe
       },
     });
 
-    revalidatePath("/accounts");
-    revalidatePath("/dashboard");
+    revalidatePath("/", "layout");
 
     return {
       success: true,
@@ -230,8 +229,7 @@ export async function archiveAccount(id: string): Promise<ActionResult> {
       data: { isArchived: true },
     });
 
-    revalidatePath("/accounts");
-    revalidatePath("/dashboard");
+    revalidatePath("/", "layout");
 
     return { success: true, message: "Akun berhasil diarsipkan." };
   } catch (error) {

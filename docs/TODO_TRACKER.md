@@ -223,6 +223,14 @@
 - [x] **9.15 Sinkronisasi Google OAuth Authorized Redirect URI & Domain Baru**
   - [x] Resolusi error `Error 400: redirect_uri_mismatch` saat domain Vercel diganti atau diakses dari URL baru.
   - [x] Panduan pendaftaran URI callback resmi (`https://<domain>/api/auth/callback/google`) dan Authorized JavaScript Origin di Google Cloud Console Credentials.
+- [x] **9.16 Sinkronisasi Menyeluruh Navigasi, Routing Kanonikal & Eliminasi Stale Client Cache**
+  - [x] Memperbaiki desinkronisasi data antar menu navigasi (*Overview, Transaksi, Analitik, Target Tabungan, Rekening, Pengaturan*) dengan menonaktifkan prefetch statis (`prefetch={false}`) pada sidebar dan mobile bottom nav, menjamin setiap tab selalu menyajikan data Server Component paling mutakhir.
+  - [x] Menyeragamkan logika penanda aktif navigasi (`isItemActive`) pada Desktop Sidebar dan Mobile Bottom Navigation agar selaras 100% dan bebas konflik alias (`/vaults` vs `/goals`).
+  - [x] Menjadikan `/goals` sebagai redirect kanonikal ke `/vaults` untuk mencegah duplikasi URL dan kehilangan highlight aktif navigasi.
+  - [x] Menambahkan label mobile ringkas (*shortLabel*) pada bottom navigation dock untuk mencegah pemotongan teks kasar (*e.g. Tabungan bukan pemotongan acak*).
+  - [x] Menambahkan proteksi autentikasi pada Landing Page (`/`) agar pengguna yang sudah login langsung diarahkan secara mulus ke `/dashboard`.
+  - [x] Memperluas pemanggilan `revalidatePath("/", "layout")` ke seluruh mutasi Server Action (penghapusan transaksi, pembaruan akun, pengarsipan akun, pembuatan/penarikan tabungan target, pembuatan kategori kustom).
+  - [x] Menambahkan QA & Test suite baru (`tests/unit/navigation-sync.test.ts`) dengan 17 pengujian komprehensif, mendongkrak skor menjadi **16 Test Suites, 140/140 Tests Passing (100%)**.
 
 ---
 
@@ -237,7 +245,7 @@
   - [x] Integrasi modal tambah transaksi (`add-transaction-modal.tsx`) dengan fallback otomatis ke antrean lokal HP saat tidak ada koneksi internet.
   - [x] Auto-Sync background dispatcher yang otomatis mengirim transaksi tersimpan ke server cloud saat perangkat kembali online.
   - [x] Banner status offline, modal daftar antrean transaksi offline, dan kontrol PWA di menu Pengaturan.
-  - [x] Unit test suite khusus (`tests/unit/offline-queue.test.ts`) dengan cakupan 6 pengujian lengkap. Total test suite mencapai **15 Test Suites, 123/123 Tests Passing (100%)**.
+  - [x] Unit test suite khusus (`tests/unit/offline-queue.test.ts`) dengan cakupan 6 pengujian lengkap. Total test suite mencapai **16 Test Suites, 140/140 Tests Passing (100%)**.
 - [ ] **10.1 Telegram & WhatsApp AI Ingestion Bot**
   - [ ] Webhook bot Telegram / WhatsApp untuk menerima pesan teks ("Makan 35rb Gopay") atau foto struk langsung dari smartphone.
   - [ ] Auto-reply konfirmasi instan dan pencatatan otomatis ke database tanpa perlu membuka browser.

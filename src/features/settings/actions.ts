@@ -209,9 +209,7 @@ export async function createCustomCategory(data: {
       },
     });
 
-    revalidatePath("/settings");
-    revalidatePath("/transactions");
-    revalidatePath("/dashboard");
+    revalidatePath("/", "layout");
 
     return { success: true, message: "Kategori baru berhasil ditambahkan." };
   } catch {
@@ -242,9 +240,7 @@ export async function deleteCustomCategory(categoryId: string) {
       where: { id: categoryId },
     });
 
-    revalidatePath("/settings");
-    revalidatePath("/transactions");
-    revalidatePath("/dashboard");
+    revalidatePath("/", "layout");
 
     return { success: true, message: "Kategori berhasil dihapus." };
   } catch {

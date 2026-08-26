@@ -1,1 +1,6 @@
-export { default } from "../vaults/page";
+import { redirect } from "next/navigation";
+
+export default function GoalsPage() {
+  redirect("/vaults");
+}
+

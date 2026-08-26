@@ -194,9 +194,7 @@ export async function createGoal(input: CreateGoalInput): Promise<ActionResult> 
       },
     });
 
-    revalidatePath("/vaults");
-    revalidatePath("/goals");
-    revalidatePath("/dashboard");
+    revalidatePath("/", "layout");
 
     return { success: true, message: `Target tabungan "${name}" berhasil dibuat!` };
   } catch (error) {
@@ -218,12 +216,13 @@ export async function updateGoal(input: UpdateGoalInput): Promise<ActionResult> 
   if (!validated.success) {
     return {
       success: false,
-      message: validated.error.issues[0]?.message || "Data pembaruan tidak valid.",
+      message: validated.error.issues[0]?.message || "Data input tidak valid.",
     };
   }
 
   const userId = session.user.id;
-  const { id, name, targetAmount, linkedAccountId, deadline, color, icon, status } = validated.data;
+  const { id, name, targetAmount, deadline, color, icon, status, linkedAccountId } =
+    validated.data;
 
   try {
     const existing = await prisma.goalVault.findFirst({
@@ -234,28 +233,29 @@ export async function updateGoal(input: UpdateGoalInput): Promise<ActionResult> 
       return { success: false, message: "Target tabungan tidak ditemukan." };
     }
 
-    // Auto-achieve status if current amount equals or exceeds target
-    let resolvedStatus = status;
-    if (existing.currentAmount >= targetAmount) {
+    const resolvedTargetAmount =
+      targetAmount !== undefined ? targetAmount : existing.targetAmount;
+    const resolvedCurrentAmount = existing.currentAmount;
+
+    let resolvedStatus = status || existing.status;
+    if (resolvedCurrentAmount >= resolvedTargetAmount && resolvedStatus === "ACTIVE") {
       resolvedStatus = "ACHIEVED";
     }
 
     await prisma.goalVault.update({
       where: { id },
       data: {
-        name,
-        targetAmount,
-        linkedAccountId: linkedAccountId || null,
-        deadline: deadline ? new Date(deadline) : null,
+        ...(name && { name }),
+        ...(targetAmount !== undefined && { targetAmount }),
+        ...(linkedAccountId !== undefined && { linkedAccountId }),
+        deadline: deadline ? new Date(deadline) : deadline === null ? null : undefined,
         color: color || "#3B82F6",
         icon: icon || "piggy",
         status: resolvedStatus,
       },
     });
 
-    revalidatePath("/vaults");
-    revalidatePath("/goals");
-    revalidatePath("/dashboard");
+    revalidatePath("/", "layout");
 
     return { success: true, message: "Target tabungan berhasil diperbarui!" };
   } catch (error) {
@@ -289,9 +289,7 @@ export async function deleteGoal(id: string): Promise<ActionResult> {
       where: { id },
     });
 
-    revalidatePath("/vaults");
-    revalidatePath("/goals");
-    revalidatePath("/dashboard");
+    revalidatePath("/", "layout");
 
     return { success: true, message: `Target "${existing.name}" berhasil dihapus.` };
   } catch (error) {
@@ -373,10 +371,7 @@ export async function depositToVault(input: AllocateFundsInput): Promise<ActionR
       ]);
     });
 
-    revalidatePath("/vaults");
-    revalidatePath("/goals");
-    revalidatePath("/accounts");
-    revalidatePath("/dashboard");
+    revalidatePath("/", "layout");
 
     return {
       success: true,
@@ -462,10 +457,7 @@ export async function withdrawFromVault(input: WithdrawFundsInput): Promise<Acti
       ]);
     });
 
-    revalidatePath("/vaults");
-    revalidatePath("/goals");
-    revalidatePath("/accounts");
-    revalidatePath("/dashboard");
+    revalidatePath("/", "layout");
 
     return {
       success: true,

@@ -185,4 +185,9 @@ sequenceDiagram
    * **Vercel Automatic Subdomain Suffixing**: Vercel secara otomatis menghasilkan subdomain unik (misal: `*-two-teal-14.vercel.app`) untuk mencegah tabrakan nama proyek di lingkup global domain `vercel.app`. Proyek dapat dikonfigurasi ke domain bersih atau custom domain pribadi (misal: `financetracker.id`) melalui menu *Vercel Settings $\rightarrow$ Domains*.
    * **Deployment Chunk Mismatch Auto-Recovery**: Ketika deployment Vercel baru diperbarui, hash chunk JS Next.js berubah. Root dan segment error boundaries (`error.tsx`) dilengkapi pendeteksi otomatis `ChunkLoadError` yang mengeksekusi pemuatan ulang transparan 1x untuk mencegah layar error bagi pengguna yang masih membuka tab lama.
    * **Cookie Sesi Full Navigation**: Transisi login menggunakan `window.location.href` untuk memastikan cookie sesi otentikasi tuntas tersimpan sebelum RSC pertama di-stream dari server Vercel.
+8. **Navigation Synchronization & Zero-Stale Client Cache Protocol**:
+   * **Dynamic Freshness Navigation (`prefetch={false}`)**: Seluruh tautan navigasi utama pada Desktop Sidebar dan Mobile Bottom Navigation Dock dikonfigurasi dengan `prefetch={false}`. Hal ini mencegah Next.js membekukan RSC payload usang di client-side router cache browser saat pengguna berpindah-pindah tab.
+   * **Global Layout Invalidation (`revalidatePath("/", "layout")`)**: Seluruh Server Actions (transaksi, rekening, target tabungan, dan kategori kustom) menginvaliasi root layout secara menyeluruh sehingga saldo dan kalkulasi keuangan di halaman Overview, Transaksi, Analitik, Tabungan, dan Rekening selalu sinkron 100%.
+   * **Canonical Route Normalization**: Rute duplikat seperti `/goals` secara otomatis dialihkan melalui server redirect ke `/vaults` untuk mencegah desinkronisasi penanda aktif (*active highlight state*) pada UI navigasi.
+
 

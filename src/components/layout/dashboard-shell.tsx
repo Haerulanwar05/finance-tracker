@@ -34,18 +34,35 @@ interface DashboardShellProps {
   children: React.ReactNode;
 }
 
-const NAV_ITEMS = [
-  { label: "Overview", href: "/dashboard", icon: LayoutGrid },
-  { label: "Transaksi", href: "/transactions", icon: ArrowLeftRight },
-  { label: "Analitik", href: "/analytics", icon: TrendingUp },
-  { label: "Target Tabungan", href: "/vaults", icon: Target },
-  { label: "Rekening", href: "/accounts", icon: WalletCards },
-  { label: "Pengaturan", href: "/settings", icon: SlidersHorizontal },
+interface NavItem {
+  label: string;
+  shortLabel: string;
+  href: string;
+  icon: React.ComponentType<{ className?: string }>;
+}
+
+const NAV_ITEMS: NavItem[] = [
+  { label: "Overview", shortLabel: "Overview", href: "/dashboard", icon: LayoutGrid },
+  { label: "Transaksi", shortLabel: "Transaksi", href: "/transactions", icon: ArrowLeftRight },
+  { label: "Analitik", shortLabel: "Analitik", href: "/analytics", icon: TrendingUp },
+  { label: "Target Tabungan", shortLabel: "Tabungan", href: "/vaults", icon: Target },
+  { label: "Rekening", shortLabel: "Rekening", href: "/accounts", icon: WalletCards },
+  { label: "Pengaturan", shortLabel: "Pengaturan", href: "/settings", icon: SlidersHorizontal },
 ];
 
 function DashboardShellInner({ user, children }: DashboardShellProps) {
   const pathname = usePathname();
   const { isPrivate, togglePrivacy } = usePrivacy();
+
+  const isItemActive = (href: string) => {
+    if (href === "/dashboard") {
+      return pathname === "/dashboard" || pathname === "/";
+    }
+    if (href === "/vaults") {
+      return pathname.startsWith("/vaults") || pathname.startsWith("/goals");
+    }
+    return pathname.startsWith(href);
+  };
 
   return (
     <div className="min-h-screen flex bg-[#08080a] text-zinc-100 selection:bg-emerald-500/20 selection:text-emerald-200 font-sans">
@@ -73,14 +90,13 @@ function DashboardShellInner({ user, children }: DashboardShellProps) {
           <nav className="space-y-1 pt-2">
             {NAV_ITEMS.map((item) => {
               const Icon = item.icon;
-              const isActive =
-                pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href));
+              const isActive = isItemActive(item.href);
 
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  prefetch={true}
+                  prefetch={false}
                   className={cn(
                     "relative flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-medium transition-[background-color,border-color,color,box-shadow] duration-150 group cursor-pointer",
                     isActive
@@ -208,14 +224,13 @@ function DashboardShellInner({ user, children }: DashboardShellProps) {
       <div className="md:hidden fixed bottom-0 left-0 right-0 h-[66px] pb-2 pt-1 bg-[#09090c]/95 backdrop-blur-2xl border-t border-white/[0.08] px-2 flex items-center justify-around z-30 shadow-[0_-8px_32px_rgba(0,0,0,0.8)]">
         {NAV_ITEMS.map((item) => {
           const Icon = item.icon;
-          const isActive =
-            pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href));
+          const isActive = isItemActive(item.href);
 
           return (
             <Link
               key={item.href}
               href={item.href}
-              prefetch={true}
+              prefetch={false}
               className={cn(
                 "flex-1 flex flex-col items-center justify-center gap-0.5 py-1 rounded-xl text-[10px] transition-all relative min-w-0 max-w-[62px] cursor-pointer active:scale-95",
                 isActive
@@ -231,7 +246,7 @@ function DashboardShellInner({ user, children }: DashboardShellProps) {
               >
                 <Icon className="h-4 w-4" />
               </div>
-              <span className="truncate w-full text-center px-0.5">{item.label.split(" ")[0]}</span>
+              <span className="truncate w-full text-center px-0.5">{item.shortLabel}</span>
               {isActive && (
                 <div className="absolute -bottom-1 h-0.5 w-4 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
               )}

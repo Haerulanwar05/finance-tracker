@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
 import { ArrowRight, ShieldCheck, Sparkles, Landmark, ScanLine, Target, Layers } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TypewriterText } from "@/components/shared/typewriter-text";
@@ -11,7 +13,12 @@ const TYPING_WORDS = [
   "Pantau Uangmu Kapan Saja",
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+  const session = await auth();
+  if (session?.user) {
+    redirect("/dashboard");
+  }
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-between p-6 bg-zinc-950 text-zinc-100 selection:bg-blue-500/30">
       {/* Glow Effects */}
