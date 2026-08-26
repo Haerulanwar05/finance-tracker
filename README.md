@@ -135,6 +135,6 @@ Semua perencanaan sistem dan panduan teknis telah disusun secara terstruktur di 
 * **Database & ORM**: Supabase Cloud PostgreSQL + Prisma ORM + `@prisma/adapter-pg`
 * **Authentication**: NextAuth.js (Auth.js v5) with Google OAuth Provider & Credentials
 * **AI Vision API**: Google Gemini Flash Vision API (@google/genai)
-* **Testing**: Vitest (**16 Test Suites, 140/140 Tests Passed 100%**)
+* **Testing**: Vitest (**16 Test Suites, 142/142 Tests Passed 100%**)
 * **Linting**: ESLint (0 errors, 0 warnings)
 * **Hosting / CI-CD**: Vercel Serverless Edge Platform

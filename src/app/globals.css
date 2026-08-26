@@ -231,3 +231,17 @@ rect.recharts-bar-rectangle {
     break-inside: avoid !important;
   }
 }
+
+@keyframes nav-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-nav-shimmer {
+  animation: nav-shimmer 1.2s infinite ease-in-out;
+}
+

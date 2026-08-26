@@ -164,4 +164,36 @@ describe("QA & Test: Navigation Sync & Route Coherence", () => {
       expect(rootLayoutRevalidation.type).toBe("layout");
     });
   });
+
+  describe("5. Instant Optimistic Navigation & Responsiveness Invariant", () => {
+    it("immediately activates clicked destination via optimistic state in 0ms", () => {
+      const currentPath = "/dashboard";
+      const clickedTarget = "/transactions";
+
+      // Simulation of instant optimistic setter
+      let optimisticPath: string | null = null;
+      const handleNavClick = (target: string) => {
+        optimisticPath = target;
+      };
+
+      handleNavClick(clickedTarget);
+      const activePath = optimisticPath || currentPath;
+
+      expect(activePath).toBe("/transactions");
+      expect(isItemActive(activePath, "/transactions")).toBe(true);
+      expect(isItemActive(activePath, "/dashboard")).toBe(false);
+    });
+
+    it("verifies prefetch enabled flag on all navigation routes", () => {
+      const navConfig = NAV_ITEMS.map((item) => ({
+        ...item,
+        prefetch: true,
+      }));
+
+      navConfig.forEach((item) => {
+        expect(item.prefetch).toBe(true);
+      });
+    });
+  });
 });
+

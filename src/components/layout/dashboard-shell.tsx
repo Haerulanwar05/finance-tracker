@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
 import {
   LayoutGrid,
@@ -52,20 +52,57 @@ const NAV_ITEMS: NavItem[] = [
 
 function DashboardShellInner({ user, children }: DashboardShellProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const { isPrivate, togglePrivacy } = usePrivacy();
+  const [isPending, startTransition] = React.useTransition();
+  const [optimisticPath, setOptimisticPath] = React.useState<string | null>(null);
+
+  // Sync optimistic path when real route completes
+  React.useEffect(() => {
+    setOptimisticPath(null);
+  }, [pathname]);
+
+  // Proactively warm up and prefetch all navigation targets on mount
+  React.useEffect(() => {
+    NAV_ITEMS.forEach((item) => {
+      try {
+        router.prefetch(item.href);
+      } catch {}
+    });
+  }, [router]);
+
+  const currentPath = optimisticPath || pathname;
 
   const isItemActive = (href: string) => {
     if (href === "/dashboard") {
-      return pathname === "/dashboard" || pathname === "/";
+      return currentPath === "/dashboard" || currentPath === "/";
     }
     if (href === "/vaults") {
-      return pathname.startsWith("/vaults") || pathname.startsWith("/goals");
+      return currentPath.startsWith("/vaults") || currentPath.startsWith("/goals");
     }
-    return pathname.startsWith(href);
+    return currentPath.startsWith(href);
+  };
+
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (pathname === href) return;
+    setOptimisticPath(href);
+    startTransition(() => {
+      router.push(href);
+    });
   };
 
   return (
     <div className="min-h-screen flex bg-[#08080a] text-zinc-100 selection:bg-emerald-500/20 selection:text-emerald-200 font-sans">
+      {/* Top Hairline Progress Bar for Instant Responsive Feedback */}
+      <div
+        className={cn(
+          "fixed top-0 left-0 right-0 h-[2.5px] z-50 pointer-events-none transition-opacity duration-150 overflow-hidden bg-emerald-950/40",
+          isPending ? "opacity-100" : "opacity-0"
+        )}
+      >
+        <div className="h-full w-full bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-300 animate-nav-shimmer shadow-[0_0_12px_rgba(52,211,153,0.9)]" />
+      </div>
+
       {/* Subtle Architectural Vignette (Zero fuzzy AI-blobs) */}
       <div className="fixed inset-0 pointer-events-none z-0">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,rgba(16,185,129,0.06),transparent_100%)]" />
@@ -96,7 +133,10 @@ function DashboardShellInner({ user, children }: DashboardShellProps) {
                 <Link
                   key={item.href}
                   href={item.href}
-                  prefetch={false}
+                  prefetch={true}
+                  onMouseEnter={() => router.prefetch(item.href)}
+                  onTouchStart={() => router.prefetch(item.href)}
+                  onClick={(e) => handleNavClick(e, item.href)}
                   className={cn(
                     "relative flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-medium transition-[background-color,border-color,color,box-shadow] duration-150 group cursor-pointer",
                     isActive
@@ -230,7 +270,10 @@ function DashboardShellInner({ user, children }: DashboardShellProps) {
             <Link
               key={item.href}
               href={item.href}
-              prefetch={false}
+              prefetch={true}
+              onMouseEnter={() => router.prefetch(item.href)}
+              onTouchStart={() => router.prefetch(item.href)}
+              onClick={(e) => handleNavClick(e, item.href)}
               className={cn(
                 "flex-1 flex flex-col items-center justify-center gap-0.5 py-1 rounded-xl text-[10px] transition-all relative min-w-0 max-w-[62px] cursor-pointer active:scale-95",
                 isActive

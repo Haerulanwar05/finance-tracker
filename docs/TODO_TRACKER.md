@@ -224,13 +224,18 @@
   - [x] Resolusi error `Error 400: redirect_uri_mismatch` saat domain Vercel diganti atau diakses dari URL baru.
   - [x] Panduan pendaftaran URI callback resmi (`https://<domain>/api/auth/callback/google`) dan Authorized JavaScript Origin di Google Cloud Console Credentials.
 - [x] **9.16 Sinkronisasi Menyeluruh Navigasi, Routing Kanonikal & Eliminasi Stale Client Cache**
-  - [x] Memperbaiki desinkronisasi data antar menu navigasi (*Overview, Transaksi, Analitik, Target Tabungan, Rekening, Pengaturan*) dengan menonaktifkan prefetch statis (`prefetch={false}`) pada sidebar dan mobile bottom nav, menjamin setiap tab selalu menyajikan data Server Component paling mutakhir.
-  - [x] Menyeragamkan logika penanda aktif navigasi (`isItemActive`) pada Desktop Sidebar dan Mobile Bottom Navigation agar selaras 100% dan bebas konflik alias (`/vaults` vs `/goals`).
+  - [x] Memperbaiki desinkronisasi data antar menu navigasi (*Overview, Transaksi, Analitik, Target Tabungan, Rekening, Pengaturan*) dengan menyeragamkan logika penanda aktif navigasi (`isItemActive`).
   - [x] Menjadikan `/goals` sebagai redirect kanonikal ke `/vaults` untuk mencegah duplikasi URL dan kehilangan highlight aktif navigasi.
   - [x] Menambahkan label mobile ringkas (*shortLabel*) pada bottom navigation dock untuk mencegah pemotongan teks kasar (*e.g. Tabungan bukan pemotongan acak*).
   - [x] Menambahkan proteksi autentikasi pada Landing Page (`/`) agar pengguna yang sudah login langsung diarahkan secara mulus ke `/dashboard`.
-  - [x] Memperluas pemanggilan `revalidatePath("/", "layout")` ke seluruh mutasi Server Action (penghapusan transaksi, pembaruan akun, pengarsipan akun, pembuatan/penarikan tabungan target, pembuatan kategori kustom).
-  - [x] Menambahkan QA & Test suite baru (`tests/unit/navigation-sync.test.ts`) dengan 17 pengujian komprehensif, mendongkrak skor menjadi **16 Test Suites, 140/140 Tests Passing (100%)**.
+  - [x] Memperluas pemanggilan `revalidatePath("/", "layout")` ke seluruh mutasi Server Action.
+- [x] **9.17 Mesin Navigasi Super Cepat: Optimistic UI Transitions, Proactive Route Warmup & Per-Segment Streaming Skeletons**
+  - [x] Mengeliminasi jeda beku 2-3 detik antar-navigasi dengan mengaktifkan prefetching proaktif (`prefetch={true}`) pada seluruh item menu navigasi Desktop & Mobile Dock.
+  - [x] Menerapkan **Optimistic Active State Transition (0ms response)**: Penanda tab aktif (indikator hijau, bobot font, dan highlight kartu) langsung beralih seketika saat diklik tanpa menunggu respon server.
+  - [x] Menambahkan pemanasan rute proaktif (*hover/touch warmup*) via `router.prefetch()` pada `onMouseEnter` dan `onTouchStart` untuk memuat bundle halaman sebelum jari selesai menekan tombol.
+  - [x] Menghadirkan *Hairline Top Progress Bar* mewah beranimasi shimmer (`animate-nav-shimmer`) yang memberi umpan balik visual instan selama transisi halaman.
+  - [x] Menambahkan berkas `loading.tsx` khusus untuk setiap segmen rute (`/transactions`, `/accounts`, `/analytics`, `/vaults`, `/settings`) agar streaming skeleton muncul instan jika server sedang memuat data.
+  - [x] Memperbarui QA & Test suite (`tests/unit/navigation-sync.test.ts`) menjadi **16 Test Suites, 142/142 Tests Passing (100%)**.
 
 ---
 
