@@ -40,7 +40,8 @@ export function BentoMetrics({
   const { isPrivate } = usePrivacy();
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
 
-  // Status configuration for Budget & Safe-to-Spend
+  // Status configuration for Budget & Safe-to-Spend with resilient fallback
+  const safeStatus = monthlyBudget?.status || "SAFE";
   const statusConfig = {
     SAFE: {
       label: "Batas Aman",
@@ -57,7 +58,11 @@ export function BentoMetrics({
       color: "text-rose-400 bg-rose-500/10 border-rose-500/20",
       dot: "bg-rose-400",
     },
-  }[monthlyBudget.status];
+  }[safeStatus] || {
+    label: "Batas Aman",
+    color: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
+    dot: "bg-emerald-400",
+  };
 
   return (
     <>

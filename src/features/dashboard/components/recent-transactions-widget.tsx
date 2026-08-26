@@ -72,12 +72,16 @@ export function RecentTransactionsWidget({ transactions }: RecentTransactionsWid
 
                   <div className="min-w-0">
                     <p className="text-xs sm:text-sm font-semibold text-zinc-100 truncate">
-                      {tx.description}
+                      {tx.description || tx.category?.name || "Transaksi"}
                     </p>
                     <div className="flex items-center gap-1.5 text-[10px] text-zinc-400">
-                      <span>{tx.account.name}</span>
+                      <span>{tx.account?.name || "Akun"}</span>
                       <span>•</span>
-                      <span>{new Date(tx.date).toLocaleDateString("id-ID", { day: "numeric", month: "short" })}</span>
+                      <span>
+                        {tx.date
+                          ? new Date(tx.date).toLocaleDateString("id-ID", { day: "numeric", month: "short" })
+                          : "-"}
+                      </span>
                       {tx.receiptUrl && (
                         <>
                           <span>•</span>

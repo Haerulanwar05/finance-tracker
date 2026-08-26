@@ -104,15 +104,22 @@ export interface DashboardAnalyticsData {
 const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agt", "Sep", "Okt", "Nov", "Des"];
 
 export async function getDashboardAnalyticsData(): Promise<DashboardAnalyticsData> {
-  const session = await auth();
-  let userId = session?.user?.id;
+  let session = null;
+  let userId: string | undefined = undefined;
 
-  if (!userId && session?.user?.email) {
-    const dbUser = await prisma.user.findUnique({
-      where: { email: session.user.email.toLowerCase() },
-      select: { id: true },
-    });
-    if (dbUser) userId = dbUser.id;
+  try {
+    session = await auth();
+    userId = session?.user?.id;
+
+    if (!userId && session?.user?.email) {
+      const dbUser = await prisma.user.findUnique({
+        where: { email: session.user.email.toLowerCase() },
+        select: { id: true },
+      });
+      if (dbUser) userId = dbUser.id;
+    }
+  } catch (authError) {
+    console.error("getDashboardAnalyticsData: Error retrieving session:", authError);
   }
 
   if (!userId) {
@@ -446,8 +453,8 @@ export async function getDashboardAnalyticsData(): Promise<DashboardAnalyticsDat
         }
       : null,
     account: {
-      name: tx.account.name,
-      type: tx.account.type,
+      name: tx.account?.name || "Akun",
+      type: tx.account?.type || "BANK",
     },
   }));
 
