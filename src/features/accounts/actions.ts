@@ -102,8 +102,7 @@ export async function unarchiveAccount(id: string): Promise<ActionResult> {
       data: { isArchived: false },
     });
 
-    revalidatePath("/accounts");
-    revalidatePath("/dashboard");
+    revalidatePath("/", "layout");
 
     return { success: true, message: `Akun "${existing.name}" berhasil dipulihkan.` };
   } catch (error) {
@@ -143,8 +142,7 @@ export async function createAccount(input: CreateAccountInput): Promise<ActionRe
       },
     });
 
-    revalidatePath("/accounts");
-    revalidatePath("/dashboard");
+    revalidatePath("/", "layout");
 
     return {
       success: true,
@@ -287,9 +285,7 @@ export async function deleteAccount(id: string): Promise<ActionResult> {
       });
     });
 
-    revalidatePath("/accounts");
-    revalidatePath("/transactions");
-    revalidatePath("/dashboard");
+    revalidatePath("/", "layout");
 
     return {
       success: true,
@@ -381,9 +377,7 @@ export async function transferFunds(input: TransferInput): Promise<ActionResult>
       ]);
     });
 
-    revalidatePath("/accounts");
-    revalidatePath("/dashboard");
-    revalidatePath("/transactions");
+    revalidatePath("/", "layout");
 
     return {
       success: true,

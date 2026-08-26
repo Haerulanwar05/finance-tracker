@@ -242,15 +242,17 @@ export function AddTransactionModal({
         description: description.trim() || undefined,
       });
 
-      setIsLoading(false);
-
       if (!res.success) {
+        setIsLoading(false);
         setError(res.message || "Gagal mencatat transaksi");
       } else {
+        setIsLoading(false);
         setAmount("");
         setDescription("");
-        router.refresh();
         onClose();
+        React.startTransition(() => {
+          router.refresh();
+        });
       }
     } catch {
       // Fallback jika koneksi terputus saat request sedang berjalan

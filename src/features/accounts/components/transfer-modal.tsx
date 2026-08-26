@@ -143,15 +143,17 @@ export function TransferModal({
       description: description || undefined,
     });
 
-    setIsLoading(false);
-
     if (!res.success) {
+      setIsLoading(false);
       setError(res.message || "Gagal melakukan transfer");
     } else {
+      setIsLoading(false);
       setAmount("");
       setDescription("");
-      router.refresh();
       onClose();
+      React.startTransition(() => {
+        router.refresh();
+      });
     }
   }
 

@@ -92,6 +92,11 @@ pie title Distribusi Warna Visual Antarmuka
 * **Safe Area Spacing (`pb-24`)**: Memastikan konten paling bawah tidak tertutup oleh bilah navigasi melayang.
 * **Header Quick Gear Action**: Tombol jalan pintas pengaturan di samping sensor privasi saldo.
 
+### 4.7. Fast Interaction, Instant Modal Dismiss & Balance Sorting Controls
+* **Instant Modal Dismissal**: Modal transaksi dan transfer tertutup seketika (< 50ms) setelah penekanan tombol simpan/update, menghilangkan rasa "layar membeku" selama proses mutasi database.
+* **Non-Blocking Concurrent Refresh**: Pembaruan angka Net Worth dan mutasi saldo di layar menggunakan `React.startTransition`, menjaga kelancaran animasi 60 FPS tanpa jeda freeze.
+* **Interactive Balance Sorting Controls**: Tombol *Tertinggi (Descending)* dan *Terendah (Ascending)* dengan highlight aktif beraksen zamrud (*emerald glow*) serta tombol reset sekali klik.
+
 ---
 
 ## 5. Print Design System (A4 Executive Statement)

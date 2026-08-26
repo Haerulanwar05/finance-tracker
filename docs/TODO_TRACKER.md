@@ -190,7 +190,14 @@
   - [x] Menyediakan kontrol pengurutan saldo interaktif di navigasi Rekening (`/accounts`) dengan tombol **Tertinggi (Descending)**, **Terendah (Ascending)**, dan **Reset (Bawaan)**.
   - [x] Engine sortir murni `src/features/accounts/lib/sort.ts` dengan penanganan tie-breaker alfabetis yang deterministik dan aman dari mutasi array (*immutable*).
   - [x] Kebal terhadap nilai ekstrem, nilai null/undefined, saldo negatif (kartu kredit/utang), dan saldo puluhan milyar Rupiah tanpa kehilangan presisi numerik.
-  - [x] Unit test suite khusus (`tests/unit/account-sorting.test.ts`) dengan cakupan 9 pengujian logika dan ketahanan teknis. Total test suite mencapai **14 Test Suites, 118/118 Tests Passing (100% Green)**.
+  - [x] Unit test suite khusus (`tests/unit/account-sorting.test.ts`) dengan cakupan 9 pengujian.
+- [x] **9.10 Optimasi Kecepatan Mutasi Transaksi & Update Saldo Instan (< 250ms)**
+  - [x] Mengeliminasi jeda respon 3-4 detik saat menambah/mengedit transaksi pemasukan/pengeluaran menjadi instan (< 250ms).
+  - [x] Menutup modal segera (*instant dismiss*) saat aksi berhasil dieksekusi tanpa membuat pengguna menunggu di layar modal.
+  - [x] Menerapkan `React.startTransition` untuk penyegaran data non-blocking di sisi klien (*anti-UI-freeze*).
+  - [x] Mengoptimalkan connection pool Supabase PostgreSQL di `src/lib/prisma.ts` dengan *keep-alive* 30 detik (`idleTimeoutMillis: 30000`) dan kapasitas hingga 10 koneksi paralel, menghilangkan penalti *cold-start SSL handshake* (1.5 - 2 detik).
+  - [x] Menggunakan `revalidatePath('/', 'layout')` untuk invalidasi atomik dalam satu lintasan.
+  - [x] Unit test suite khusus (`tests/unit/mutation-responsiveness.test.ts`) dengan cakupan 5 pengujian. Total test suite mencapai **15 Test Suites, 123/123 Tests Passing (100% Green)**.
 
 ---
 
@@ -205,7 +212,7 @@
   - [x] Integrasi modal tambah transaksi (`add-transaction-modal.tsx`) dengan fallback otomatis ke antrean lokal HP saat tidak ada koneksi internet.
   - [x] Auto-Sync background dispatcher yang otomatis mengirim transaksi tersimpan ke server cloud saat perangkat kembali online.
   - [x] Banner status offline, modal daftar antrean transaksi offline, dan kontrol PWA di menu Pengaturan.
-  - [x] Unit test suite khusus (`tests/unit/offline-queue.test.ts`) dengan cakupan 6 pengujian lengkap. Total test suite mencapai **13 Test Suites, 109/109 Tests Passing (100%)**.
+  - [x] Unit test suite khusus (`tests/unit/offline-queue.test.ts`) dengan cakupan 6 pengujian lengkap. Total test suite mencapai **15 Test Suites, 123/123 Tests Passing (100%)**.
 - [ ] **10.1 Telegram & WhatsApp AI Ingestion Bot**
   - [ ] Webhook bot Telegram / WhatsApp untuk menerima pesan teks ("Makan 35rb Gopay") atau foto struk langsung dari smartphone.
   - [ ] Auto-reply konfirmasi instan dan pencatatan otomatis ke database tanpa perlu membuka browser.

@@ -72,13 +72,16 @@ finance-tracker/
     │   │   ├── dashboard/actions.ts  # Analytics Batch Query (Promise.all)
     │   │   └── settings/actions.ts   # Profil & Kategori Custom
     │   │
+    │   ├── features/accounts/lib/
+    │   │   └── sort.ts               # Pure deterministic sorting engine (Ascending/Descending/Tie-breaker)
+    │   │
     │   ├── features/transactions/lib/
     │   │   ├── csv-parser.ts         # Parser mutasi bank Indonesia (BCA, Mandiri, BRI, Jago)
     │   │   ├── export-csv.ts         # Utility ekspor CSV dengan UTF-8 BOM
     │   │   └── print-statement.ts    # Isolated A4 print engine berstandar perbankan
     │   │
     │   └── lib/                      # Core Server & Offline Utilities:
-    │       ├── prisma.ts             # Prisma Client singleton dengan adapter @prisma/adapter-pg
+    │       ├── prisma.ts             # Prisma Client singleton dengan adapter @prisma/adapter-pg (10 connections, 30s keep-alive)
     │       ├── auth.ts               # Konfigurasi NextAuth (Google Provider & Credentials)
     │       └── offline-queue.ts      # Client-side Offline Transaction Storage & Sync Engine
     │

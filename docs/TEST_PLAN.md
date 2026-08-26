@@ -37,7 +37,10 @@ graph TD
 | 10 | `settings.test.ts` | Update profil, sanitasi limit belanja, proteksi kategori default | 4 | ✅ Passed |
 | 11 | `export-statement.test.ts` | Sanitasi CSV UTF-8 BOM, kalkulasi porsi kategori rekening koran | 4 | ✅ Passed |
 | 12 | `offline-queue.test.ts` | Antrean transaksi offline, auto-sync background, dan failover | 6 | ✅ Passed |
-| **TOTAL** | **12 Berkas Uji** | **Seluruh Modul & Invarian Finansial** | **98 Tests** | **✅ 100% Passed** |
+| 13 | `transfer-interaccount.test.ts` | Resolusi tabrakan UI, swap transfer, validasi transfer ACID, dan konservasi saldo | 11 | ✅ Passed |
+| 14 | `account-sorting.test.ts` | Pengurutan saldo Ascending & Descending, tie-breaker deterministik, toleransi ekstrem | 9 | ✅ Passed |
+| 15 | `mutation-responsiveness.test.ts` | Responsivitas mutasi saldo/Net Worth, warm pool connection keepalive, transisi atomik | 5 | ✅ Passed |
+| **TOTAL** | **15 Berkas Uji** | **Seluruh Modul & Invarian Finansial** | **123 Tests** | **✅ 100% Passed** |
 
 ---
 

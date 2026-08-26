@@ -186,12 +186,14 @@ export function ReceiptScannerModal({
       rawOcrJson,
     });
 
-    setIsSaving(false);
-
     if (res.success) {
-      router.refresh();
+      setIsSaving(false);
       onClose();
+      React.startTransition(() => {
+        router.refresh();
+      });
     } else {
+      setIsSaving(false);
       setError(res.message || "Gagal menyimpan transaksi struk.");
     }
   }

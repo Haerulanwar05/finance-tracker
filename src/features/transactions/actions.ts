@@ -302,9 +302,7 @@ export async function createTransaction(input: CreateTransactionInput): Promise<
       await Promise.all(mutationPromises);
     });
 
-    revalidatePath("/transactions");
-    revalidatePath("/accounts");
-    revalidatePath("/dashboard");
+    revalidatePath("/", "layout");
 
     return {
       success: true,
@@ -454,9 +452,7 @@ export async function updateTransaction(input: UpdateTransactionInput): Promise<
       await Promise.all(applyPromises);
     });
 
-    revalidatePath("/transactions");
-    revalidatePath("/accounts");
-    revalidatePath("/dashboard");
+    revalidatePath("/", "layout");
 
     return { success: true, message: "Transaksi berhasil diperbarui!" };
   } catch (error: unknown) {
@@ -490,7 +486,7 @@ export async function deleteTransaction(id: string): Promise<ActionResult> {
       const amount = Number(existing.amount);
       const rollbackPromises: Promise<unknown>[] = [];
 
-      // Refund/Rollback account balance in parallel with transaction deletion
+      // Revert original mutation
       if (existing.type === "EXPENSE") {
         rollbackPromises.push(
           tx.account.update({
@@ -527,9 +523,7 @@ export async function deleteTransaction(id: string): Promise<ActionResult> {
       await Promise.all(rollbackPromises);
     });
 
-    revalidatePath("/transactions");
-    revalidatePath("/accounts");
-    revalidatePath("/dashboard");
+    revalidatePath("/", "layout");
 
     return { success: true, message: "Transaksi berhasil dihapus dan saldo telah dipulihkan." };
   } catch (error: unknown) {

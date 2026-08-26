@@ -11,17 +11,18 @@ Semua perencanaan sistem dan panduan teknis telah disusun secara terstruktur di 
 * 🏛️ **[docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md)**: Arsitektur sistem (C4 Model), Tech Stack Decision Matrix, Data Flow transaksi & OCR, integrasi Supabase PostgreSQL & Google OAuth, mesin cetak dokumen PDF, serta standar keamanan finansial.
 * 🎨 **[docs/UI_UX_DESIGN_SYSTEM.md](./docs/UI_UX_DESIGN_SYSTEM.md)**: Sistem desain visual modern (Bento Grid, Glassmorphism, Color Tokens, Mobile Thumb Navigation, Google Sign-in Buttons, CSS Print Optimization, & Aksesibilitas WCAG AA).
 * 📁 **[docs/FOLDER_STRUCTURE.md](./docs/FOLDER_STRUCTURE.md)**: Tata letak direktori proyek Next.js App Router dengan pemisahan tegas Feature-Sliced Architecture.
-* 🧪 **[docs/TEST_PLAN.md](./docs/TEST_PLAN.md)**: Rencana pengujian QA komprehensif (Unit Test, Integration Test, E2E QA Matrix, AI OCR Testing, Offline Queue Engine & Keamanan Isolasi Data - **12 Test Suites, 98/98 Tests Passing 100%**).
+* 🧪 **[docs/TEST_PLAN.md](./docs/TEST_PLAN.md)**: Rencana pengujian QA komprehensif (Unit Test, Integration Test, E2E QA Matrix, AI OCR Testing, Offline Queue Engine & Keamanan Isolasi Data - **15 Test Suites, 123/123 Tests Passing 100%**).
 * 📋 **[docs/TODO_TRACKER.md](./docs/TODO_TRACKER.md)**: Roadmap pengerjaan 10 fase bertahap (*Step-by-step checklist*) dan rencana inovasi masa depan.
 
 ---
 
 ## 🚀 Fitur Utama
 
-1. **Multi-Account & Net Worth**:
+1. **Multi-Account, Balance Sorting & Net Worth**:
    * Kelola rekening bank (BCA, Mandiri, dll.), dompet digital (GoPay, OVO, DANA), uang tunai, dan aset investasi.
-   * Transfer antar-rekening dengan pencatatan mutasi otomatis dan saldo terjaga atomik (ACID).
-   * Kalkulasi *real-time* total kekayaan bersih (*Net Worth*).
+   * **Fitur Pengurutan Saldo (Ascending & Descending)**: Urutkan rekening dari Saldo Tertinggi ($\downarrow$) atau Saldo Terendah ($\uparrow$) dengan secondary tie-breaker deterministik dan toleransi saldo negatif.
+   * Transfer antar-rekening dengan pencegahan tabrakan (*auto-collision resolver*), tombol tukar arah (🔁), dan integritas atomik (ACID).
+   * Kalkulasi *real-time* total kekayaan bersih (*Net Worth*) yang merespons instan (< 250ms) saat transaksi dicatat atau diedit.
 2. **Pencatatan Harian & Smart Ingestion**:
    * Input cepat transaksi pemasukan, pengeluaran, dan mutasi.
    * **AI Vision OCR**: Foto struk belanja $\rightarrow$ otomatis ekstrak nominal, tanggal, toko, dan kategori via Google Gemini.

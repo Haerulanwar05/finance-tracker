@@ -11,9 +11,9 @@ function createPrismaClient() {
   // Configure lightweight pg.Pool tailored for Serverless Lambdas & Supabase connection limits
   const pool = new Pool({
     connectionString,
-    max: 1, // 1 connection per serverless lambda instance prevents pool exhaustion
-    idleTimeoutMillis: 5000, // Release idle connection quickly after request finishes
-    connectionTimeoutMillis: 8000,
+    max: process.env.NODE_ENV === "production" ? 5 : 10, // Up to 10 connections for parallel queries
+    idleTimeoutMillis: 30000, // 30s keepalive prevents constant TLS cold start reconnects
+    connectionTimeoutMillis: 10000,
   });
 
   const adapter = new PrismaPg(pool);

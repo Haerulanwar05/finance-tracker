@@ -177,4 +177,7 @@ sequenceDiagram
    * Modus sensor privasi (`PrivacyProvider`) menyembunyikan nominal saldo di layar saat digunakan di ruang publik.
 5. **Offline Queue Encryption & Local Security**:
    * Antrean transaksi lokal disimpan di storage klien terisolasi dan hanya dapat disinkronkan oleh sesi akun pengguna yang sah.
+6. **High-Performance Connection Pooling & Instant UI Invalidation**:
+   * PostgreSQL pg.Pool dikonfigurasi dengan *30-second keep-alive* (`idleTimeoutMillis: 30000`) dan kapasitas hingga 10 koneksi simultan untuk menghilangkan penalti koneksi dingin (*cold-start TLS handshake*) 1.5 - 2 detik saat pengguna mencatat transaksi.
+   * Client-side modal langsung ditutup seketika (*instant dismiss*), dan penyegaran server dijalankan secara non-blocking via `React.startTransition` bersama invalidasi atomik `revalidatePath('/', 'layout')`.
 

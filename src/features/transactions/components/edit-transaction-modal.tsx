@@ -152,13 +152,15 @@ export function EditTransactionModal({
       description: description.trim() || undefined,
     });
 
-    setIsLoading(false);
-
     if (!res.success) {
+      setIsLoading(false);
       setError(res.message || "Gagal memperbarui transaksi");
     } else {
-      router.refresh();
+      setIsLoading(false);
       onClose();
+      React.startTransition(() => {
+        router.refresh();
+      });
     }
   }
 
