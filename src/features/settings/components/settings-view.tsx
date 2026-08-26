@@ -649,10 +649,10 @@ export function SettingsView({ data }: SettingsViewProps) {
             <div className="space-y-0.5">
               <div className="flex items-center gap-2">
                 <Smartphone className="h-4 w-4 text-emerald-400" />
-                <p className="text-xs font-bold text-white">Aplikasi Mandiri (HP & Laptop) & Catat Offline</p>
+                <p className="text-xs font-bold text-white">Aplikasi Mandiri & Mode Offline</p>
               </div>
               <p className="text-[11px] text-zinc-400">
-                Pasang di layar HP atau PC/Laptop untuk akses cepat dan tetap bisa mencatat pengeluaran tanpa internet.
+                Pasang aplikasi di perangkat Anda untuk akses cepat dan tetap bisa mencatat transaksi tanpa koneksi internet.
               </p>
             </div>
 

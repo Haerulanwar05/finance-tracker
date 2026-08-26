@@ -39,7 +39,7 @@ export function OfflineIndicatorBanner() {
         <div className="fixed top-3 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
           <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-semibold backdrop-blur-xl shadow-xl shadow-black/50">
             <CloudOff className="h-3.5 w-3.5 animate-pulse text-amber-400" />
-            <span>Mode Offline — Transaksi disimpan di antrean HP</span>
+            <span>Mode Offline — Transaksi tersimpan aman di perangkat ini</span>
           </div>
         </div>
       )}

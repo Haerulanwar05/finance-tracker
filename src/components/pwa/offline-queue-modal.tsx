@@ -25,30 +25,31 @@ export function OfflineQueueModal({ isOpen, onClose }: OfflineQueueModalProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="relative w-full max-w-lg bg-zinc-950 border border-zinc-800 rounded-3xl p-6 shadow-2xl shadow-black space-y-5">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+      <div className="relative w-full max-w-lg bg-[#0c0c0f]/95 border border-white/[0.09] backdrop-blur-2xl rounded-3xl p-6 shadow-[0_20px_50px_-8px_rgba(0,0,0,0.8),inset_0_1px_0_0_rgba(255,255,255,0.08)] space-y-5">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between border-b border-white/[0.08] pb-4">
           <div className="flex items-center gap-2.5">
-            <div className="h-10 w-10 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center">
+            <div className="h-10 w-10 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center shadow-[inset_0_1px_0_0_rgba(245,158,11,0.2)]">
               <CloudOff className="h-5 w-5" />
             </div>
             <div>
               <h3 className="text-base font-bold text-white tracking-tight flex items-center gap-2">
                 Antrean Transaksi Offline
-                <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 font-semibold">
+                <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 font-semibold font-mono">
                   {offlineQueue.length} Tertunda
                 </span>
               </h3>
               <p className="text-xs text-zinc-400">
-                Transaksi disimpan di HP & siap disinkronkan ke server.
+                Transaksi tersimpan di perangkat ini & siap disinkronkan saat online.
               </p>
             </div>
           </div>
 
           <button
             onClick={onClose}
-            className="text-zinc-400 hover:text-white p-1.5 rounded-xl hover:bg-zinc-800 transition-colors cursor-pointer"
+            aria-label="Tutup dialog"
+            className="text-zinc-400 hover:text-white p-1.5 rounded-xl hover:bg-white/[0.06] transition-colors cursor-pointer"
           >
             <X className="h-5 w-5" />
           </button>

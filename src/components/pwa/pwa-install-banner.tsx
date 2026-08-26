@@ -211,13 +211,13 @@ export function PwaInstallBanner() {
                     <span className="text-xs sm:text-sm font-extrabold text-white tracking-tight">
                       Pasang FinanceTracker
                     </span>
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-semibold flex items-center gap-1">
+                    <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-semibold flex items-center gap-1 font-mono">
                       <Sparkles className="h-2.5 w-2.5 text-emerald-400" />
-                      HP & PC/Laptop
+                      Semua Perangkat
                     </span>
                   </div>
                   <p className="text-[11px] sm:text-xs text-zinc-300 leading-relaxed font-normal">
-                    Pasang di layar HP atau Laptop untuk akses kilat 1-klik dan tetap bisa catat transaksi saat offline.
+                    Pasang aplikasi di perangkat Anda untuk akses kilat 1-klik dan kemudahan mencatat transaksi tanpa internet.
                   </p>
                 </div>
               </div>

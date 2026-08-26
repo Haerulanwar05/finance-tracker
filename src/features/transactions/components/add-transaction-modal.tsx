@@ -209,7 +209,7 @@ export function AddTransactionModal({
       return;
     }
 
-    // Jika sedang Offline, simpan langsung ke Offline Queue lokal HP
+    // Jika sedang Offline, simpan langsung ke Offline Queue lokal perangkat
     if (!isOnline) {
       addOfflineTx({
         accountId,
