@@ -185,7 +185,12 @@
   - [x] Memperbaiki desinkronisasi state pada `TransferModal`, `AddTransactionModal`, dan `EditTransactionModal` ketika pengguna memilih akun sumber yang sama dengan target (misal: BNI $\rightarrow$ Uang Tunai).
   - [x] Menyediakan auto-switch otomatis pada akun tujuan saat terjadi tabrakan pilihan (*collision*), sinkronisasi realtime melalui `useEffect`, dan tombol interaktif *Swap Direction* (🔁 Tukar Akun).
   - [x] Menambahkan validasi proteksi berlapis pada action `transferFunds`, `createTransaction`, dan `updateTransaction`.
-  - [x] Menambahkan test suite komprehensif `tests/unit/transfer-interaccount.test.ts` (11 pengujian baru). Total pengujian meningkat menjadi **13 Test Suites, 109/109 Tests Passing (100% Green)**.
+  - [x] Menambahkan test suite komprehensif `tests/unit/transfer-interaccount.test.ts` (11 pengujian).
+- [x] **9.9 Fitur Pengurutan Saldo Rekening (*Ascending & Descending Balance Sorting*)**
+  - [x] Menyediakan kontrol pengurutan saldo interaktif di navigasi Rekening (`/accounts`) dengan tombol **Tertinggi (Descending)**, **Terendah (Ascending)**, dan **Reset (Bawaan)**.
+  - [x] Engine sortir murni `src/features/accounts/lib/sort.ts` dengan penanganan tie-breaker alfabetis yang deterministik dan aman dari mutasi array (*immutable*).
+  - [x] Kebal terhadap nilai ekstrem, nilai null/undefined, saldo negatif (kartu kredit/utang), dan saldo puluhan milyar Rupiah tanpa kehilangan presisi numerik.
+  - [x] Unit test suite khusus (`tests/unit/account-sorting.test.ts`) dengan cakupan 9 pengujian logika dan ketahanan teknis. Total test suite mencapai **14 Test Suites, 118/118 Tests Passing (100% Green)**.
 
 ---
 

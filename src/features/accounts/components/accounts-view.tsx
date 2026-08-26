@@ -16,6 +16,9 @@ import {
   TrendingUp,
   CreditCard,
   LucideIcon,
+  ArrowDownWideNarrow,
+  ArrowUpNarrowWide,
+  SlidersHorizontal,
 } from "lucide-react";
 import { NetWorthCard } from "./net-worth-card";
 import { AccountCard, AccountItem } from "./account-card";
@@ -26,6 +29,7 @@ import { Button } from "@/components/ui/button";
 import { formatRupiah } from "@/lib/currency";
 import { usePrivacy } from "@/context/privacy-context";
 import { unarchiveAccount, deleteAccount } from "../actions";
+import { sortAccounts, AccountSortOption } from "../lib/sort";
 
 interface AccountsViewProps {
   initialAccounts: AccountItem[];
@@ -54,6 +58,11 @@ export function AccountsView({
   const [selectedSourceId, setSelectedSourceId] = React.useState<string | undefined>();
   const [isArchivedSectionOpen, setIsArchivedSectionOpen] = React.useState(false);
   const [processingId, setProcessingId] = React.useState<string | null>(null);
+  const [sortOption, setSortOption] = React.useState<AccountSortOption>("DEFAULT");
+
+  const sortedAccounts = React.useMemo(() => {
+    return sortAccounts(initialAccounts, sortOption);
+  }, [initialAccounts, sortOption]);
 
   function handleOpenTransfer(sourceId?: string) {
     setSelectedSourceId(sourceId);
@@ -109,9 +118,60 @@ export function AccountsView({
 
       {/* Active Accounts Grid */}
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-base font-bold text-zinc-100 tracking-tight">Daftar Rekening</h2>
-          <span className="text-xs text-zinc-500">{initialAccounts.length} akun aktif</span>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 className="text-base font-bold text-zinc-100 tracking-tight">Daftar Rekening</h2>
+            <span className="text-xs text-zinc-500">{initialAccounts.length} akun aktif</span>
+          </div>
+
+          {/* Balance Sorting Controls */}
+          {initialAccounts.length > 1 && (
+            <div className="flex items-center gap-1 p-1 bg-zinc-900/90 border border-zinc-800/80 rounded-2xl shrink-0 self-start sm:self-auto">
+              <span className="text-[11px] font-medium text-zinc-400 pl-2 pr-1 hidden xs:flex items-center gap-1">
+                <SlidersHorizontal className="h-3 w-3 text-zinc-500" />
+                <span>Urutkan:</span>
+              </span>
+
+              <button
+                type="button"
+                onClick={() => setSortOption((prev) => (prev === "BALANCE_DESC" ? "DEFAULT" : "BALANCE_DESC"))}
+                className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
+                  sortOption === "BALANCE_DESC"
+                    ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shadow-sm"
+                    : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/60 border border-transparent"
+                }`}
+                title="Urutkan dari saldo terbesar ke terkecil"
+              >
+                <ArrowDownWideNarrow className="h-3.5 w-3.5" />
+                <span>Tertinggi</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setSortOption((prev) => (prev === "BALANCE_ASC" ? "DEFAULT" : "BALANCE_ASC"))}
+                className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
+                  sortOption === "BALANCE_ASC"
+                    ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shadow-sm"
+                    : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/60 border border-transparent"
+                }`}
+                title="Urutkan dari saldo terkecil ke terbesar"
+              >
+                <ArrowUpNarrowWide className="h-3.5 w-3.5" />
+                <span>Terendah</span>
+              </button>
+
+              {sortOption !== "DEFAULT" && (
+                <button
+                  type="button"
+                  onClick={() => setSortOption("DEFAULT")}
+                  className="px-2.5 py-1.5 rounded-xl text-xs text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800/60 transition-colors cursor-pointer"
+                  title="Kembalikan ke urutan awal"
+                >
+                  Reset
+                </button>
+              )}
+            </div>
+          )}
         </div>
 
         {initialAccounts.length === 0 ? (
@@ -132,7 +192,7 @@ export function AccountsView({
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {initialAccounts.map((account) => (
+            {sortedAccounts.map((account) => (
               <AccountCard
                 key={account.id}
                 account={account}
