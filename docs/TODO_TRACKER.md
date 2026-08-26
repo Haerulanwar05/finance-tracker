@@ -220,6 +220,9 @@
 - [x] **9.14 Panduan Manajemen Domain Vercel & Branding Custom URL**
   - [x] Dokumentasi mekanisme penamaan subdomain otomatis Vercel (`*-two-teal-*.vercel.app`) akibat keunikan nama namespace global.
   - [x] Panduan konfigurasi nama domain bersih (`*.vercel.app`) dan integrasi custom domain resmi (misal: `financetracker.id` / `haerulfinance.com`) via Vercel Dashboard Settings.
+- [x] **9.15 Sinkronisasi Google OAuth Authorized Redirect URI & Domain Baru**
+  - [x] Resolusi error `Error 400: redirect_uri_mismatch` saat domain Vercel diganti atau diakses dari URL baru.
+  - [x] Panduan pendaftaran URI callback resmi (`https://<domain>/api/auth/callback/google`) dan Authorized JavaScript Origin di Google Cloud Console Credentials.
 
 ---
 
