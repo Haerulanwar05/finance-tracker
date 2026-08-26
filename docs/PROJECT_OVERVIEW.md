@@ -61,6 +61,12 @@ Semua perencanaan sistem dan panduan teknis telah disusun secara terstruktur di 
     * Symmetrical 2-column mobile button grids dan swipeable horizontal category filters.
 12. **Obsidian Sovereign Visual Architecture (Anti-AI Slop)**:
     * Arsitektur desain Swiss Fintech dengan font Geist Sans/Mono, tabular numerals, specular micro-borders (`border-white/[0.08]`), tactile button bevels, dan kartu fisik rekening premium.
+13. **Zero-Crash Resilience & Deployment Auto-Recovery**:
+    * Penanganan otomatis benturan versi chunk Next.js (*ChunkLoadError*) dengan auto-recovery 1x transparan.
+    * Eliminasi race condition otentikasi dengan navigasi penuh pasca-login.
+    * Null-safety komprehensif pada kalkulasi batas anggaran bulanan dan transaksi transfer.
+14. **Fleksibilitas Domain & Hosting**:
+    * Dukungan penuh penamaan subdomain bersih di Vercel (`*.vercel.app`) dan integrasi *Custom Domain* resmi (misal: `financetracker.id`).
 
 ---
 

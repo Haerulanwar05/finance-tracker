@@ -211,6 +211,15 @@
   - [x] Memperbarui floating banner offline menjadi *"Mode Offline — Transaksi tersimpan aman di perangkat ini"*.
   - [x] Memperbarui modal antrean offline menjadi *"Transaksi tersimpan di perangkat ini & siap disinkronkan saat online."*.
   - [x] Memperbarui badge PWA menjadi *"Semua Perangkat"* dan menyelaraskan copy panduan instalasi desktop/mobile.
+- [x] **9.13 Pengerasan Error Boundary Produksi & Ketahanan Nol-Crash (Zero-Crash Resilience)**
+  - [x] Mengatasi benturan versi bundle JS Next.js (*ChunkLoadError / deployment chunk mismatch*) dengan auto-recovery 1x reload transparan pada root & segment error boundaries.
+  - [x] Mengganti navigasi `router.push` pasca-login dengan `window.location.href = '/dashboard'` untuk mengeliminasi *race condition* sesi cookie otentikasi.
+  - [x] Menambahkan pelindung `try ... catch` dan safe data fallback pada `DashboardLayout` dan Server Action `getDashboardAnalyticsData()`.
+  - [x] Menerapkan *null-safety* menyeluruh pada mutasi transaksi tanpa deskripsi (`tx.description || tx.category?.name || "Transaksi"`), akun rekening (`tx.account?.name || "Akun"`), dan status batas anggaran bulanan (`monthlyBudget?.status || "SAFE"`).
+  - [x] Menaikkan cache Service Worker PWA ke `financetracker-v2` untuk auto-eviction aset statis usang di browser pengguna.
+- [x] **9.14 Panduan Manajemen Domain Vercel & Branding Custom URL**
+  - [x] Dokumentasi mekanisme penamaan subdomain otomatis Vercel (`*-two-teal-*.vercel.app`) akibat keunikan nama namespace global.
+  - [x] Panduan konfigurasi nama domain bersih (`*.vercel.app`) dan integrasi custom domain resmi (misal: `financetracker.id` / `haerulfinance.com`) via Vercel Dashboard Settings.
 
 ---
 

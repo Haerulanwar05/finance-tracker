@@ -181,4 +181,8 @@ sequenceDiagram
 6. **High-Performance Connection Pooling & Instant UI Invalidation**:
    * PostgreSQL pg.Pool dikonfigurasi dengan *30-second keep-alive* (`idleTimeoutMillis: 30000`) dan kapasitas hingga 10 koneksi simultan untuk menghilangkan penalti koneksi dingin (*cold-start TLS handshake*) 1.5 - 2 detik saat pengguna mencatat transaksi.
    * Client-side modal langsung ditutup seketika (*instant dismiss*), dan penyegaran server dijalankan secara non-blocking via `React.startTransition` bersama invalidasi atomik `revalidatePath('/', 'layout')`.
+7. **Deployment Architecture, Vercel Domains & Zero-Crash Resilience**:
+   * **Vercel Automatic Subdomain Suffixing**: Vercel secara otomatis menghasilkan subdomain unik (misal: `*-two-teal-14.vercel.app`) untuk mencegah tabrakan nama proyek di lingkup global domain `vercel.app`. Proyek dapat dikonfigurasi ke domain bersih atau custom domain pribadi (misal: `financetracker.id`) melalui menu *Vercel Settings $\rightarrow$ Domains*.
+   * **Deployment Chunk Mismatch Auto-Recovery**: Ketika deployment Vercel baru diperbarui, hash chunk JS Next.js berubah. Root dan segment error boundaries (`error.tsx`) dilengkapi pendeteksi otomatis `ChunkLoadError` yang mengeksekusi pemuatan ulang transparan 1x untuk mencegah layar error bagi pengguna yang masih membuka tab lama.
+   * **Cookie Sesi Full Navigation**: Transisi login menggunakan `window.location.href` untuk memastikan cookie sesi otentikasi tuntas tersimpan sebelum RSC pertama di-stream dari server Vercel.
 

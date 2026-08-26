@@ -60,6 +60,15 @@ Berikut adalah rangkuman peningkatan dan fitur terbaru yang membuat pengalaman A
 ### 📄 9. Nama Pengguna Otomatis Sesuai Saat Cetak Laporan PDF
 * Saat mencetak rekening koran atau bukti transaksi berformat PDF, nama pemilik akun kini **100% otomatis menampilkan nama lengkap / username Anda yang sedang login**.
 
+### 🛡️ 10. Stabilitas Tingkat Produksi & Auto-Recovery Pasca-Pembaruan (Zero-Crash Error Boundary)
+* **Auto-Recovery Pembaruan Versi**: Mengatasi kendala benturan versi (*chunk hash mismatch*) saat aplikasi menerima pembaruan di server Vercel. Error boundary mendeteksi pergantian aset secara cerdas dan melakukan sinkronisasi otomatis.
+* **Navigasi Bersih Pasca-Login**: Mengeliminasi *race condition* sesi cookie sehingga pengguna langsung diarahkan ke Dashboard dengan bundle HTML dan JS yang segar.
+* **Null-Safety Menyeluruh**: Menjamin dashboard, kartu bento batas anggaran, dan riwayat mutasi transaksi kebal terhadap data kosong atau transaksi transfer tanpa catatan manual.
+* **Service Worker v2 Cache Purge**: Cache PWA otomatis diperbarui ke versi `v2` untuk membuang file cache lama di browser pengguna.
+
+### 🌐 11. Panduan Pengelolaan Domain & URL Vercel
+* Penjelasan mengenai akhiran unik otomatis Vercel (seperti `-two-teal-14`) dan panduan langkah demi langkah untuk mengubah subdomain atau menghubungkan custom domain resmi di menu **Vercel Dashboard $\rightarrow$ Settings $\rightarrow$ Domains**.
+
 ---
 
 ## 📚 Dokumentasi Proyek Lengkap (Untuk Pengembang & Teknis)
