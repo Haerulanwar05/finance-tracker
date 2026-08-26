@@ -113,11 +113,16 @@ export default function RegisterPage() {
               <span>{isGoogleLoading ? "Menghubungkan..." : "Daftar dengan Google"}</span>
             </Button>
 
-            <div className="relative flex items-center justify-center py-1">
-              <div className="border-t border-zinc-800 w-full" />
-              <span className="bg-zinc-900 px-2 text-[10px] text-zinc-500 uppercase tracking-wider font-semibold">
-                atau daftar dengan email
-              </span>
+            {/* Divider Tepat di Atas Form Input Email */}
+            <div className="relative my-3">
+              <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                <div className="w-full border-t border-zinc-800" />
+              </div>
+              <div className="relative flex justify-center text-[10px] uppercase">
+                <span className="bg-zinc-900 px-3 text-zinc-400 font-semibold tracking-wider">
+                  atau daftar dengan email
+                </span>
+              </div>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
