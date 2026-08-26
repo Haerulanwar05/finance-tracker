@@ -51,7 +51,8 @@ C4Context
 | **AI / OCR Engine** | **Gemini Flash Vision API (@google/genai)** | Ekstraksi teks nota berkecepatan tinggi, akurasi tinggi membaca struk bahasa Indonesia, biaya efisien (token-based). |
 | **Print & Export Engine** | **Isolated Iframe DOM + UTF-8 BOM CSV** | Menjamin hasil cetak PDF A4 bersih (*top-aligned, high-contrast, zero dark-mode artifacts*) dan kompatibel dengan Excel/Google Sheets. |
 | **State Management** | **Zustand + React Server Actions + Context API** | State UI lokal yang sangat ringan untuk sensor privasi saldo, offline queue, dan filter data. |
-| **PWA & Offline Engine** | **Web App Manifest + Service Worker + Local Queue** | Standalone installability (HP & PC/Laptop), Stale-While-Revalidate static cache, dan zero-connection transaction queue auto-sync. |
+| **PWA & Offline Engine** | **Web App Manifest + Service Worker + Local Queue** | Standalone installability di seluruh perangkat (Mobile, Tablet, Desktop), Stale-While-Revalidate static cache, dan zero-connection transaction queue auto-sync. |
+| **UI Architecture** | **Obsidian Sovereign Design System** | Estetika Kinetic Swiss Fintech, Geist Sans/Mono, tabular numerals, specular micro-borders (`border-white/[0.08]`), tactile bevels, dan kartu fisik rekening. |
 
 ---
 

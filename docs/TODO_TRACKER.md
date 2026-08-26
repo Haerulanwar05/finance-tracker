@@ -6,7 +6,7 @@
 ## 📊 Status Progres Ringkas
 * **Total Milestone**: 9 Fase Lengkap Selesai + Fase 10 Future Roadmap
 * **Status Saat Ini**: `🎉 SELURUH FASE INTI (0 - 9) SELESAI, TERUJI & PRODUCTION READY`
-* **Metrik Kualitas QA**: **11 Test Suites, 92/92 Unit & E2E Tests Passed (100%)**, **ESLint 0 errors / 0 warnings**, **Next.js 16 Production Build Bersih**.
+* **Metrik Kualitas QA**: **15 Test Suites, 123/123 Unit & E2E Tests Passed (100%)**, **ESLint 0 errors / 0 warnings**, **Next.js 16 Production Build Bersih**.
 
 ---
 
@@ -198,6 +198,19 @@
   - [x] Mengoptimalkan connection pool Supabase PostgreSQL di `src/lib/prisma.ts` dengan *keep-alive* 30 detik (`idleTimeoutMillis: 30000`) dan kapasitas hingga 10 koneksi paralel, menghilangkan penalti *cold-start SSL handshake* (1.5 - 2 detik).
   - [x] Menggunakan `revalidatePath('/', 'layout')` untuk invalidasi atomik dalam satu lintasan.
   - [x] Unit test suite khusus (`tests/unit/mutation-responsiveness.test.ts`) dengan cakupan 5 pengujian. Total test suite mencapai **15 Test Suites, 123/123 Tests Passing (100% Green)**.
+- [x] **9.11 Visual Overhaul Menyeluruh "Obsidian Sovereign" (Anti-AI Slop)**
+  - [x] Mengadopsi bahasa desain **"Obsidian Sovereign" — Kinetic Swiss Fintech & Editorial Banking**.
+  - [x] Mengeliminasi trope generic AI: menghapus font Arial dan memasang `Geist Sans` & `Geist Mono` dengan subpixel antialiasing dan `tabular-nums` untuk angka keuangan Rupiah.
+  - [x] Menghapus gradien ungu-biru seragam (`from-blue-600 to-indigo-600`) dan menggantinya dengan varian tombol **Silver-White Tactile Bevel** (`shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]`) dan **Emerald Sovereign**.
+  - [x] Menghapus blob blur acak dan menerapkan pencahayaan radial arsitektural dari zenith atas (*atmospheric vignette*).
+  - [x] Merombak struktur kartu menjadi panel obsidian triple-layer dengan *hairline micro-border* (`border-white/[0.08]`), *specular top rim highlight*, dan *ambient glass blur 24px*.
+  - [x] Merombak kartu rekening menjadi kartu fisik mewah (*matte metal finish*) dengan subtle corner glow sesuai warna instrumen bank/e-wallet.
+  - [x] Menerapkan *Micro-Labels* berhierarki: `text-[10px] uppercase tracking-[0.14em] font-semibold text-zinc-400`.
+- [x] **9.12 Penyelarasan Kata-Kata Mode Offline & PWA Universal (Multi-Device Copywriting)**
+  - [x] Menghapus diksi spesifik HP ("antrean HP") agar alami dan relevan di PC desktop, laptop, tablet, maupun smartphone.
+  - [x] Memperbarui floating banner offline menjadi *"Mode Offline — Transaksi tersimpan aman di perangkat ini"*.
+  - [x] Memperbarui modal antrean offline menjadi *"Transaksi tersimpan di perangkat ini & siap disinkronkan saat online."*.
+  - [x] Memperbarui badge PWA menjadi *"Semua Perangkat"* dan menyelaraskan copy panduan instalasi desktop/mobile.
 
 ---
 

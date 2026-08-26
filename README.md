@@ -12,42 +12,52 @@
 
 ## 📢 Apa yang Baru di Pembaruan Terkini? (Untuk Pengguna)
 
-Berikut adalah rangkuman peningkatan dan fitur terbaru yang membuat pengalaman Anda mengelola keuangan harian semakin cepat, rapi, dan praktis:
+Berikut adalah rangkuman peningkatan dan fitur terbaru yang membuat pengalaman Anda mengelola keuangan harian semakin cepat, rapi, dan berkelas dunia:
 
-### ⚡ 1. Respon Transaksi & Update Saldo Instan (*Instant Balance & Net Worth Updates*)
-* **Eliminasi Total Jeda 3-4 Detik**: Sebelumnya, saat Anda mencatat pemasukan, menambah saldo, atau mengedit transaksi, terdapat jeda tunggu sekitar 3-4 detik hingga angka total kekayaan (*Net Worth*) atau saldo akun berubah.
-* **Sekarang Berjalan Seketika**:
-  * **Penutupan Modal Cepat**: Begitu Anda mengklik simpan transaksi atau transfer, modal langsung tertutup seketika (*instant dismiss*) tanpa membuat Anda menunggu di layar modal.
-  * **Koneksi Database Tetap Hangat (*Warm Pool Keep-Alive*)**: Pool koneksi Supabase PostgreSQL dioptimalkan dengan *30-second keep-alive* dan kuota koneksi paralel (hingga 10 *concurrent connections*). Hal ini mencegah *cold-start SSL handshake delay* (1.5 - 2 detik) saat pengguna berinteraksi.
-  * **Atomic Single-Pass Revalidation**: Sistem memperbarui seluruh tampilan layout dalam satu kali lintasan atomik (*React concurrent transition*), sehingga angka saldo dan grafik di layar langsung sinkron tanpa rasa macet (*no UI freeze*).
+### 🏛️ 1. Visual Overhaul Menyeluruh: "Obsidian Sovereign" (Anti-AI Slop)
+* **Transformasi Bahasa Desain Kelas Swiss Fintech**: Seluruh antarmuka aplikasi dirombak total dari kesan template AI generik (*AI Slop*) menjadi sistem desain berpresisi tinggi:
+  * **Tipografi Tajam & Angka Monospaced**: Menggunakan font **Geist Sans** & **Geist Mono** dengan perataan subpixel dan `tabular-nums` untuk angka keuangan Rupiah yang kokoh dan mudah dibaca.
+  * **Eliminasi Gradien Ungu-Biru AI**: Menggantikan gradien generic dengan **Silver-White Tactile Bevel** (`shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]`) dan warna **Emerald Sovereign** yang berwibawa.
+  * **Specular Micro-Borders & Atmospheric Vignette**: Setiap panel dilengkapi *hairline lighting* (`border-white/[0.08]`) dan *ambient glass blur 24px*, menggantikan efek blob blur bulat murahan.
+  * **Kartu Rekening Fisik Mewah**: Tampilan kartu akun bank/e-wallet menyerupai kartu fisik premium (*matte finish metal card*) dengan ambient glow halus sesuai identitas bank.
+  * **Micro-Labels Berhierarki**: Mengadopsi label mikro uppercase (`text-[10px] tracking-[0.14em] font-semibold text-zinc-400`) untuk kontras visual yang presisi.
 
-### 🔢 2. Pengurutan Saldo Rekening Ascending & Descending (*Sort by Balance*)
-* Di halaman **Rekening & Dompet**, kini tersedia tombol sortir interaktif:
+### ⚡ 2. Respon Transaksi & Update Saldo Instan (< 200ms)
+* **Eliminasi Total Jeda 3-4 Detik**: Waktu tunggu saat mencatat pemasukan, menambah saldo, atau mengedit transaksi kini dipangkas menjadi seketika (< 200ms).
+* **Penutupan Modal Cepat (*Instant Dismiss*)**: Modal langsung tertutup tanpa menahan pengguna di layar formulir.
+* **Warm Pool Keep-Alive**: Koneksi database Supabase PostgreSQL dijaga tetap aktif (*30-second keep-alive* hingga 10 koneksi paralel), mengeliminasi *cold-start SSL handshake delay*.
+* **Atomic Single-Pass Revalidation**: Pembaruan tata letak menggunakan `React.startTransition` non-blocking untuk mencegah UI freeze.
+
+### 📶 3. Bahasa Mode Offline Universal & Alami (PC, Laptop, Tablet, & HP)
+* **Penyempurnaan Kata-Kata Universal**: Menghilangkan penyebutan spesifik "antrean HP". Kini antarmuka menampilkan pesan yang menenangkan dan relevan di semua platform:
+  * *Banner Mengambang*: `"Mode Offline — Transaksi tersimpan aman di perangkat ini"`.
+  * *Modal Antrean*: `"Transaksi tersimpan di perangkat ini & siap disinkronkan saat online."`.
+  * *PWA Banner*: Label `"Semua Perangkat"` dan deskripsi natural untuk kemudahan mencatat transaksi kapan saja tanpa koneksi internet.
+
+### 🔢 4. Pengurutan Saldo Rekening Ascending & Descending (*Sort by Balance*)
+* Di halaman **Rekening & Dompet**, kini tersedia kontrol sortir interaktif:
   * **Tertinggi ($\downarrow$)**: Menampilkan rekening atau instrumen tabungan dengan saldo terbanyak di urutan paling atas.
-  * **Terendah ($\uparrow$)**: Menampilkan dompet atau rekening dengan saldo paling minim di atas (sangat praktis untuk memantau rekening yang perlu segera diisi ulang / di-top up).
-  * **Reset**: Mengembalikan urutan rekening ke posisi standar bawaan.
+  * **Terendah ($\uparrow$)**: Menampilkan dompet atau rekening dengan saldo paling minim di atas (praktis untuk memantau akun yang perlu di-top up).
+  * **Reset**: Mengembalikan urutan rekening ke posisi default bawaan.
 * **Kebal Nilai Ekstrem & Penanganan Saldo Kembar**: Dilengkapi *secondary tie-breaker* alfabetis dan penanganan aman untuk saldo utang/kartu kredit negatif maupun saldo bernilai puluhan milyar Rupiah.
 
-### 🛡️ 3. Perbaikan Bug Transfer Antar-Akun & Tombol Tukar Arah (🔁)
+### 🛡️ 5. Perbaikan Bug Transfer Antar-Akun & Tombol Tukar Arah (🔁)
 * **Pencegahan Tabrakan Pilihan (*Auto-Collision Resolver*)**: Menyelesaikan tuntas kendala saat mentransfer dari BNI ke Uang Tunai yang sebelumnya memunculkan peringatan *"Akun sumber dan Tujuan tidak boleh sama"*.
-* **Tombol Tukar Cepat (🔁)**: Menyediakan tombol 1-klik untuk membalikkan posisi akun asal dan tujuan tanpa perlu memilih ulang dropdown.
+* **Tombol Tukar Cepat (🔁)**: Menyediakan tombol 1-klik untuk membalikkan posisi akun asal dan tujuan secara instan.
 
-### 📲 4. Pasang Aplikasi di Layar HP & Laptop/PC (PWA) & Catat Offline Tanpa Internet
-* **Bisa Dipasang di Semua Perangkat (HP & Komputer)**: Anda sekarang dapat memasang FinanceTracker sebagai aplikasi mandiri di **Android, iPhone, iPad, serta Laptop / PC Desktop (Windows & Mac)** melalui banner *"Pasang FinanceTracker"*, tombol sidebar desktop, atau menu Pengaturan.
-* **Dukungan Desktop Native & Pin ke Taskbar**: Berjalan sebagai jendela aplikasi desktop mandiri tanpa bilah browser web, memiliki ikon resmi tersendiri di Taskbar Windows, dan dapat di-*Pin* langsung ke Taskbar untuk akses instan 1-klik setiap hari.
-* **Generator Unduh Pintasan Desktop (`FinanceTracker.url`)**: Tersedia tombol instan untuk langsung men-download file pintasan ke komputer Anda.
-* **Tetap Bisa Mencatat Saat Offline**: Sedang di tempat tanpa sinyal atau kuota internet habis? Anda tetap dapat mencatat pengeluaran harian seperti biasa. Catatan Anda akan disimpan dengan aman di **Antrean Lokal Perangkat** dan **otomatis tersinkronisasi (*auto-sync*)** ke server cloud begitu koneksi internet terhubung kembali!
-* **Akses Cepat (*App Shortcuts*)**: Ikon aplikasi di layar HP mendukung *Long-Press Shortcut* untuk langsung membuka fitur "Catat Transaksi" atau "Ringkasan Keuangan".
+### 📲 6. Pasang Aplikasi di Layar Komputer & HP (PWA)
+* **Multi-Device Standalone App**: Dapat dipasang di **Android, iPhone, iPad, serta Laptop / PC Desktop (Windows & Mac)**.
+* **Dukungan Pin ke Taskbar Windows & File Pintasan (`FinanceTracker.url`)**: Berjalan sebagai jendela aplikasi desktop mandiri tanpa bilah browser.
 
-### 🏷️ 5. Tampilan "Batas Belanja Bulanan" Lebih Rapi & Elegan
-* Tampilannya minimalis dan mewah dengan **garis batas warna gradien (*Indigo to Cyan*)** dan **lampu status berdenyut halus** (*Batas Aman*, *Waspada*, atau *Batas Kritis*).
-* **Cukup 1 kali klik pada kartu**, Anda dapat langsung mengatur batas belanja bulanan dan melihat rekomendasi batas belanja harian yang aman.
+### 🏷️ 7. Tampilan "Batas Belanja Bulanan" Minimalis & Kartu KPI Analitik
+* Tampilannya minimalis dan mewah dengan **garis batas warna gradien**, **lampu status berdenyut halus**, dan 4 kartu metrik kesehatan finansial.
+* Mengklik kartu batas belanja langsung membuka modal penyesuaian limit bulanan dan kalkulasi batas harian.
 
-### ✨ 6. Logo Baru Kantong Uang Beranimasi & Navigasi Cerdas
-* **Desain Logo Baru**: Lambang **Kantong Uang Emas-Zamrud (`$`)** yang melayang lembut dengan efek kilau elegan.
-* **Navigasi 1-Klik**: Mengklik logo mengarahkan langsung ke Ringkasan saat login, atau ke beranda saat di halaman auth.
+### ✨ 8. Logo Kantong Uang Emas-Zamrud Beranimasi & Routing Cerdas
+* **Desain Logo Baru**: Lambang **Kantong Uang Emas-Zamrud (`$`)** yang melayang lembut dengan efek kilau elegan tanpa distorsi gradien di perangkat apa pun.
+* **Navigasi Cerdas**: Mengklik logo mengarahkan langsung ke Ringkasan saat login, atau ke beranda saat di form auth.
 
-### 📄 7. Nama Pengguna Otomatis Sesuai Saat Cetak Laporan PDF
+### 📄 9. Nama Pengguna Otomatis Sesuai Saat Cetak Laporan PDF
 * Saat mencetak rekening koran atau bukti transaksi berformat PDF, nama pemilik akun kini **100% otomatis menampilkan nama lengkap / username Anda yang sedang login**.
 
 ---

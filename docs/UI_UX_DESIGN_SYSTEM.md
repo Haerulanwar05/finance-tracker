@@ -4,35 +4,29 @@
 
 ---
 
-## 1. Visual Theme & Personality
-* **Design Philosophy**: *High-Trust Modern Fintech* (Kombinasi estetika **Bento Grid** bergaya Linear/Mercury dengan sentuhan halus **Glassmorphism**).
-* **Target Feeling**: Profesional, bersih, presisi finansial, aman, dan intuitif digunakan dalam 1 tangan di layar smartphone.
-* **Natural Language**: Istilah yang digunakan bersifat natural perbankan modern: *Target Tabungan Mandiri*, *Rekening & Dompet Digital*, *Buku Mutasi Transaksi*, dan *Batas Belanja Aman (Safe-to-Spend)*.
+## 1. Visual Theme & Personality: "Obsidian Sovereign"
+* **Design Philosophy**: **"Obsidian Sovereign" — Kinetic Swiss Fintech & High-Craft Editorial Banking**.
+* **Anti-AI Slop Mandate**: Menghilangkan seluruh trope template AI generik (tidak ada lagi font generic korporat, tidak ada gradien ungu-biru seragam `from-blue-600 to-indigo-600`, tidak ada blob blur bulat raksasa acak, dan tidak ada card datar tak bernyawa).
+* **Target Feeling**: Kemewahan perbankan privat Swiss, ketegasan garis *hairline lighting* (specular borders), bobot fisik nyata (*tactile depth*), dan ritme angka monospaced presisi.
+* **Natural Language**: Bahasa Indonesia profesional dan ramah perbankan modern: *Target Tabungan Mandiri*, *Rekening & Dompet Digital*, *Buku Mutasi Transaksi*, *Batas Belanja Aman (Safe-to-Spend)*, serta pesan offline yang universal di seluruh perangkat.
 
 ---
 
 ## 2. Color Palette & Design Tokens
 
-```mermaid
-pie title Distribusi Warna Visual Antarmuka
-    "Background & Surface (Slate/Zinc 900-950)" : 60
-    "Card Container & Borders (Zinc 800)" : 20
-    "Neutral Content & Text (Zinc 100-400)" : 10
-    "Accent Colors (Emerald, Indigo, Rose)" : 10
-```
-
-| Token Role | Hex Code | Tailwind Class | Kegunaan |
+| Token Role | Hex Code / Value | Tailwind Class / Style | Karakter & Kegunaan |
 | :--- | :--- | :--- | :--- |
-| **Canvas Background** | `#09090B` | `bg-zinc-950` | Latar belakang utama dashboard. |
-| **Card Surface** | `#18181B` / 80% | `bg-zinc-900/80 backdrop-blur-md` | Kartu statistik, modal, dan container widget. |
-| **Card Border** | `#27272A` | `border-zinc-800` | Garis batas kartu (1px solid). |
-| **Income / Net Worth** | `#10B981` | `text-emerald-500 bg-emerald-500/10` | Pemasukan, pertumbuhan saldo positif, indikator aman. |
-| **Expense / Alert** | `#F43F5E` | `text-rose-500 bg-rose-500/10` | Pengeluaran, peringatan batas budget, saldo defisit. |
-| **Primary Accent / Goals** | `#3B82F6` | `text-blue-500 bg-blue-500/10` | Tombol aksi utama (CTA), target tabungan finansial. |
-| **Transfer / Neutral** | `#A855F7` | `text-purple-500 bg-purple-500/10` | Mutasi transfer antar-rekening/dompet. |
-| **Google Sign-In Button** | `#27272A` | `bg-zinc-800/80 border-zinc-700` | Tombol otentikasi Google dengan ikon multi-color resmi. |
-| **Text Primary** | `#F4F4F5` | `text-zinc-100` | Judul, nominal saldo utama. |
-| **Text Muted** | `#A1A1AA` | `text-zinc-400` | Label tanggal, kategori sekunder, placeholder. |
+| **Obsidian Canvas** | `#08080A` | `bg-[#08080a]` | Latar belakang dasar arsitektural dengan subtle top vignette. |
+| **Panel Surface** | `#0C0C0F` / `#121215` | `bg-gradient-to-b from-zinc-900/85 via-zinc-900/50 to-zinc-950/90` | Panel kartu triple-layer dengan ambient glass blur 24px. |
+| **Specular Micro-Border** | `rgba(255,255,255,0.08)` | `border-white/[0.08]` | Garis batas mikro presisi dengan pantulan cahaya atas. |
+| **Specular Top Bevel** | `rgba(255,255,255,0.08)` | `shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08)]` | Efek tepi bevel atas yang menangkap pencahayaan zenith. |
+| **Tactile Silver-White (Primary)** | `#FFFFFF` / Silver | `bg-white text-zinc-950 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]` | Tombol primer berbobot fisik dengan kontras tajam. |
+| **Sovereign Emerald (CTA / Income)** | `#10B981` | `bg-emerald-500 text-zinc-950 shadow-[inset_0_1px_0_rgba(255,255,255,0.3)]` | Tombol aksi positif, pemasukan, pertumbuhan saldo, safe state. |
+| **Obsidian Glass (Secondary)** | Semi-transparent | `bg-white/[0.05] border-white/[0.08] hover:bg-white/[0.08]` | Tombol sekunder bertepi kaca gelap. |
+| **Alert / Expense** | `#F43F5E` | `text-rose-400 bg-rose-500/10 border-rose-500/25` | Pengeluaran kas, batas kritis anggaran, tombol hapus. |
+| **Transfer / Vault** | `#8B5CF6` | `text-violet-400 bg-violet-500/10 border-violet-500/25` | Mutasi antar-rekening dan tabungan impian. |
+| **Text Primary** | `#FFFFFF` | `text-white font-medium` | Judul, nominal angka kekayaan utama. |
+| **Micro-Labels Muted** | `#A1A1AA` | `text-[10px] uppercase tracking-[0.14em] font-semibold text-zinc-400` | Sub-label kategori, status badge, dan keterangan kolom. |
 
 ---
 
@@ -78,13 +72,13 @@ pie title Distribusi Warna Visual Antarmuka
 * **Interactive Surface**: Seluruh permukaan kartu dapat diklik untuk membuka modal pengaturan batas belanja bulanan dan rekomendasi belanja harian.
 
 ### 4.4. PWA Installation & Multi-Device Floating Banner
-* **Dual-Device Visual Badge**: Ikon kombinasi `Laptop` & `Smartphone` dengan latar gradien halus *Emerald-to-Teal*.
-* **Natural Copywriting**: Bahasa Indonesia ramah dan alami yang menginformasikan pemasangan di HP maupun PC/Laptop serta kemampuan mencatat offline.
-* **Smart Device Detection**: Membuka *Native Android Install Prompt* atau menampilkan panduan visual 2 langkah khusus untuk *iOS Safari* dan *Desktop Chrome/Edge*.
+* **Multi-Device Visual Badge**: Badge *"Semua Perangkat"* berlatar emerald dengan ikon download instan.
+* **Universal & Natural Copywriting**: Bahasa Indonesia lugas dan ramah yang menekankan kemudahan akses kilat 1-klik di seluruh perangkat serta jaminan pencatatan transaksi tanpa koneksi internet.
+* **Smart Device Detection**: Membuka *Native Android Install Prompt* atau menampilkan panduan visual interaktif untuk *iOS Safari* dan *Desktop Chrome/Edge* (termasuk generator shortcut `.url`).
 
-### 4.5. Offline State & Queue Indicators
-* **Mode Offline Banner**: Indikator mengambang di atas layar saat koneksi terputus: *"Mode Offline — Transaksi disimpan di antrean HP"*.
-* **Pending Queue Floating Pill**: Pill mengambang di sudut kiri bawah saat terdapat transaksi belum tersinkron dengan tombol pintas *"Lihat Antrean"* dan *"Sync"*.
+### 4.5. Universal Offline State & Queue Indicators
+* **Mode Offline Banner**: Indikator mengambang di atas layar saat koneksi terputus: *"Mode Offline — Transaksi tersimpan aman di perangkat ini"*.
+* **Pending Queue Floating Pill**: Pill mengambang di sudut kiri bawah saat terdapat transaksi belum tersinkron dengan tombol pintas *"Lihat Antrean"* dan status *"Transaksi tersimpan di perangkat ini & siap disinkronkan saat online."*.
 * **Auto-Dismiss Sync Toast**: Notifikasi hijau halus yang muncul otomatis dan menghilang dalam 4 detik begitu sinkronisasi background selesai.
 
 ### 4.6. Mobile Ergonomics (Thumb-Zone Navigation)
