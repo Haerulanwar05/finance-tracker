@@ -54,7 +54,6 @@ function DashboardShellInner({ user, children }: DashboardShellProps) {
   const pathname = usePathname();
   const router = useRouter();
   const { isPrivate, togglePrivacy } = usePrivacy();
-  const [isPending, startTransition] = React.useTransition();
   const [optimisticPath, setOptimisticPath] = React.useState<string | null>(null);
 
   // Sync optimistic path when real route completes
@@ -72,6 +71,7 @@ function DashboardShellInner({ user, children }: DashboardShellProps) {
   }, [router]);
 
   const currentPath = optimisticPath || pathname;
+  const isNavigating = optimisticPath !== null && optimisticPath !== pathname;
 
   const isItemActive = (href: string) => {
     if (href === "/dashboard") {
@@ -83,12 +83,10 @@ function DashboardShellInner({ user, children }: DashboardShellProps) {
     return currentPath.startsWith(href);
   };
 
-  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    if (pathname === href) return;
-    setOptimisticPath(href);
-    startTransition(() => {
-      router.push(href);
-    });
+  const handleNavClick = (href: string) => {
+    if (pathname !== href) {
+      setOptimisticPath(href);
+    }
   };
 
   return (
@@ -97,7 +95,7 @@ function DashboardShellInner({ user, children }: DashboardShellProps) {
       <div
         className={cn(
           "fixed top-0 left-0 right-0 h-[2.5px] z-50 pointer-events-none transition-opacity duration-150 overflow-hidden bg-emerald-950/40",
-          isPending ? "opacity-100" : "opacity-0"
+          isNavigating ? "opacity-100" : "opacity-0"
         )}
       >
         <div className="h-full w-full bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-300 animate-nav-shimmer shadow-[0_0_12px_rgba(52,211,153,0.9)]" />
@@ -136,7 +134,7 @@ function DashboardShellInner({ user, children }: DashboardShellProps) {
                   prefetch={true}
                   onMouseEnter={() => router.prefetch(item.href)}
                   onTouchStart={() => router.prefetch(item.href)}
-                  onClick={(e) => handleNavClick(e, item.href)}
+                  onClick={() => handleNavClick(item.href)}
                   className={cn(
                     "relative flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-medium transition-[background-color,border-color,color,box-shadow] duration-150 group cursor-pointer",
                     isActive
@@ -273,7 +271,7 @@ function DashboardShellInner({ user, children }: DashboardShellProps) {
               prefetch={true}
               onMouseEnter={() => router.prefetch(item.href)}
               onTouchStart={() => router.prefetch(item.href)}
-              onClick={(e) => handleNavClick(e, item.href)}
+              onClick={() => handleNavClick(item.href)}
               className={cn(
                 "flex-1 flex flex-col items-center justify-center gap-0.5 py-1 rounded-xl text-[10px] transition-all relative min-w-0 max-w-[62px] cursor-pointer active:scale-95",
                 isActive

@@ -243,6 +243,11 @@
   - [x] Menyelaraskan seluruh komponen `page.tsx` pada rute dashboard dengan `try ... catch` lapis kedua agar tidak pernah melempar pengecualian fatal tak tertangani ke boundary.
   - [x] Menambahkan `src/app/global-error.tsx` untuk menangani kegagalan layout akar (*root layout error boundary*) secara mulus.
   - [x] Menambahkan pengujian ketahanan fail-safe pada `tests/unit/navigation-sync.test.ts`, memperluas cakupan menjadi **16 Test Suites, 144/144 Tests Passing (100%)**.
+- [x] **9.19 Sinkronisasi Definitif Overview vs Analitik & Transisi ke Supabase Transaction Pooler (Port 6543)**
+  - [x] **Akar Masalah Ditemukan & Diatasi**: Supabase Pooler Port 5432 (*Session Mode*) memiliki batasan ketat 15 koneksi bersamaan (`EMAXCONNSESSION: max clients reached in session mode - pool_size: 15`). Ketika pengguna berpindah antar halaman atau melakukan prefetching rute, serverless lambdas Vercel melampaui batas ini dan menyebabkan kueri gagal serta memicu fallback data kosong (angka menjadi Rp 0 / default).
+  - [x] Mengalihkan koneksi Prisma dan Serverless ke **Supabase Transaction Pooler (Port 6543 + `pgbouncer=true`)** dengan aturan `max: 1` koneksi per kontainer lambda di `src/lib/prisma.ts`. Port 6543 mendukung ribuan koneksi konkuren dan mendaur ulang koneksi seketika setiap kueri selesai.
+  - [x] Menghilangkan bentrokan ganda navigasi (*navigation race condition*) pada `dashboard-shell.tsx` dengan membiarkan Next.js `<Link>` mengelola transisi secara murni tanpa pemanggilan duplikat `router.push()`.
+  - [x] Data keuangan pengguna (`HHe__`) dengan 5 rekening dan 33 transaksi kini selalu tampil konsisten, sinkron, dan stabil di Overview maupun Analitik tanpa risiko menghilang saat di-refresh.
 
 ---
 

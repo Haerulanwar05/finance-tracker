@@ -6,13 +6,24 @@ import { Pool } from "pg";
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
 
 function createPrismaClient() {
-  const connectionString = process.env.DATABASE_URL;
-  
-  // Configure lightweight pg.Pool tailored for Serverless Lambdas & Supabase connection limits
+  let connectionString = process.env.DATABASE_URL || "";
+
+  // Critical Serverless Invariant:
+  // Supabase Pooler port 5432 is Session Mode (limited to 15 concurrent clients).
+  // Port 6543 is Transaction Mode (supports high-concurrency serverless lambdas with PgBouncer).
+  if (connectionString.includes("pooler.supabase.com:5432")) {
+    connectionString = connectionString.replace(":5432", ":6543");
+    if (!connectionString.includes("pgbouncer=true")) {
+      connectionString += (connectionString.includes("?") ? "&" : "?") + "pgbouncer=true";
+    }
+  }
+
+  // For Serverless Lambdas (Vercel), each execution container runs a single request.
+  // Using max: 1 prevents multiple dormant connections per container and prevents pool saturation.
   const pool = new Pool({
     connectionString,
-    max: process.env.NODE_ENV === "production" ? 5 : 10, // Up to 10 connections for parallel queries
-    idleTimeoutMillis: 30000, // 30s keepalive prevents constant TLS cold start reconnects
+    max: process.env.NODE_ENV === "production" ? 1 : 5,
+    idleTimeoutMillis: 10000,
     connectionTimeoutMillis: 10000,
   });
 
@@ -30,4 +41,3 @@ export const prisma = globalForPrisma.prisma || createPrismaClient();
 globalForPrisma.prisma = prisma;
 
 export default prisma;
-
