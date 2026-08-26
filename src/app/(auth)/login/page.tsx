@@ -35,8 +35,7 @@ export default function LoginPage() {
       if (res?.error) {
         setError("Email atau password salah");
       } else {
-        router.push("/dashboard");
-        router.refresh();
+        window.location.href = "/dashboard";
       }
     } catch {
       setError("Terjadi kesalahan saat masuk");
@@ -73,8 +72,7 @@ export default function LoginPage() {
       if (res?.error) {
         setError("Gagal masuk mode demo");
       } else {
-        router.push("/dashboard");
-        router.refresh();
+        window.location.href = "/dashboard";
       }
     } catch {
       setError("Terjadi kesalahan saat masuk mode demo");

@@ -1,5 +1,5 @@
 // FinanceTracker Progressive Web App Service Worker
-const CACHE_NAME = "financetracker-v1";
+const CACHE_NAME = "financetracker-v2";
 const STATIC_ASSETS = [
   "/",
   "/manifest.json",

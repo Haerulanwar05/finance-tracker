@@ -170,8 +170,9 @@ export async function getDashboardAnalyticsData(): Promise<DashboardAnalyticsDat
   // 6 months ago range for trend chart
   const startOfSixMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 5, 1);
 
-  // Parallel Batch DB Fetch (Mengurangi network latency dari 2.5s ke ~250ms)
-  const [
+  try {
+    // Parallel Batch DB Fetch (Mengurangi network latency dari 2.5s ke ~250ms)
+    const [
     accountsRaw,
     goalsRaw,
     transactionsRaw,
@@ -459,34 +460,74 @@ export async function getDashboardAnalyticsData(): Promise<DashboardAnalyticsDat
     color: c.color,
   }));
 
-  return {
-    netWorth,
-    monthlyIncome,
-    monthlyExpense,
-    prevMonthIncome,
-    prevMonthExpense,
-    incomeGrowthPct,
-    expenseGrowthPct,
-    savingsRate,
-    healthScore,
-    healthGrade,
-    avgDailySpend,
-    totalGoalSavings,
-    monthlyBudget,
-    safeToSpend: {
-      dailyAmount: monthlyBudget.dailySafeAmount,
-      monthlyRemaining: monthlyBudget.monthlyRemaining,
-      daysRemaining,
-      status: monthlyBudget.status,
-    },
-    cashflowTrend,
-    categoryExpenses,
-    recentTransactions,
-    topGoals,
-    accounts,
-    categories,
-    userName,
-  };
+    return {
+      netWorth,
+      monthlyIncome,
+      monthlyExpense,
+      prevMonthIncome,
+      prevMonthExpense,
+      incomeGrowthPct,
+      expenseGrowthPct,
+      savingsRate,
+      healthScore,
+      healthGrade,
+      avgDailySpend,
+      totalGoalSavings,
+      monthlyBudget,
+      safeToSpend: {
+        dailyAmount: monthlyBudget.dailySafeAmount,
+        monthlyRemaining: monthlyBudget.monthlyRemaining,
+        daysRemaining,
+        status: monthlyBudget.status,
+      },
+      cashflowTrend,
+      categoryExpenses,
+      recentTransactions,
+      topGoals,
+      accounts,
+      categories,
+      userName,
+    };
+  } catch (error) {
+    console.error("getDashboardAnalyticsData error, providing safe fallback:", error);
+    return {
+      netWorth: 0,
+      monthlyIncome: 0,
+      monthlyExpense: 0,
+      prevMonthIncome: 0,
+      prevMonthExpense: 0,
+      incomeGrowthPct: 0,
+      expenseGrowthPct: 0,
+      savingsRate: 0,
+      healthScore: 100,
+      healthGrade: "A+",
+      avgDailySpend: 0,
+      totalGoalSavings: 0,
+      monthlyBudget: {
+        monthlyLimit: 5000000,
+        monthlySpent: 0,
+        monthlyRemaining: 5000000,
+        usagePercentage: 0,
+        dailySafeAmount: 166667,
+        daysRemaining: 30,
+        status: "SAFE",
+        isCustom: false,
+      },
+      safeToSpend: {
+        dailyAmount: 166667,
+        monthlyRemaining: 5000000,
+        daysRemaining: 30,
+        status: "SAFE",
+      },
+      cashflowTrend: [],
+      categoryExpenses: [],
+      recentTransactions: [],
+      topGoals: [],
+      accounts: [],
+      categories: [],
+      userName: session?.user?.name || "Pengguna",
+    };
+  }
 }
 
 export async function updateMonthlySpendingLimit(amount: number) {

@@ -16,8 +16,11 @@ export default async function DashboardLayout({
   }
 
   let userId = session?.user?.id;
-  let dbUser = userId
-    ? await prisma.user.findUnique({
+  let dbUser = null;
+
+  try {
+    if (userId) {
+      dbUser = await prisma.user.findUnique({
         where: { id: userId },
         select: {
           id: true,
@@ -25,19 +28,22 @@ export default async function DashboardLayout({
           email: true,
           image: true,
         },
-      })
-    : null;
+      });
+    }
 
-  if (!dbUser && session?.user?.email) {
-    dbUser = await prisma.user.findUnique({
-      where: { email: session.user.email.toLowerCase() },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        image: true,
-      },
-    });
+    if (!dbUser && session?.user?.email) {
+      dbUser = await prisma.user.findUnique({
+        where: { email: session.user.email.toLowerCase() },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          image: true,
+        },
+      });
+    }
+  } catch (error) {
+    console.error("DashboardLayout: safe fallback on user query error:", error);
   }
 
   const currentUser = {
