@@ -12,24 +12,36 @@ export default function GlobalError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const [isAutoReloading, setIsAutoReloading] = React.useState(false);
+
   React.useEffect(() => {
     console.error("Global error boundary caught:", error);
 
-    // Auto-recover jika terjadi ChunkLoadError akibat pembaruan versi build di Vercel
-    const isChunkError =
-      error?.message?.includes("Loading chunk") ||
-      error?.message?.includes("ChunkLoadError") ||
-      error?.name === "ChunkLoadError";
+    // Auto-recover immediately on chunk mismatch / fresh Vercel deployment
+    // Guarded by 15-second cooldown to prevent reload loops
+    try {
+      const reloadKey = "ft_global_last_auto_reload";
+      const lastReload = sessionStorage.getItem(reloadKey);
+      const now = Date.now();
+      const isWithinCooldown = lastReload && now - parseInt(lastReload, 10) < 15000;
 
-    if (isChunkError && typeof window !== "undefined") {
-      const reloadKey = "ft_auto_reload_attempted";
-      const hasAttempted = sessionStorage.getItem(reloadKey);
-      if (!hasAttempted) {
-        sessionStorage.setItem(reloadKey, "true");
-        window.location.reload();
+      if (!isWithinCooldown && typeof window !== "undefined") {
+        sessionStorage.setItem(reloadKey, now.toString());
+        setIsAutoReloading(true);
+        const timer = setTimeout(() => {
+          window.location.reload();
+        }, 200);
+        return () => clearTimeout(timer);
       }
-    }
+    } catch {}
   }, [error]);
+
+  const handleManualReload = () => {
+    try {
+      sessionStorage.removeItem("ft_global_last_auto_reload");
+    } catch {}
+    window.location.reload();
+  };
 
   return (
     <div className="min-h-screen bg-[#08080a] flex flex-col items-center justify-center p-6 text-center text-zinc-100 selection:bg-emerald-500/30">
@@ -39,21 +51,18 @@ export default function GlobalError({
         </div>
 
         <h1 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight mb-2">
-          Terjadi Kendala Memuat Aplikasi
+          {isAutoReloading ? "Menyinkronkan Versi..." : "Terjadi Kendala Memuat Aplikasi"}
         </h1>
 
         <p className="text-xs sm:text-sm text-zinc-400 max-w-sm mb-6 leading-relaxed font-normal">
-          Aplikasi baru saja menerima pembaruan versi atau koneksi sedang disinkronkan. Silakan muat ulang halaman untuk menyegarkan cache.
+          {isAutoReloading
+            ? "Mendeteksi rilis versi terbaru. Sedang menyegarkan cache aplikasi secara otomatis..."
+            : "Aplikasi baru saja menerima pembaruan versi atau koneksi sedang disinkronkan. Silakan muat ulang halaman untuk menyegarkan cache."}
         </p>
 
         <div className="flex flex-col sm:flex-row items-center gap-3 w-full">
           <Button
-            onClick={() => {
-              if (typeof window !== "undefined") {
-                sessionStorage.removeItem("ft_auto_reload_attempted");
-                window.location.reload();
-              }
-            }}
+            onClick={handleManualReload}
             className="w-full sm:flex-1 gap-2 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold h-10.5 rounded-xl shadow-lg shadow-emerald-500/20 active:scale-95 transition-all cursor-pointer"
           >
             <RefreshCw className="h-4 w-4" />
@@ -70,6 +79,12 @@ export default function GlobalError({
             </Button>
           </Link>
         </div>
+
+        {error?.digest && (
+          <p className="text-[10px] text-zinc-600 font-mono mt-5">
+            Kode Diagnostik: {error.digest}
+          </p>
+        )}
       </div>
     </div>
   );

@@ -53,18 +53,103 @@ export interface GoalVaultWithRelations {
  * Fetch all goal vaults, summary metrics, and active accounts for the authenticated user
  */
 export async function getGoalsData() {
-  const session = await auth();
-  let userId = session?.user?.id;
+  try {
+    const session = await auth();
+    let userId = session?.user?.id;
 
-  if (!userId && session?.user?.email) {
-    const dbUser = await prisma.user.findUnique({
-      where: { email: session.user.email.toLowerCase() },
-      select: { id: true },
+    if (!userId && session?.user?.email) {
+      const dbUser = await prisma.user.findUnique({
+        where: { email: session.user.email.toLowerCase() },
+        select: { id: true },
+      });
+      if (dbUser) userId = dbUser.id;
+    }
+
+    if (!userId) {
+      return {
+        goals: [] as GoalVaultWithRelations[],
+        summary: {
+          totalTarget: 0,
+          totalSaved: 0,
+          overallProgress: 0,
+          activeCount: 0,
+          achievedCount: 0,
+        },
+        accounts: [],
+      };
+    }
+
+    const [rawGoals, accounts] = await Promise.all([
+      prisma.goalVault.findMany({
+        where: { userId },
+        include: {
+          linkedAccount: {
+            select: { id: true, name: true, type: true, balance: true },
+          },
+          allocations: {
+            orderBy: { date: "desc" },
+            take: 5,
+            select: { id: true, amount: true, type: true, date: true, note: true },
+          },
+        },
+        orderBy: [{ status: "asc" }, { deadline: "asc" }, { createdAt: "desc" }],
+      }),
+      prisma.account.findMany({
+        where: { userId, isArchived: false },
+        select: { id: true, name: true, type: true, balance: true, color: true },
+        orderBy: { createdAt: "asc" },
+      }),
+    ]);
+
+    let totalTarget = 0;
+    let totalSaved = 0;
+    let activeCount = 0;
+    let achievedCount = 0;
+
+    const goals: GoalVaultWithRelations[] = rawGoals.map((g: {
+      id: string;
+      userId: string;
+      linkedAccountId: string | null;
+      name: string;
+      targetAmount: number;
+      currentAmount: number;
+      deadline: Date | null;
+      color: string | null;
+      icon: string | null;
+      status: string;
+      createdAt: Date;
+      updatedAt: Date;
+      linkedAccount?: { id: string; name: string; type: string; balance: number } | null;
+      allocations?: Array<{ id: string; amount: number; type: string; date: Date; note: string | null }>;
+    }) => {
+      totalTarget += g.targetAmount;
+      totalSaved += g.currentAmount;
+      if (g.status === "ACHIEVED" || g.currentAmount >= g.targetAmount) {
+        achievedCount++;
+      } else {
+        activeCount++;
+      }
+
+      return {
+        ...g,
+      };
     });
-    if (dbUser) userId = dbUser.id;
-  }
 
-  if (!userId) {
+    const overallProgress = totalTarget > 0 ? Math.min(100, Math.round((totalSaved / totalTarget) * 100)) : 0;
+
+    return {
+      goals,
+      summary: {
+        totalTarget,
+        totalSaved,
+        overallProgress,
+        activeCount,
+        achievedCount,
+      },
+      accounts,
+    };
+  } catch (error) {
+    console.error("getGoalsData: resilient error recovery:", error);
     return {
       goals: [] as GoalVaultWithRelations[],
       summary: {
@@ -77,76 +162,6 @@ export async function getGoalsData() {
       accounts: [],
     };
   }
-
-  const [rawGoals, accounts] = await Promise.all([
-    prisma.goalVault.findMany({
-      where: { userId },
-      include: {
-        linkedAccount: {
-          select: { id: true, name: true, type: true, balance: true },
-        },
-        allocations: {
-          orderBy: { date: "desc" },
-          take: 5,
-          select: { id: true, amount: true, type: true, date: true, note: true },
-        },
-      },
-      orderBy: [{ status: "asc" }, { deadline: "asc" }, { createdAt: "desc" }],
-    }),
-    prisma.account.findMany({
-      where: { userId, isArchived: false },
-      select: { id: true, name: true, type: true, balance: true, color: true },
-      orderBy: { createdAt: "asc" },
-    }),
-  ]);
-
-  let totalTarget = 0;
-  let totalSaved = 0;
-  let activeCount = 0;
-  let achievedCount = 0;
-
-  const goals: GoalVaultWithRelations[] = rawGoals.map((g: {
-    id: string;
-    userId: string;
-    linkedAccountId: string | null;
-    name: string;
-    targetAmount: number;
-    currentAmount: number;
-    deadline: Date | null;
-    color: string | null;
-    icon: string | null;
-    status: string;
-    createdAt: Date;
-    updatedAt: Date;
-    linkedAccount?: { id: string; name: string; type: string; balance: number } | null;
-    allocations?: Array<{ id: string; amount: number; type: string; date: Date; note: string | null }>;
-  }) => {
-    totalTarget += g.targetAmount;
-    totalSaved += g.currentAmount;
-    if (g.status === "ACHIEVED" || g.currentAmount >= g.targetAmount) {
-      achievedCount++;
-    } else {
-      activeCount++;
-    }
-
-    return {
-      ...g,
-    };
-  });
-
-  const overallProgress = totalTarget > 0 ? Math.min(100, Math.round((totalSaved / totalTarget) * 100)) : 0;
-
-  return {
-    goals,
-    summary: {
-      totalTarget,
-      totalSaved,
-      overallProgress,
-      activeCount,
-      achievedCount,
-    },
-    accounts,
-  };
 }
 
 /**

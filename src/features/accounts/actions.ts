@@ -23,60 +23,65 @@ export interface ActionResult<T = unknown> {
  * Get all active and archived accounts for the logged-in user + Net Worth calculation
  */
 export async function getAccountsData() {
-  const session = await auth();
-  let userId = session?.user?.id;
+  try {
+    const session = await auth();
+    let userId = session?.user?.id;
 
-  if (!userId && session?.user?.email) {
-    const dbUser = await prisma.user.findUnique({
-      where: { email: session.user.email.toLowerCase() },
-      select: { id: true },
+    if (!userId && session?.user?.email) {
+      const dbUser = await prisma.user.findUnique({
+        where: { email: session.user.email.toLowerCase() },
+        select: { id: true },
+      });
+      if (dbUser) userId = dbUser.id;
+    }
+
+    if (!userId) {
+      return { accounts: [], archivedAccounts: [], netWorth: 0 };
+    }
+
+    const [activeAccounts, archivedAccounts] = await Promise.all([
+      prisma.account.findMany({
+        where: {
+          userId,
+          isArchived: false,
+        },
+        orderBy: {
+          createdAt: "asc",
+        },
+      }),
+      prisma.account.findMany({
+        where: {
+          userId,
+          isArchived: true,
+        },
+        orderBy: {
+          updatedAt: "desc",
+        },
+      }),
+    ]);
+
+    const netWorth = activeAccounts.reduce((acc, curr) => acc + Number(curr.balance), 0);
+
+    const mapAccount = (acc: (typeof activeAccounts)[0]) => ({
+      id: acc.id,
+      name: acc.name,
+      type: acc.type,
+      balance: Number(acc.balance),
+      color: acc.color,
+      icon: acc.icon,
+      accountNumber: acc.accountNumber,
+      isArchived: acc.isArchived,
     });
-    if (dbUser) userId = dbUser.id;
-  }
 
-  if (!userId) {
+    return {
+      accounts: activeAccounts.map(mapAccount),
+      archivedAccounts: archivedAccounts.map(mapAccount),
+      netWorth,
+    };
+  } catch (error) {
+    console.error("getAccountsData: resilient error recovery:", error);
     return { accounts: [], archivedAccounts: [], netWorth: 0 };
   }
-
-  const [activeAccounts, archivedAccounts] = await Promise.all([
-    prisma.account.findMany({
-      where: {
-        userId,
-        isArchived: false,
-      },
-      orderBy: {
-        createdAt: "asc",
-      },
-    }),
-    prisma.account.findMany({
-      where: {
-        userId,
-        isArchived: true,
-      },
-      orderBy: {
-        updatedAt: "desc",
-      },
-    }),
-  ]);
-
-  const netWorth = activeAccounts.reduce((acc, curr) => acc + Number(curr.balance), 0);
-
-  const mapAccount = (acc: (typeof activeAccounts)[0]) => ({
-    id: acc.id,
-    name: acc.name,
-    type: acc.type,
-    balance: Number(acc.balance),
-    color: acc.color,
-    icon: acc.icon,
-    accountNumber: acc.accountNumber,
-    isArchived: acc.isArchived,
-  });
-
-  return {
-    accounts: activeAccounts.map(mapAccount),
-    archivedAccounts: archivedAccounts.map(mapAccount),
-    netWorth,
-  };
 }
 
 /**

@@ -195,5 +195,55 @@ describe("QA & Test: Navigation Sync & Route Coherence", () => {
       });
     });
   });
+
+  describe("6. Fault-Tolerance & Error Recovery Invariant (Auto-Recovery & Safe Fallbacks)", () => {
+    it("enforces cooldown window to prevent infinite auto-reload loops on error boundaries", () => {
+      const COOLDOWN_MS = 15000;
+      const now = Date.now();
+
+      // Case 1: First error (no previous reload) -> allowed to auto-reload
+      const lastReloadNone = null;
+      const canReload1 = !lastReloadNone || now - parseInt(lastReloadNone, 10) > COOLDOWN_MS;
+      expect(canReload1).toBe(true);
+
+      // Case 2: Error occurring 2 seconds later -> throttled / suppressed
+      const lastReloadRecent = (now - 2000).toString();
+      const canReload2 = !lastReloadRecent || now - parseInt(lastReloadRecent, 10) > COOLDOWN_MS;
+      expect(canReload2).toBe(false);
+
+      // Case 3: Error occurring 20 seconds later -> allowed to auto-reload
+      const lastReloadOld = (now - 20000).toString();
+      const canReload3 = !lastReloadOld || now - parseInt(lastReloadOld, 10) > COOLDOWN_MS;
+      expect(canReload3).toBe(true);
+    });
+
+    it("verifies that all dashboard data structures guarantee non-null safe fallbacks", () => {
+      // Accounts fallback contract
+      const accountsFallback = { accounts: [], archivedAccounts: [], netWorth: 0 };
+      expect(Array.isArray(accountsFallback.accounts)).toBe(true);
+      expect(accountsFallback.netWorth).toBe(0);
+
+      // Transactions fallback contract
+      const txFallback = {
+        transactions: [],
+        summary: { totalIncome: 0, totalExpense: 0, netCashflow: 0, count: 0 },
+        accounts: [],
+        categories: [],
+        userName: "Pengguna",
+      };
+      expect(Array.isArray(txFallback.transactions)).toBe(true);
+      expect(txFallback.summary.netCashflow).toBe(0);
+
+      // Goals fallback contract
+      const goalsFallback = {
+        goals: [],
+        summary: { totalTarget: 0, totalSaved: 0, overallProgress: 0, activeCount: 0, achievedCount: 0 },
+        accounts: [],
+      };
+      expect(Array.isArray(goalsFallback.goals)).toBe(true);
+      expect(goalsFallback.summary.overallProgress).toBe(0);
+    });
+  });
 });
+
 

@@ -33,20 +33,35 @@ export interface SettingsData {
 }
 
 export async function getSettingsData(): Promise<SettingsData> {
-  const session = await auth();
-  let userId = session?.user?.id;
+  try {
+    const session = await auth();
+    let userId = session?.user?.id;
 
-  if (!userId && session?.user?.email) {
-    const dbUser = await prisma.user.findUnique({
-      where: { email: session.user.email.toLowerCase() },
-      select: { id: true },
-    });
-    if (dbUser) userId = dbUser.id;
-  }
+    if (!userId && session?.user?.email) {
+      const dbUser = await prisma.user.findUnique({
+        where: { email: session.user.email.toLowerCase() },
+        select: { id: true },
+      });
+      if (dbUser) userId = dbUser.id;
+    }
 
-  let user = userId
-    ? await prisma.user.findUnique({
-        where: { id: userId },
+    let user = userId
+      ? await prisma.user.findUnique({
+          where: { id: userId },
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            monthlySpendingLimit: true,
+            passwordHash: true,
+            createdAt: true,
+          },
+        })
+      : null;
+
+    if (!user && session?.user?.email) {
+      user = await prisma.user.findUnique({
+        where: { email: session.user.email.toLowerCase() },
         select: {
           id: true,
           name: true,
@@ -55,30 +70,87 @@ export async function getSettingsData(): Promise<SettingsData> {
           passwordHash: true,
           createdAt: true,
         },
-      })
-    : null;
+      });
+      if (user) userId = user.id;
+    }
 
-  if (!user && session?.user?.email) {
-    user = await prisma.user.findUnique({
-      where: { email: session.user.email.toLowerCase() },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        monthlySpendingLimit: true,
-        passwordHash: true,
-        createdAt: true,
-      },
-    });
-    if (user) userId = user.id;
-  }
+    if (!user || !userId) {
+      return {
+        user: {
+          id: userId || "anonymous",
+          name: session?.user?.name || "Pengguna",
+          email: session?.user?.email || null,
+          monthlySpendingLimit: 5000000,
+          hasPassword: false,
+          createdAt: new Date().toISOString(),
+        },
+        stats: {
+          accountsCount: 0,
+          transactionsCount: 0,
+          goalsCount: 0,
+        },
+        categories: [],
+      };
+    }
 
-  if (!user || !userId) {
+    const [accountsCount, transactionsCount, goalsCount, categoriesRaw] = await Promise.all([
+      prisma.account.count({ where: { userId, isArchived: false } }),
+      prisma.transaction.count({ where: { userId } }),
+      prisma.goalVault.count({ where: { userId } }),
+      prisma.category.findMany({
+        where: {
+          OR: [{ userId }, { userId: null, isDefault: true }],
+        },
+        include: {
+          _count: {
+            select: { transactions: true },
+          },
+        },
+        orderBy: [{ isDefault: "desc" }, { name: "asc" }],
+      }),
+    ]);
+
     return {
       user: {
-        id: userId || "anonymous",
-        name: session?.user?.name || "Pengguna",
-        email: session?.user?.email || null,
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        monthlySpendingLimit: Number(user.monthlySpendingLimit) || 0,
+        hasPassword: Boolean(user.passwordHash),
+        createdAt: user.createdAt.toISOString(),
+      },
+      stats: {
+        accountsCount,
+        transactionsCount,
+        goalsCount,
+      },
+      categories: categoriesRaw.map((c: {
+        id: string;
+        name: string;
+        type: string;
+        icon: string | null;
+        color: string | null;
+        isDefault: boolean;
+        _count: { transactions: number };
+      }) => ({
+        id: c.id,
+        name: c.name,
+        type: c.type,
+        icon: c.icon,
+        color: c.color,
+        isDefault: c.isDefault,
+        _count: {
+          transactions: c._count.transactions,
+        },
+      })),
+    };
+  } catch (error) {
+    console.error("getSettingsData: resilient error recovery:", error);
+    return {
+      user: {
+        id: "recovered",
+        name: "Pengguna",
+        email: null,
         monthlySpendingLimit: 5000000,
         hasPassword: false,
         createdAt: new Date().toISOString(),
@@ -91,58 +163,6 @@ export async function getSettingsData(): Promise<SettingsData> {
       categories: [],
     };
   }
-
-  const [accountsCount, transactionsCount, goalsCount, categoriesRaw] = await Promise.all([
-    prisma.account.count({ where: { userId, isArchived: false } }),
-    prisma.transaction.count({ where: { userId } }),
-    prisma.goalVault.count({ where: { userId } }),
-    prisma.category.findMany({
-      where: {
-        OR: [{ userId }, { userId: null, isDefault: true }],
-      },
-      include: {
-        _count: {
-          select: { transactions: true },
-        },
-      },
-      orderBy: [{ isDefault: "desc" }, { name: "asc" }],
-    }),
-  ]);
-
-  return {
-    user: {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      monthlySpendingLimit: Number(user.monthlySpendingLimit) || 0,
-      hasPassword: Boolean(user.passwordHash),
-      createdAt: user.createdAt.toISOString(),
-    },
-    stats: {
-      accountsCount,
-      transactionsCount,
-      goalsCount,
-    },
-    categories: categoriesRaw.map((c: {
-      id: string;
-      name: string;
-      type: string;
-      icon: string | null;
-      color: string | null;
-      isDefault: boolean;
-      _count: { transactions: number };
-    }) => ({
-      id: c.id,
-      name: c.name,
-      type: c.type,
-      icon: c.icon,
-      color: c.color,
-      isDefault: c.isDefault,
-      _count: {
-        transactions: c._count.transactions,
-      },
-    })),
-  };
 }
 
 export async function updateProfile(formData: {

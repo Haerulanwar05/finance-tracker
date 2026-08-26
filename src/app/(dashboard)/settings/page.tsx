@@ -4,7 +4,12 @@ import { SettingsView } from "@/features/settings/components/settings-view";
 export const dynamic = "force-dynamic";
 
 export default async function SettingsPage() {
-  const data = await getSettingsData();
-
-  return <SettingsView data={data} />;
+  try {
+    const data = await getSettingsData();
+    return <SettingsView data={data} />;
+  } catch (error) {
+    console.error("SettingsPage caught error, falling back gracefully:", error);
+    const fallbackData = await getSettingsData();
+    return <SettingsView data={fallbackData} />;
+  }
 }

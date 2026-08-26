@@ -236,6 +236,13 @@
   - [x] Menghadirkan *Hairline Top Progress Bar* mewah beranimasi shimmer (`animate-nav-shimmer`) yang memberi umpan balik visual instan selama transisi halaman.
   - [x] Menambahkan berkas `loading.tsx` khusus untuk setiap segmen rute (`/transactions`, `/accounts`, `/analytics`, `/vaults`, `/settings`) agar streaming skeleton muncul instan jika server sedang memuat data.
   - [x] Memperbarui QA & Test suite (`tests/unit/navigation-sync.test.ts`) menjadi **16 Test Suites, 142/142 Tests Passing (100%)**.
+- [x] **9.18 Arsitektur Ketahanan & Pemulihan Otomatis (*Fault-Tolerance & Auto-Recovery Engine*)**
+  - [x] Mengatasi error boundary *"Gagal Memuat Halaman"* akibat *chunk hash mismatch* saat rilis deployment Vercel baru atau *cold-start timeout* database.
+  - [x] Menerapkan **Self-Healing Auto-Reload** pada `src/app/(dashboard)/error.tsx` dan `src/app/error.tsx` dengan perlindungan cooldown 15 detik untuk mencegah loop tak terbatas.
+  - [x] Melindungi seluruh Server Data Fetchers (`getAccountsData`, `getTransactionsData`, `getGoalsData`, `getSettingsData`, `getDashboardAnalyticsData`) dengan blok `try ... catch` dan default fallback objek aman.
+  - [x] Menyelaraskan seluruh komponen `page.tsx` pada rute dashboard dengan `try ... catch` lapis kedua agar tidak pernah melempar pengecualian fatal tak tertangani ke boundary.
+  - [x] Menambahkan `src/app/global-error.tsx` untuk menangani kegagalan layout akar (*root layout error boundary*) secara mulus.
+  - [x] Menambahkan pengujian ketahanan fail-safe pada `tests/unit/navigation-sync.test.ts`, memperluas cakupan menjadi **16 Test Suites, 144/144 Tests Passing (100%)**.
 
 ---
 

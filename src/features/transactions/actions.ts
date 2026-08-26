@@ -55,140 +55,153 @@ export interface TransactionWithRelations {
  * Fetch filtered transactions and summary analytics
  */
 export async function getTransactionsData(filters?: TransactionFilterInput) {
-  const session = await auth();
-  let userId = session?.user?.id;
+  try {
+    const session = await auth();
+    let userId = session?.user?.id;
 
-  if (!userId && session?.user?.email) {
-    const dbUser = await prisma.user.findUnique({
-      where: { email: session.user.email.toLowerCase() },
-      select: { id: true },
+    if (!userId && session?.user?.email) {
+      const dbUser = await prisma.user.findUnique({
+        where: { email: session.user.email.toLowerCase() },
+        select: { id: true },
+      });
+      if (dbUser) userId = dbUser.id;
+    }
+
+    if (!userId) {
+      return {
+        transactions: [] as TransactionWithRelations[],
+        summary: { totalIncome: 0, totalExpense: 0, netCashflow: 0, count: 0 },
+        accounts: [],
+        categories: [],
+        userName: "Pengguna",
+      };
+    }
+
+    // Build Prisma Where Clause
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const where: any = { userId };
+
+    if (filters?.accountId) {
+      where.OR = [
+        { accountId: filters.accountId },
+        { targetAccountId: filters.accountId },
+      ];
+    }
+
+    if (filters?.categoryId) {
+      where.categoryId = filters.categoryId;
+    }
+
+    if (filters?.type && filters.type !== "ALL") {
+      where.type = filters.type;
+    }
+
+    if (filters?.search) {
+      where.description = {
+        contains: filters.search,
+      };
+    }
+
+    if (filters?.startDate || filters?.endDate) {
+      where.date = {};
+      if (filters.startDate) {
+        where.date.gte = new Date(filters.startDate);
+      }
+      if (filters.endDate) {
+        const end = new Date(filters.endDate);
+        end.setHours(23, 59, 59, 999);
+        where.date.lte = end;
+      }
+    }
+
+    const [rawTransactions, accounts, categories] = await Promise.all([
+      prisma.transaction.findMany({
+        where,
+        orderBy: { date: "desc" },
+        take: 200,
+        include: {
+          account: {
+            select: { id: true, name: true, type: true, color: true },
+          },
+          targetAccount: {
+            select: { id: true, name: true, type: true, color: true },
+          },
+          category: {
+            select: { id: true, name: true, icon: true, color: true },
+          },
+        },
+      }),
+      prisma.account.findMany({
+        where: { userId, isArchived: false },
+        orderBy: { createdAt: "asc" },
+        select: { id: true, name: true, type: true, balance: true, color: true },
+      }),
+      prisma.category.findMany({
+        where: {
+          OR: [{ userId }, { userId: null, isDefault: true }],
+        },
+        orderBy: { name: "asc" },
+        select: { id: true, name: true, type: true, icon: true, color: true },
+      }),
+    ]);
+
+    let totalIncome = 0;
+    let totalExpense = 0;
+
+    const transactions: TransactionWithRelations[] = rawTransactions.map((tx: (typeof rawTransactions)[0]) => {
+      const numAmount = Number(tx.amount);
+      if (tx.type === "INCOME") {
+        totalIncome += numAmount;
+      } else if (tx.type === "EXPENSE") {
+        totalExpense += numAmount;
+      }
+
+      return {
+        ...tx,
+        amount: numAmount,
+      };
     });
-    if (dbUser) userId = dbUser.id;
-  }
 
-  if (!userId) {
+    const netCashflow = totalIncome - totalExpense;
+
+    const sanitizedAccounts = accounts.map((acc: (typeof accounts)[0]) => ({
+      ...acc,
+      balance: Number(acc.balance),
+    }));
+
+    let dbUserName: string | null = session?.user?.name || null;
+    if (!dbUserName && userId) {
+      const userDoc = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { name: true },
+      });
+      dbUserName = userDoc?.name || null;
+    }
+
+    const userName = dbUserName || session?.user?.name || "Pengguna";
+
+    return {
+      transactions,
+      summary: {
+        totalIncome,
+        totalExpense,
+        netCashflow,
+        count: transactions.length,
+      },
+      accounts: sanitizedAccounts,
+      categories,
+      userName,
+    };
+  } catch (error) {
+    console.error("getTransactionsData: resilient error recovery:", error);
     return {
       transactions: [] as TransactionWithRelations[],
       summary: { totalIncome: 0, totalExpense: 0, netCashflow: 0, count: 0 },
       accounts: [],
       categories: [],
+      userName: "Pengguna",
     };
   }
-
-  // Build Prisma Where Clause
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const where: any = { userId };
-
-  if (filters?.accountId) {
-    where.OR = [
-      { accountId: filters.accountId },
-      { targetAccountId: filters.accountId },
-    ];
-  }
-
-  if (filters?.categoryId) {
-    where.categoryId = filters.categoryId;
-  }
-
-  if (filters?.type && filters.type !== "ALL") {
-    where.type = filters.type;
-  }
-
-  if (filters?.search) {
-    where.description = {
-      contains: filters.search,
-    };
-  }
-
-  if (filters?.startDate || filters?.endDate) {
-    where.date = {};
-    if (filters.startDate) {
-      where.date.gte = new Date(filters.startDate);
-    }
-    if (filters.endDate) {
-      const end = new Date(filters.endDate);
-      end.setHours(23, 59, 59, 999);
-      where.date.lte = end;
-    }
-  }
-
-  const [rawTransactions, accounts, categories] = await Promise.all([
-    prisma.transaction.findMany({
-      where,
-      orderBy: { date: "desc" },
-      include: {
-        account: {
-          select: { id: true, name: true, type: true, color: true },
-        },
-        targetAccount: {
-          select: { id: true, name: true, type: true, color: true },
-        },
-        category: {
-          select: { id: true, name: true, icon: true, color: true },
-        },
-      },
-    }),
-    prisma.account.findMany({
-      where: { userId, isArchived: false },
-      orderBy: { createdAt: "asc" },
-      select: { id: true, name: true, type: true, balance: true, color: true },
-    }),
-    prisma.category.findMany({
-      where: {
-        OR: [{ userId }, { userId: null, isDefault: true }],
-      },
-      orderBy: { name: "asc" },
-      select: { id: true, name: true, type: true, icon: true, color: true },
-    }),
-  ]);
-
-  let totalIncome = 0;
-  let totalExpense = 0;
-
-  const transactions: TransactionWithRelations[] = rawTransactions.map((tx: (typeof rawTransactions)[0]) => {
-    const numAmount = Number(tx.amount);
-    if (tx.type === "INCOME") {
-      totalIncome += numAmount;
-    } else if (tx.type === "EXPENSE") {
-      totalExpense += numAmount;
-    }
-
-    return {
-      ...tx,
-      amount: numAmount,
-    };
-  });
-
-  const netCashflow = totalIncome - totalExpense;
-
-  const sanitizedAccounts = accounts.map((acc: (typeof accounts)[0]) => ({
-    ...acc,
-    balance: Number(acc.balance),
-  }));
-
-  let dbUserName: string | null = session?.user?.name || null;
-  if (!dbUserName && userId) {
-    const userDoc = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { name: true },
-    });
-    dbUserName = userDoc?.name || null;
-  }
-
-  const userName = dbUserName || session?.user?.name || "Pengguna";
-
-  return {
-    transactions,
-    summary: {
-      totalIncome,
-      totalExpense,
-      netCashflow,
-      count: transactions.length,
-    },
-    accounts: sanitizedAccounts,
-    categories,
-    userName,
-  };
 }
 
 /**

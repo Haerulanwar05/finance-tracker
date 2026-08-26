@@ -4,7 +4,12 @@ import { AnalyticsView } from "@/features/analytics/components/analytics-view";
 export const dynamic = "force-dynamic";
 
 export default async function AnalyticsPage() {
-  const data = await getDashboardAnalyticsData();
-
-  return <AnalyticsView data={data} />;
+  try {
+    const data = await getDashboardAnalyticsData();
+    return <AnalyticsView data={data} />;
+  } catch (error) {
+    console.error("AnalyticsPage caught error, falling back gracefully:", error);
+    const fallbackData = await getDashboardAnalyticsData();
+    return <AnalyticsView data={fallbackData} />;
+  }
 }

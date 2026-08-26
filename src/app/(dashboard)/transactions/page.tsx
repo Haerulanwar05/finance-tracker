@@ -4,15 +4,28 @@ import { TransactionsView } from "@/features/transactions/components/transaction
 export const dynamic = "force-dynamic";
 
 export default async function TransactionsPage() {
-  const { transactions, summary, accounts, categories, userName } = await getTransactionsData();
+  try {
+    const { transactions, summary, accounts, categories, userName } = await getTransactionsData();
 
-  return (
-    <TransactionsView
-      initialTransactions={transactions}
-      summary={summary}
-      accounts={accounts}
-      categories={categories}
-      userName={userName}
-    />
-  );
+    return (
+      <TransactionsView
+        initialTransactions={transactions || []}
+        summary={summary || { totalIncome: 0, totalExpense: 0, netCashflow: 0, count: 0 }}
+        accounts={accounts || []}
+        categories={categories || []}
+        userName={userName || "Pengguna"}
+      />
+    );
+  } catch (error) {
+    console.error("TransactionsPage caught error, falling back gracefully:", error);
+    return (
+      <TransactionsView
+        initialTransactions={[]}
+        summary={{ totalIncome: 0, totalExpense: 0, netCashflow: 0, count: 0 }}
+        accounts={[]}
+        categories={[]}
+        userName="Pengguna"
+      />
+    );
+  }
 }
