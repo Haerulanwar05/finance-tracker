@@ -213,5 +213,8 @@ model Budget {
    * Mempercepat filter riwayat transaksi bulanan dan kalkulasi *cashflow* dashboard tanpa *full-table scan*.
 2. **Relasi Cascading vs SetNull**:
    * Menghapus `Account` atau `Category` mengubah relasi di tabel `Transaction` menjadi `SetNull` agar buku mutasi masa lalu tetap utuh dan audit trail tidak hilang.
-3. **Driver Adapter `@prisma/adapter-pg` & Connection Pooling**:
-   * Menggunakan pool connection PostgreSQL untuk efisiensi koneksi pada lingkungan serverless Next.js di Vercel tanpa kehabisan *database connections limit*.
+3. **Driver Adapter `@prisma/adapter-pg` & Supabase Transaction Pooler (Port 6543)**:
+   * **Transaction Mode (:6543) vs Session Mode (:5432)**: Supabase Session Mode pada port 5432 membatasi maksimal 15 koneksi paralel. Melampaui batas ini memicu error fatal `(EMAXCONNSESSION) max clients reached in session mode - pool_size: 15`.
+   * **PgBouncer Integration**: Prisma dikonfigurasi melalui `@prisma/adapter-pg` untuk mengalirkan seluruh lalu lintas kueri aplikasi ke **Port 6543 dengan `pgbouncer=true`**, yang mendukung ribuan koneksi konkuren dengan siklus rilis koneksi instan.
+   * **Serverless Container Sizing (`max: 1`)**: Karena setiap fungsi serverless Vercel mengeksekusi 1 permintaan secara terisolasi, `max: 1` per kontainer lambda menjamin batas koneksi database tidak pernah terlampaui.
+   * **Direct URL (:5432) untuk Migrasi**: Port 5432 tetap dipertahankan secara eksklusif untuk `DIRECT_URL` pada Prisma CLI saat menjalankan migrasi skema (`prisma db push`).

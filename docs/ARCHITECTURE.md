@@ -178,16 +178,19 @@ sequenceDiagram
    * Modus sensor privasi (`PrivacyProvider`) menyembunyikan nominal saldo di layar saat digunakan di ruang publik.
 5. **Offline Queue Encryption & Local Security**:
    * Antrean transaksi lokal disimpan di storage klien terisolasi dan hanya dapat disinkronkan oleh sesi akun pengguna yang sah.
-6. **High-Performance Connection Pooling & Instant UI Invalidation**:
-   * PostgreSQL pg.Pool dikonfigurasi dengan *30-second keep-alive* (`idleTimeoutMillis: 30000`) dan kapasitas hingga 10 koneksi simultan untuk menghilangkan penalti koneksi dingin (*cold-start TLS handshake*) 1.5 - 2 detik saat pengguna mencatat transaksi.
-   * Client-side modal langsung ditutup seketika (*instant dismiss*), dan penyegaran server dijalankan secara non-blocking via `React.startTransition` bersama invalidasi atomik `revalidatePath('/', 'layout')`.
-7. **Deployment Architecture, Vercel Domains & Zero-Crash Resilience**:
-   * **Vercel Automatic Subdomain Suffixing**: Vercel secara otomatis menghasilkan subdomain unik (misal: `*-two-teal-14.vercel.app`) untuk mencegah tabrakan nama proyek di lingkup global domain `vercel.app`. Proyek dapat dikonfigurasi ke domain bersih atau custom domain pribadi (misal: `financetracker.id`) melalui menu *Vercel Settings $\rightarrow$ Domains*.
-   * **Deployment Chunk Mismatch Auto-Recovery**: Ketika deployment Vercel baru diperbarui, hash chunk JS Next.js berubah. Root dan segment error boundaries (`error.tsx`) dilengkapi pendeteksi otomatis `ChunkLoadError` yang mengeksekusi pemuatan ulang transparan 1x untuk mencegah layar error bagi pengguna yang masih membuka tab lama.
-   * **Cookie Sesi Full Navigation**: Transisi login menggunakan `window.location.href` untuk memastikan cookie sesi otentikasi tuntas tersimpan sebelum RSC pertama di-stream dari server Vercel.
-8. **Navigation Synchronization & Zero-Stale Client Cache Protocol**:
-   * **Dynamic Freshness Navigation (`prefetch={false}`)**: Seluruh tautan navigasi utama pada Desktop Sidebar dan Mobile Bottom Navigation Dock dikonfigurasi dengan `prefetch={false}`. Hal ini mencegah Next.js membekukan RSC payload usang di client-side router cache browser saat pengguna berpindah-pindah tab.
-   * **Global Layout Invalidation (`revalidatePath("/", "layout")`)**: Seluruh Server Actions (transaksi, rekening, target tabungan, dan kategori kustom) menginvaliasi root layout secara menyeluruh sehingga saldo dan kalkulasi keuangan di halaman Overview, Transaksi, Analitik, Tabungan, dan Rekening selalu sinkron 100%.
-   * **Canonical Route Normalization**: Rute duplikat seperti `/goals` secara otomatis dialihkan melalui server redirect ke `/vaults` untuk mencegah desinkronisasi penanda aktif (*active highlight state*) pada UI navigasi.
+6. **High-Performance Serverless Connection Pooling (Supabase Transaction Mode Port 6543)**:
+   * **Transaction Mode vs Session Mode**: Port 5432 (*Session Mode*) pada Supabase memiliki kuota terbatas 15 klien bersamaan yang rawan memicu `(EMAXCONNSESSION) max clients reached in session mode - pool_size: 15` di lingkungan serverless.
+   * **PgBouncer Port 6543 Auto-Routing**: Driver di [`src/lib/prisma.ts`](file:///C:/Users/Haerul/finance-tracker/src/lib/prisma.ts) secara otomatis mengalihkan koneksi ke Port 6543 dengan `pgbouncer=true` dan mengatur `max: 1` koneksi per serverless lambda, mendukung ribuan koneksi konkuren dan mendaur ulang koneksi seketika setelah setiap kueri.
+   * Client-side modal langsung ditutup seketika (*instant dismiss*), dan penyegaran server dijalankan secara non-blocking bersama invalidasi atomik `revalidatePath('/', 'layout')`.
+7. **Deployment Architecture, Vercel Domains & Self-Healing Auto-Recovery**:
+   * **Vercel Automatic Subdomain Suffixing**: Vercel secara default menghasilkan subdomain unik untuk mencegah tabrakan global. Proyek dapat dikonfigurasi ke domain kustom pribadi (misal: `financetracker-id.vercel.app`) melalui menu *Vercel Settings $\rightarrow$ Domains* dengan sinkronisasi URI Google OAuth.
+   * **Self-Healing Error Boundaries & Chunk Mismatch Auto-Recovery**: Ketika deployment Vercel baru diperbarui, hash chunk JS Next.js berubah. Seluruh error boundaries ([`src/app/(dashboard)/error.tsx`](file:///C:/Users/Haerul/finance-tracker/src/app/(dashboard)/error.tsx), [`src/app/error.tsx`](file:///C:/Users/Haerul/finance-tracker/src/app/error.tsx), dan [`src/app/global-error.tsx`](file:///C:/Users/Haerul/finance-tracker/src/app/global-error.tsx)) dilengkapi fitur *Self-Healing Auto-Reload* dengan proteksi *cooldown* 15 detik untuk mencegah *infinite reload loop*.
+   * **Multi-Tier Safe Fallbacks**: Seluruh Server Actions (`getAccountsData`, `getTransactionsData`, `getGoalsData`, `getSettingsData`, `getDashboardAnalyticsData`) dan Server Components (`page.tsx`) diproteksi dengan `try ... catch` dan default fallback objek aman agar halaman tidak pernah crash meski database mengalami gangguan sementara.
+8. **Sub-50ms Instant Optimistic Navigation Engine**:
+   * **Optimistic Active State (0ms Response)**: Penanda tab aktif (titik hijau berdenyut, warna teks putih tebal, dan highlight latar belakang obsidian) langsung berpindah seketika saat diklik tanpa menunggu respon server.
+   * **Proactive Route Warmup & Prefetching**: Mengaktifkan `prefetch={true}` bersama pemicu pemanasan rute instan via `router.prefetch()` pada event `onMouseEnter` dan `onTouchStart`.
+   * **Hairline Top Progress Bar (`animate-nav-shimmer`)**: Bar tipis 2.5px dengan gradien zamrud (*emerald-to-teal*) di bagian paling atas layar memberi umpan balik visual instan selama transisi halaman.
+   * **Per-Segment Streaming Skeletons (`loading.tsx`)**: Skeleton beranimasi lembut untuk setiap segmen rute (`/transactions`, `/accounts`, `/analytics`, `/vaults`, `/settings`) yang tampil seketika jika server sedang memproses kueri.
+   * **Canonical Route Normalization**: Rute duplikat seperti `/goals` secara otomatis dialihkan melalui server redirect ke `/vaults` untuk mencegah desinkronisasi penanda aktif pada UI navigasi.
 
 

@@ -35,11 +35,21 @@ finance-tracker/
     ├── 🖥️ [FRONT-END] View & UI Components Layer
     │   ├── app/
     │   │   ├── layout.tsx            # Root HTML, PWA Metadata, Viewport & Theme Provider
+    │   │   ├── global-error.tsx      # Root Layout Error Boundary (Fail-safe auto-recovery)
+    │   │   ├── error.tsx             # Root Application Error Boundary (15s cooldown auto-reload)
     │   │   ├── (auth)/               # Halaman Login & Register (Google OAuth & Email Form)
-    │   │   └── (dashboard)/          # Halaman Dashboard, Transaksi, Rekening, Target, Analitik, Pengaturan
+    │   │   └── (dashboard)/          # Rute Dashboard, Transaksi, Rekening, Target, Analitik, Pengaturan:
+    │   │       ├── error.tsx         # Dashboard Segment Error Boundary (Self-healing auto-reload)
+    │   │       ├── loading.tsx       # Root Dashboard Loading Skeleton
+    │   │       ├── transactions/loading.tsx # Dedicated Transactions Loading Skeleton
+    │   │       ├── accounts/loading.tsx     # Dedicated Accounts Loading Skeleton
+    │   │       ├── analytics/loading.tsx    # Dedicated Analytics Loading Skeleton
+    │   │       ├── vaults/loading.tsx       # Dedicated Goal Vaults Loading Skeleton
+    │   │       └── settings/loading.tsx     # Dedicated Settings Loading Skeleton
     │   │
     │   ├── components/ui/            # Komponen Atomik UI (Button, Dialog, Input, Card)
-    │   ├── components/layout/        # Navigasi (Sidebar, Header, Mobile Bottom Nav 6-item)
+    │   ├── components/layout/        # Navigasi:
+    │   │   └── dashboard-shell.tsx   # Sub-50ms Optimistic Navigation, Shimmer Top Progress Bar & Mobile Dock
     │   ├── components/pwa/           # Komponen PWA & Offline:
     │   │   ├── pwa-register.tsx      # Registrasi Service Worker di browser
     │   │   ├── pwa-install-banner.tsx # Floating Banner Pasang Aplikasi (HP & PC/Laptop)
@@ -81,7 +91,7 @@ finance-tracker/
     │   │   └── print-statement.ts    # Isolated A4 print engine berstandar perbankan
     │   │
     │   └── lib/                      # Core Server & Offline Utilities:
-    │       ├── prisma.ts             # Prisma Client singleton dengan adapter @prisma/adapter-pg (10 connections, 30s keep-alive)
+    │       ├── prisma.ts             # Prisma Client singleton dengan adapter @prisma/adapter-pg (Supabase Transaction Pooler Port 6543, max: 1 per container, auto-reroute dari :5432)
     │       ├── auth.ts               # Konfigurasi NextAuth (Google Provider & Credentials)
     │       └── offline-queue.ts      # Client-side Offline Transaction Storage & Sync Engine
     │

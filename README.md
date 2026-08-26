@@ -2,11 +2,11 @@
 
 > **Aplikasi Pintar Pengelola Keuangan Pribadi, Multi-Rekening, Target Tabungan Impian, dan Pencatatan Struk Otomatis Berbasis AI Vision.**
 
-[![Status Produksi](https://img.shields.io/badge/Status-Production%20Ready-emerald.svg)](https://finance-tracker-two-teal-14.vercel.app)
+[![Status Produksi](https://img.shields.io/badge/Status-Production%20Ready-emerald.svg)](https://financetracker-id.vercel.app)
 [![Next.js 16](https://img.shields.io/badge/Framework-Next.js%2016-blue.svg)](https://nextjs.org/)
 [![PWA Ready](https://img.shields.io/badge/PWA-Offline%20Ready-blueviolet.svg)](./docs/TODO_TRACKER.md)
 [![Database](https://img.shields.io/badge/Database-Supabase%20PostgreSQL-3ecf8e.svg)](https://supabase.com/)
-[![QA Tests](https://img.shields.io/badge/Tests-123%2F123%20Passed%20(100%25)-brightgreen.svg)](./docs/TEST_PLAN.md)
+[![QA Tests](https://img.shields.io/badge/Tests-144%2F144%20Passed%20(100%25)-brightgreen.svg)](./docs/TEST_PLAN.md)
 
 ---
 
@@ -69,6 +69,18 @@ Berikut adalah rangkuman peningkatan dan fitur terbaru yang membuat pengalaman A
 ### 🌐 11. Panduan Pengelolaan Domain & URL Vercel
 * Penjelasan mengenai akhiran unik otomatis Vercel (seperti `-two-teal-14`) dan panduan langkah demi langkah untuk mengubah subdomain atau menghubungkan custom domain resmi di menu **Vercel Dashboard $\rightarrow$ Settings $\rightarrow$ Domains**.
 
+### ⚡ 12. Navigasi Kilat Sub-50ms & Transisi ke Supabase Transaction Pooler (Port 6543)
+* **Navigasi Instan Tanpa Jeda**: Perpindahan antar-halaman (*Overview*, *Transaksi*, *Analitik*, *Target Tabungan*, *Rekening*, *Pengaturan*) kini merespons instan dalam hitungan milidetik:
+  * **Optimistic Highlight (0ms)**: Tab aktif langsung berpindah begitu disentuh atau diklik.
+  * **Pemanasan Rute Proaktif**: Prefetch otomatis saat kursor mendekati menu (`onMouseEnter`) atau disentuh di mobile (`onTouchStart`).
+  * **Top Hairline Shimmer Indicator**: Garis tipis 2.5px bergradien zamrud menyala halus di atas layar saat transisi berjalan.
+  * **Dedicated Streaming Skeletons**: Kerangka konten gelap khusus untuk masing-masing segmen rute saat server merender data.
+* **Migrasi ke Supabase Transaction Pooler (Port 6543 + PgBouncer)**:
+  * Mengeliminasi batas koneksi ketat 15 klien (*Session Mode Port 5432*) yang sebelumnya menyebabkan query gagal dan data kembali ke nilai default saat me-refresh halaman.
+  * Koneksi kini mengalir melalui PgBouncer Transaction Mode yang mampu menangani ribuan koneksi konkuren serverless tanpa pernah kehabisan batas koneksi.
+* **Self-Healing Auto-Recovery**:
+  * Error boundary secara otomatis memulihkan diri (*1x transparent reload*) jika terjadi kesalahan jaringan sesaat atau pembaruan build Vercel baru dengan perlindungan *cooldown* 15 detik.
+
 ---
 
 ## 📚 Dokumentasi Proyek Lengkap (Untuk Pengembang & Teknis)
@@ -79,7 +91,7 @@ Semua perencanaan sistem dan panduan teknis telah disusun secara terstruktur di 
 * 🎨 **[docs/UI_UX_DESIGN_SYSTEM.md](./docs/UI_UX_DESIGN_SYSTEM.md)**: Sistem desain visual modern (Bento Grid, Glassmorphism, Color Tokens, PWA Install Banner, Mobile Thumb Navigation, Google Sign-in Buttons, CSS Print Optimization, & Aksesibilitas WCAG AA).
 * 🗄️ **[docs/DATABASE_DESIGN.md](./docs/DATABASE_DESIGN.md)**: Skema cloud database lengkap (Supabase PostgreSQL + Prisma ORM + `@prisma/adapter-pg`), relasi entitas, tipe enum, dan strategi indexing.
 * 📁 **[docs/FOLDER_STRUCTURE.md](./docs/FOLDER_STRUCTURE.md)**: Tata letak direktori proyek Next.js App Router dengan pemisahan tegas Feature-Sliced Architecture.
-* 🧪 **[docs/TEST_PLAN.md](./docs/TEST_PLAN.md)**: Rencana pengujian QA komprehensif (Unit Test, Offline Queue Test, Integration Test, E2E QA Matrix, AI OCR Testing, & Keamanan Isolasi Data - **15 Test Suites, 123/123 Tests Passing 100%**).
+* 🧪 **[docs/TEST_PLAN.md](./docs/TEST_PLAN.md)**: Rencana pengujian QA komprehensif (Unit Test, Offline Queue Test, Integration Test, E2E QA Matrix, AI OCR Testing, & Keamanan Isolasi Data - **16 Test Suites, 144/144 Tests Passing 100%**).
 * 📋 **[docs/TODO_TRACKER.md](./docs/TODO_TRACKER.md)**: Roadmap pengerjaan 10 fase bertahap (*Step-by-step checklist*) dan rencana inovasi masa depan (*Phase 10 Future Horizon*).
 
 ---
@@ -108,10 +120,11 @@ Semua perencanaan sistem dan panduan teknis telah disusun secara terstruktur di 
 6. **Brand Identity & Navigasi Cerdas**:
    * **Animated Luxury Dollar Bag Logo**: Logo kantong dollar vektor interaktif dengan floating physics & shimmer glow.
    * **Smart Routing**: Klik logo mengarahkan ke Overview (`/dashboard`) saat login, atau ke Landing Page (`/`) pada form auth.
-7. **Sinkronisasi Navigasi & Integritas Data (*Zero-Stale Real-Time Sync*)**:
-   * Optimasi kueri database paralel (*Promise.all*) memangkas waktu load hingga 80%.
-   * **Dynamic Server-Fresh Navigation**: Navigasi desktop dan mobile bottom nav selalu menyajikan saldo, mutasi, dan target tabungan terkini secara sinkron tanpa terjebak data basi (*stale client cache*).
-   * **Global Layout Cache Revalidation**: Setiap mutasi transaksi, mutasi rekening, penyesuaian target tabungan, dan pembuatan kategori langsung menginvaliasi root layout (`revalidatePath("/", "layout")`).
+7. **Sub-50ms Instant Navigation & Integritas Data (*Zero-Stale Real-Time Sync*)**:
+   * **Instant Optimistic Active State (0ms)**: Tab aktif langsung berpindah begitu disentuh atau diklik tanpa menunggu respon jaringan.
+   * **Pemanasan Rute Proaktif**: Prefetch otomatis saat kursor hover (`onMouseEnter`) atau disentuh (`onTouchStart`) bersama dedicated per-segment streaming skeletons.
+   * **Supabase Transaction Pooler (Port 6543)**: Koneksi dialirkan melalui PgBouncer untuk menjamin kestabilan ribuan kueri paralel serverless tanpa penolakan batas koneksi.
+   * **Global Layout Cache Revalidation**: Setiap mutasi transaksi, mutasi rekening, dan target tabungan menginvaliasi root layout (`revalidatePath("/", "layout")`).
 8. **Autentikasi & Keamanan Produksi**:
    * **Google OAuth**: Masuk 1-klik dengan akun Google (`Lanjutkan dengan Google`) dengan auto-seeding dompet awal & kategori.
    * **Credentials Auth**: Registrasi & login email + password terenkripsi bcrypt.

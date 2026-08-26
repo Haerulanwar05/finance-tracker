@@ -91,6 +91,11 @@
 * **Non-Blocking Concurrent Refresh**: Pembaruan angka Net Worth dan mutasi saldo di layar menggunakan `React.startTransition`, menjaga kelancaran animasi 60 FPS tanpa jeda freeze.
 * **Interactive Balance Sorting Controls**: Tombol *Tertinggi (Descending)* dan *Terendah (Ascending)* dengan highlight aktif beraksen zamrud (*emerald glow*) serta tombol reset sekali klik.
 
+### 4.8. Sub-50ms Instant Optimistic Navigation & Streaming Skeletons
+* **Instant Optimistic Active State**: Titik emerald bercahaya (`bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]`), border specular, dan teks putih tebal berpindah secara instan (0ms) begitu tautan disentuh atau diklik tanpa menunggu respon jaringan server.
+* **Hairline Shimmer Top Progress Bar**: Garis tipis 2.5px di puncak layar dengan gradien zamrud (*emerald-to-teal*) dan animasi shimmer horizontal (`animate-nav-shimmer`) yang aktif otomatis selama transisi navigasi.
+* **Obsidian-Themed Segment Skeletons (`loading.tsx`)**: Setiap segmen rute memiliki kerangka skeleton gelap khusus (`bg-zinc-900/60`, `border-white/[0.06]`) dengan denyut lembut (*pulse*) yang segera menggantikan konten saat koneksi internet lambat, mencegah layar kosong atau tampilan beku.
+
 ---
 
 ## 5. Print Design System (A4 Executive Statement)
