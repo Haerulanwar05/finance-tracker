@@ -126,7 +126,7 @@ export function AccountsView({
 
           {/* Balance Sorting Controls */}
           {initialAccounts.length > 1 && (
-            <div className="flex items-center gap-1 p-1 bg-zinc-900/90 border border-zinc-800/80 rounded-2xl shrink-0 self-start sm:self-auto">
+            <div className="flex items-center gap-1 p-1 bg-white/[0.03] border border-white/[0.08] rounded-2xl shrink-0 self-start sm:self-auto shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
               <span className="text-[11px] font-medium text-zinc-400 pl-2 pr-1 hidden xs:flex items-center gap-1">
                 <SlidersHorizontal className="h-3 w-3 text-zinc-500" />
                 <span>Urutkan:</span>
@@ -137,8 +137,8 @@ export function AccountsView({
                 onClick={() => setSortOption((prev) => (prev === "BALANCE_DESC" ? "DEFAULT" : "BALANCE_DESC"))}
                 className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
                   sortOption === "BALANCE_DESC"
-                    ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shadow-sm"
-                    : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/60 border border-transparent"
+                    ? "bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shadow-[inset_0_1px_0_rgba(16,185,129,0.2)]"
+                    : "text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.04] border border-transparent"
                 }`}
                 title="Urutkan dari saldo terbesar ke terkecil"
               >
@@ -151,8 +151,8 @@ export function AccountsView({
                 onClick={() => setSortOption((prev) => (prev === "BALANCE_ASC" ? "DEFAULT" : "BALANCE_ASC"))}
                 className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
                   sortOption === "BALANCE_ASC"
-                    ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shadow-sm"
-                    : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/60 border border-transparent"
+                    ? "bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shadow-[inset_0_1px_0_rgba(16,185,129,0.2)]"
+                    : "text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.04] border border-transparent"
                 }`}
                 title="Urutkan dari saldo terkecil ke terbesar"
               >
@@ -164,7 +164,7 @@ export function AccountsView({
                 <button
                   type="button"
                   onClick={() => setSortOption("DEFAULT")}
-                  className="px-2.5 py-1.5 rounded-xl text-xs text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800/60 transition-colors cursor-pointer"
+                  className="px-2.5 py-1.5 rounded-xl text-xs text-zinc-500 hover:text-zinc-300 hover:bg-white/[0.04] transition-colors cursor-pointer"
                   title="Kembalikan ke urutan awal"
                 >
                   Reset

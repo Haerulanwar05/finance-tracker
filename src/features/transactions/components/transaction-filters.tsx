@@ -73,7 +73,7 @@ export function TransactionFilters({
     !!endDate;
 
   return (
-    <div className="rounded-3xl border border-zinc-800/80 bg-zinc-900/60 backdrop-blur-xl p-4 sm:p-5 space-y-4 text-zinc-100 shadow-xl">
+    <div className="rounded-3xl border border-white/[0.08] bg-gradient-to-b from-zinc-900/85 via-zinc-900/50 to-zinc-950/90 backdrop-blur-2xl p-4 sm:p-5 space-y-4 text-zinc-100 shadow-[0_12px_36px_-4px_rgba(0,0,0,0.6),inset_0_1px_0_0_rgba(255,255,255,0.08)]">
       {/* Top Controls: Search & Selectors */}
       <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3">
         {/* Search Input */}
@@ -84,7 +84,7 @@ export function TransactionFilters({
             placeholder="Cari transaksi (nama toko, deskripsi, atau rekening)..."
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="pl-9.5 bg-zinc-950/80 border-zinc-800 text-xs h-9.5 rounded-2xl"
+            className="pl-9.5 bg-zinc-900/80 border-white/[0.08] text-xs h-9.5 rounded-2xl"
           />
         </div>
 
@@ -93,7 +93,8 @@ export function TransactionFilters({
           <select
             value={accountId}
             onChange={(e) => onAccountChange(e.target.value)}
-            className="w-full h-9.5 px-3 rounded-2xl bg-zinc-950/80 border border-zinc-800 text-xs text-zinc-200 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
+            aria-label="Pilih Rekening"
+            className="w-full h-9.5 px-3 rounded-2xl bg-zinc-900/80 border border-white/[0.08] text-xs text-zinc-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500/50 cursor-pointer shadow-[inset_0_1px_2px_rgba(0,0,0,0.5)]"
           >
             <option value="">Semua Rekening</option>
             {accounts.map((acc) => (
@@ -109,7 +110,8 @@ export function TransactionFilters({
           <select
             value={categoryId}
             onChange={(e) => onCategoryChange(e.target.value)}
-            className="w-full h-9.5 px-3 rounded-2xl bg-zinc-950/80 border border-zinc-800 text-xs text-zinc-200 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
+            aria-label="Pilih Kategori"
+            className="w-full h-9.5 px-3 rounded-2xl bg-zinc-900/80 border border-white/[0.08] text-xs text-zinc-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500/50 cursor-pointer shadow-[inset_0_1px_2px_rgba(0,0,0,0.5)]"
           >
             <option value="">Semua Kategori</option>
             {categories.map((cat) => (
@@ -124,7 +126,7 @@ export function TransactionFilters({
         {isFiltered && (
           <Button
             type="button"
-            variant="outline"
+            variant="secondary"
             size="sm"
             onClick={onReset}
             className="h-9.5 px-3 text-xs text-zinc-400 hover:text-white rounded-2xl shrink-0"
@@ -136,7 +138,7 @@ export function TransactionFilters({
       </div>
 
       {/* Middle Row: Period Filter Tabs & Custom Date Pickers */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 pt-1 border-t border-zinc-800/60">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 pt-1 border-t border-white/[0.07]">
         {/* Preset Period Pills */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs -mx-1 px-1 touch-pan-x scrollbar-none">
           <span className="text-[11px] text-zinc-400 font-semibold flex items-center gap-1 mr-1 shrink-0">
@@ -150,8 +152,8 @@ export function TransactionFilters({
               onClick={() => onPeriodChange(preset.value)}
               className={`px-3 py-1.5 rounded-xl font-medium transition-all text-xs cursor-pointer shrink-0 ${
                 period === preset.value
-                  ? "bg-blue-600 text-white font-bold shadow-md shadow-blue-900/30"
-                  : "bg-zinc-950/80 text-zinc-400 hover:text-zinc-200 border border-zinc-800/80 hover:border-zinc-700"
+                  ? "bg-white/[0.08] text-white font-bold border border-white/[0.15] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]"
+                  : "bg-white/[0.02] text-zinc-400 hover:text-zinc-200 border border-white/[0.06] hover:bg-white/[0.05]"
               }`}
             >
               {preset.label}
@@ -162,7 +164,7 @@ export function TransactionFilters({
         {/* Custom Start & End Date Inputs */}
         {period === "CUSTOM" && (
           <div className="flex items-center gap-2 text-xs animate-in fade-in duration-200 flex-wrap">
-            <div className="flex items-center gap-1 bg-zinc-950/80 border border-zinc-800 rounded-xl px-2.5 py-1">
+            <div className="flex items-center gap-1 bg-zinc-900/80 border border-white/[0.08] rounded-xl px-2.5 py-1">
               <span className="text-[10px] text-zinc-400">Dari:</span>
               <input
                 type="date"
@@ -172,7 +174,7 @@ export function TransactionFilters({
               />
             </div>
             <span className="text-zinc-600">-</span>
-            <div className="flex items-center gap-1 bg-zinc-950/80 border border-zinc-800 rounded-xl px-2.5 py-1">
+            <div className="flex items-center gap-1 bg-zinc-900/80 border border-white/[0.08] rounded-xl px-2.5 py-1">
               <span className="text-[10px] text-zinc-400">Sampai:</span>
               <input
                 type="date"
@@ -186,14 +188,14 @@ export function TransactionFilters({
       </div>
 
       {/* Bottom Row: Type Pills Filter */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs pt-1 border-t border-zinc-800/60 -mx-1 px-1 touch-pan-x scrollbar-none">
+      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs pt-1 border-t border-white/[0.07] -mx-1 px-1 touch-pan-x scrollbar-none">
         <button
           type="button"
           onClick={() => onTypeChange("ALL")}
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-medium transition-all cursor-pointer shrink-0 ${
             type === "ALL"
-              ? "bg-blue-600/20 text-blue-400 border border-blue-500/30"
-              : "bg-zinc-950/60 text-zinc-400 hover:text-white border border-transparent"
+              ? "bg-white/[0.08] text-white font-bold border border-white/[0.15] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]"
+              : "bg-white/[0.02] text-zinc-400 hover:text-white border border-transparent hover:bg-white/[0.04]"
           }`}
         >
           <Layers className="h-3 w-3" />
@@ -205,11 +207,11 @@ export function TransactionFilters({
           onClick={() => onTypeChange("EXPENSE")}
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-medium transition-all cursor-pointer shrink-0 ${
             type === "EXPENSE"
-              ? "bg-rose-500/20 text-rose-400 border border-rose-500/30"
-              : "bg-zinc-950/60 text-zinc-400 hover:text-white border border-transparent"
+              ? "bg-rose-500/15 text-rose-300 font-bold border border-rose-500/30 shadow-[inset_0_1px_0_rgba(244,63,94,0.2)]"
+              : "bg-white/[0.02] text-zinc-400 hover:text-white border border-transparent hover:bg-white/[0.04]"
           }`}
         >
-          <ArrowDownRight className="h-3 w-3" />
+          <ArrowDownRight className="h-3 w-3 text-rose-400" />
           <span>Pengeluaran</span>
         </button>
 
@@ -218,11 +220,11 @@ export function TransactionFilters({
           onClick={() => onTypeChange("INCOME")}
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-medium transition-all cursor-pointer shrink-0 ${
             type === "INCOME"
-              ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-              : "bg-zinc-950/60 text-zinc-400 hover:text-white border border-transparent"
+              ? "bg-emerald-500/15 text-emerald-300 font-bold border border-emerald-500/30 shadow-[inset_0_1px_0_rgba(16,185,129,0.2)]"
+              : "bg-white/[0.02] text-zinc-400 hover:text-white border border-transparent hover:bg-white/[0.04]"
           }`}
         >
-          <ArrowUpRight className="h-3 w-3" />
+          <ArrowUpRight className="h-3 w-3 text-emerald-400" />
           <span>Pemasukan</span>
         </button>
 
@@ -231,11 +233,11 @@ export function TransactionFilters({
           onClick={() => onTypeChange("TRANSFER")}
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-medium transition-all cursor-pointer shrink-0 ${
             type === "TRANSFER"
-              ? "bg-purple-500/20 text-purple-400 border border-purple-500/30"
-              : "bg-zinc-950/60 text-zinc-400 hover:text-white border border-transparent"
+              ? "bg-violet-500/15 text-violet-300 font-bold border border-violet-500/30 shadow-[inset_0_1px_0_rgba(139,92,246,0.2)]"
+              : "bg-white/[0.02] text-zinc-400 hover:text-white border border-transparent hover:bg-white/[0.04]"
           }`}
         >
-          <ArrowRightLeft className="h-3 w-3" />
+          <ArrowRightLeft className="h-3 w-3 text-violet-400" />
           <span>Transfer</span>
         </button>
       </div>

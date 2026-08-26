@@ -72,27 +72,27 @@ export function AnalyticsView({ data }: AnalyticsViewProps) {
           {/* Print PDF Button */}
           <Button
             type="button"
-            variant="outline"
+            variant="secondary"
             size="sm"
             onClick={handlePrint}
-            className="border-zinc-800 bg-zinc-900/80 hover:bg-zinc-800 text-zinc-200 text-xs shadow-sm print:hidden cursor-pointer group h-10 sm:h-9"
+            className="text-xs shadow-xs print:hidden cursor-pointer group h-10 sm:h-9"
           >
-            <Printer className="h-4 w-4 text-blue-400 mr-1.5 transition-transform group-hover:scale-110" />
+            <Printer className="h-4 w-4 text-zinc-400 mr-1.5 transition-transform group-hover:scale-110" />
             <span>Cetak Dokumen</span>
           </Button>
 
           {/* Period Switcher Tabs */}
-          <div className="flex items-center justify-between sm:justify-start p-1 bg-zinc-900/80 border border-zinc-800 rounded-2xl shadow-inner print:hidden overflow-x-auto">
+          <div className="flex items-center justify-between sm:justify-start p-1 bg-white/[0.03] border border-white/[0.08] rounded-2xl shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] print:hidden overflow-x-auto">
             {PERIOD_OPTIONS.map((p) => {
               const isActive = selectedPeriod === p.id;
               return (
                 <button
                   key={p.id}
                   onClick={() => setSelectedPeriod(p.id)}
-                  className={`flex-1 sm:flex-initial text-center px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                  className={`flex-1 sm:flex-initial text-center px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                     isActive
-                      ? "bg-blue-600 text-white shadow-md shadow-blue-900/40 font-bold"
-                      : "text-zinc-400 hover:text-zinc-200"
+                      ? "bg-white/[0.08] text-white border border-white/[0.15] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] font-bold"
+                      : "text-zinc-400 hover:text-zinc-200 border border-transparent"
                   }`}
                 >
                   {p.label}
@@ -106,35 +106,35 @@ export function AnalyticsView({ data }: AnalyticsViewProps) {
       {/* 1. Four Financial Health KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* KPI 1: Financial Health Score */}
-        <div className="relative overflow-hidden rounded-3xl border border-zinc-800/80 bg-gradient-to-br from-blue-950/20 via-zinc-900/60 to-zinc-950/80 backdrop-blur-xl p-5 space-y-3 flex flex-col justify-between shadow-lg group hover:border-blue-500/40 hover:scale-[1.01] transition-all duration-200">
+        <div className="relative overflow-hidden rounded-3xl border border-white/[0.08] bg-gradient-to-b from-zinc-900/85 via-zinc-900/50 to-zinc-950/90 backdrop-blur-2xl p-5 space-y-3 flex flex-col justify-between shadow-[0_10px_30px_-4px_rgba(0,0,0,0.6),inset_0_1px_0_0_rgba(255,255,255,0.08)] group hover:border-white/[0.2] transition-[border-color,transform,box-shadow] duration-200">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-zinc-400">Skor Kesehatan Finansial</span>
+            <span className="text-[10px] uppercase tracking-[0.14em] font-semibold text-zinc-400">Skor Kesehatan Finansial</span>
             <div className="flex items-center gap-1.5">
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 font-semibold">
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/[0.05] border border-white/[0.1] text-zinc-200 font-semibold font-mono">
                 {data.healthGrade}
               </span>
-              <div className="h-7 w-7 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center">
+              <div className="h-7 w-7 rounded-xl bg-white/[0.05] border border-white/[0.1] text-zinc-300 flex items-center justify-center">
                 <Activity className="h-3.5 w-3.5" />
               </div>
             </div>
           </div>
 
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl sm:text-4xl font-extrabold text-white font-mono tracking-tight">
+            <span className="text-3xl sm:text-4xl font-black text-white font-mono tracking-tight tabular-nums">
               {data.healthScore}
             </span>
             <span className="text-xs text-zinc-500 font-mono">/ 100</span>
           </div>
 
           {/* Progress bar */}
-          <div className="h-1.5 w-full bg-zinc-800 rounded-full overflow-hidden">
+          <div className="h-1.5 w-full bg-zinc-800/80 rounded-full overflow-hidden">
             <div
               className={`h-full rounded-full transition-all duration-700 ${
                 data.healthScore >= 75
-                  ? "bg-emerald-400"
+                  ? "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]"
                   : data.healthScore >= 50
-                  ? "bg-blue-400"
-                  : "bg-amber-400"
+                  ? "bg-teal-400 shadow-[0_0_8px_rgba(45,212,191,0.6)]"
+                  : "bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.6)]"
               }`}
               style={{ width: `${data.healthScore}%` }}
             />
@@ -142,16 +142,16 @@ export function AnalyticsView({ data }: AnalyticsViewProps) {
         </div>
 
         {/* KPI 2: Savings Rate */}
-        <div className="relative overflow-hidden rounded-3xl border border-zinc-800/80 bg-gradient-to-br from-emerald-950/20 via-zinc-900/60 to-zinc-950/80 backdrop-blur-xl p-5 space-y-3 flex flex-col justify-between shadow-lg group hover:border-emerald-500/40 hover:scale-[1.01] transition-all duration-200">
+        <div className="relative overflow-hidden rounded-3xl border border-white/[0.08] bg-gradient-to-b from-zinc-900/85 via-zinc-900/50 to-zinc-950/90 backdrop-blur-2xl p-5 space-y-3 flex flex-col justify-between shadow-[0_10px_30px_-4px_rgba(0,0,0,0.6),inset_0_1px_0_0_rgba(255,255,255,0.08)] group hover:border-emerald-500/30 transition-[border-color,transform,box-shadow] duration-200">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-zinc-400">Rasio Tabungan</span>
-            <div className="h-8 w-8 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shadow-sm shadow-emerald-500/10 group-hover:scale-110 transition-transform">
+            <span className="text-[10px] uppercase tracking-[0.14em] font-semibold text-zinc-400">Rasio Tabungan</span>
+            <div className="h-8.5 w-8.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 flex items-center justify-center shadow-[inset_0_1px_0_0_rgba(16,185,129,0.2)] group-hover:scale-105 transition-transform">
               <TrendingUp className="h-4 w-4" />
             </div>
           </div>
 
           <div>
-            <p className="text-3xl sm:text-4xl font-extrabold text-emerald-400 font-mono tracking-tight">
+            <p className="text-3xl sm:text-4xl font-black text-emerald-400 font-mono tracking-tight tabular-nums">
               {data.savingsRate}%
             </p>
             <p className="text-[11px] text-zinc-400 mt-1">
@@ -159,21 +159,21 @@ export function AnalyticsView({ data }: AnalyticsViewProps) {
             </p>
           </div>
 
-          <div className="h-1.5 w-full bg-zinc-800 rounded-full overflow-hidden">
+          <div className="h-1.5 w-full bg-zinc-800/80 rounded-full overflow-hidden">
             <div
-              className="h-full bg-emerald-500 rounded-full transition-all duration-700"
+              className="h-full bg-emerald-400 rounded-full transition-all duration-700 shadow-[0_0_8px_rgba(52,211,153,0.5)]"
               style={{ width: `${Math.min(100, data.savingsRate * 2)}%` }}
             />
           </div>
         </div>
 
-        {/* KPI 3: User Determined Monthly Spending Budget & Sub-Daily Limit */}
-        <div className="relative overflow-hidden rounded-3xl border border-indigo-500/25 bg-gradient-to-br from-indigo-950/30 via-zinc-900/60 to-zinc-950/80 backdrop-blur-xl p-5 space-y-3 flex flex-col justify-between shadow-lg group hover:border-indigo-500/50 hover:scale-[1.01] transition-all duration-200">
+        {/* KPI 3: Monthly Spending Budget */}
+        <div className="relative overflow-hidden rounded-3xl border border-white/[0.08] bg-gradient-to-b from-zinc-900/85 via-zinc-900/50 to-zinc-950/90 backdrop-blur-2xl p-5 space-y-3 flex flex-col justify-between shadow-[0_10px_30px_-4px_rgba(0,0,0,0.6),inset_0_1px_0_0_rgba(255,255,255,0.08)] group hover:border-white/[0.2] transition-[border-color,transform,box-shadow] duration-200">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-zinc-300">Batas Belanja Bulanan</span>
+            <span className="text-[10px] uppercase tracking-[0.14em] font-semibold text-zinc-400">Batas Belanja Bulanan</span>
             <button
               onClick={() => setIsEditBudgetOpen(true)}
-              className="text-[10px] font-medium text-indigo-400 hover:text-indigo-300 bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/30 px-2 py-0.5 rounded-lg flex items-center gap-1 transition-all cursor-pointer"
+              className="text-[10px] font-semibold text-zinc-300 hover:text-white bg-white/[0.05] hover:bg-white/[0.1] border border-white/[0.1] px-2.5 py-0.5 rounded-lg flex items-center gap-1 transition-all cursor-pointer"
             >
               <SlidersHorizontal className="h-2.5 w-2.5" />
               <span>{data.monthlyBudget.isCustom ? "Ubah" : "Atur"}</span>
@@ -181,7 +181,7 @@ export function AnalyticsView({ data }: AnalyticsViewProps) {
           </div>
 
           <div>
-            <p className="text-2xl sm:text-3xl font-extrabold text-white font-mono tabular-nums tracking-tight">
+            <p className="text-2xl sm:text-3xl font-black text-white font-mono tabular-nums tracking-tight">
               {isPrivate
                 ? "Rp ••••••••"
                 : data.monthlyBudget.isCustom
@@ -193,19 +193,19 @@ export function AnalyticsView({ data }: AnalyticsViewProps) {
             </p>
             {data.monthlyBudget.isCustom && (
               <div className="mt-2 space-y-1">
-                <div className="h-1.5 w-full bg-zinc-800 rounded-full overflow-hidden">
+                <div className="h-1.5 w-full bg-zinc-800/80 rounded-full overflow-hidden">
                   <div
                     className={`h-full rounded-full transition-all duration-700 ${
                       data.monthlyBudget.usagePercentage >= 90
-                        ? "bg-rose-500"
+                        ? "bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)]"
                         : data.monthlyBudget.usagePercentage >= 75
-                        ? "bg-amber-400"
-                        : "bg-indigo-400"
+                        ? "bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.6)]"
+                        : "bg-gradient-to-r from-emerald-400 to-teal-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]"
                     }`}
                     style={{ width: `${Math.min(100, data.monthlyBudget.usagePercentage)}%` }}
                   />
                 </div>
-                <p className="text-[10px] text-zinc-400">
+                <p className="text-[10px] text-zinc-400 font-mono">
                   Terpakai {isPrivate ? "•••" : formatRupiah(data.monthlyBudget.monthlySpent)} ({data.monthlyBudget.usagePercentage}%)
                 </p>
               </div>
@@ -213,25 +213,25 @@ export function AnalyticsView({ data }: AnalyticsViewProps) {
           </div>
 
           {/* Sub-metric directly below */}
-          <div className="pt-2 border-t border-zinc-800/80 flex items-center justify-between text-[11px]">
+          <div className="pt-2 border-t border-white/[0.07] flex items-center justify-between text-[11px]">
             <span className="text-zinc-400">Batas Harian:</span>
-            <span className="font-mono font-bold text-indigo-300">
-              {isPrivate ? "Rp •••••" : formatRupiah(data.monthlyBudget.dailySafeAmount)} / hari
+            <span className="font-mono font-bold text-emerald-300">
+              {isPrivate ? "Rp •••••" : formatRupiah(data.monthlyBudget.dailySafeAmount)} / hr
             </span>
           </div>
         </div>
 
         {/* KPI 4: Total Goal Savings Reserved */}
-        <div className="relative overflow-hidden rounded-3xl border border-zinc-800/80 bg-gradient-to-br from-purple-950/20 via-zinc-900/60 to-zinc-950/80 backdrop-blur-xl p-5 space-y-3 flex flex-col justify-between shadow-lg group hover:border-purple-500/40 hover:scale-[1.01] transition-all duration-200">
+        <div className="relative overflow-hidden rounded-3xl border border-white/[0.08] bg-gradient-to-b from-zinc-900/85 via-zinc-900/50 to-zinc-950/90 backdrop-blur-2xl p-5 space-y-3 flex flex-col justify-between shadow-[0_10px_30px_-4px_rgba(0,0,0,0.6),inset_0_1px_0_0_rgba(255,255,255,0.08)] group hover:border-amber-500/30 transition-[border-color,transform,box-shadow] duration-200">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-zinc-400">Tabungan Terencana (Target)</span>
-            <div className="h-8 w-8 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center shadow-sm shadow-purple-500/10 group-hover:scale-110 transition-transform">
+            <span className="text-[10px] uppercase tracking-[0.14em] font-semibold text-zinc-400">Tabungan Terencana</span>
+            <div className="h-8.5 w-8.5 rounded-2xl bg-amber-500/10 border border-amber-500/25 text-amber-400 flex items-center justify-center shadow-[inset_0_1px_0_0_rgba(245,158,11,0.2)] group-hover:scale-105 transition-transform">
               <Target className="h-4 w-4" />
             </div>
           </div>
 
           <div>
-            <p className="text-2xl sm:text-3xl font-extrabold text-purple-300 font-mono tabular-nums tracking-tight">
+            <p className="text-2xl sm:text-3xl font-black text-white font-mono tabular-nums tracking-tight">
               {isPrivate ? "Rp ••••••••" : formatRupiah(data.totalGoalSavings)}
             </p>
             <p className="text-[11px] text-zinc-400 mt-1">
@@ -239,8 +239,8 @@ export function AnalyticsView({ data }: AnalyticsViewProps) {
             </p>
           </div>
 
-          <p className="text-[10px] text-zinc-500">
-            Aman dari pengeluaran harian
+          <p className="text-[10px] text-zinc-400">
+            Aman dari batas belanja harian
           </p>
         </div>
       </div>
@@ -269,11 +269,11 @@ export function AnalyticsView({ data }: AnalyticsViewProps) {
       </div>
 
       {/* 3. Deep-Dive Category Breakdown Table */}
-      <div className="rounded-3xl border border-zinc-800/80 bg-zinc-900/60 backdrop-blur-xl p-5 sm:p-6 space-y-5 shadow-xl">
+      <div className="rounded-3xl border border-white/[0.08] bg-gradient-to-b from-zinc-900/85 via-zinc-900/50 to-zinc-950/90 backdrop-blur-2xl p-5 sm:p-6 space-y-5 shadow-[0_12px_36px_-4px_rgba(0,0,0,0.6),inset_0_1px_0_0_rgba(255,255,255,0.08)]">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="h-9 w-9 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center">
-              <Layers className="h-4.5 w-4.5" />
+            <div className="h-8.5 w-8.5 rounded-2xl bg-white/[0.05] border border-white/[0.1] text-zinc-200 flex items-center justify-center shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)]">
+              <Layers className="h-4 w-4" />
             </div>
             <div>
               <h3 className="text-base font-bold text-white tracking-tight">
@@ -284,14 +284,14 @@ export function AnalyticsView({ data }: AnalyticsViewProps) {
               </p>
             </div>
           </div>
-          <span className="text-xs text-zinc-400">
+          <span className="text-xs text-zinc-400 font-mono">
             {data.categoryExpenses.length} kategori aktif
           </span>
         </div>
 
         {data.categoryExpenses.length === 0 ? (
           <div className="py-12 text-center space-y-2">
-            <div className="h-12 w-12 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center mx-auto text-zinc-500">
+            <div className="h-12 w-12 rounded-2xl bg-zinc-900 border border-white/[0.08] flex items-center justify-center mx-auto text-zinc-500">
               <ShoppingBag className="h-6 w-6" />
             </div>
             <p className="text-xs text-zinc-400">Belum ada data pengeluaran untuk dianalisis.</p>
@@ -300,7 +300,7 @@ export function AnalyticsView({ data }: AnalyticsViewProps) {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead>
-                <tr className="border-b border-zinc-800 text-zinc-400 font-semibold">
+                <tr className="border-b border-white/[0.08] text-zinc-400 font-semibold">
                   <th className="pb-3 pl-2">Kategori</th>
                   <th className="pb-3 text-right">Total Biaya</th>
                   <th className="pb-3 text-center">Porsi (%)</th>
@@ -308,30 +308,30 @@ export function AnalyticsView({ data }: AnalyticsViewProps) {
                   <th className="pb-3 text-right pr-2">Rata-rata per Transaksi</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-800/50">
+              <tbody className="divide-y divide-white/[0.05]">
                 {data.categoryExpenses.map((cat, idx) => (
-                  <tr key={idx} className="hover:bg-zinc-800/30 transition-colors">
+                  <tr key={idx} className="hover:bg-white/[0.02] transition-colors">
                     <td className="py-3.5 pl-2">
                       <div className="flex items-center gap-2.5">
                         <span
-                          className="h-3 w-3 rounded-full shrink-0"
+                          className="h-2.5 w-2.5 rounded-full shrink-0"
                           style={{ backgroundColor: cat.color }}
                         />
                         <span className="font-semibold text-zinc-100">{cat.name}</span>
                       </div>
                     </td>
-                    <td className="py-3.5 text-right font-mono font-bold text-zinc-200">
+                    <td className="py-3.5 text-right font-mono font-bold text-zinc-200 tabular-nums">
                       {isPrivate ? "Rp •••••" : formatRupiah(cat.amount)}
                     </td>
                     <td className="py-3.5 text-center">
-                      <span className="inline-block px-2 py-0.5 rounded-md bg-zinc-800 font-mono text-zinc-300">
+                      <span className="inline-block px-2 py-0.5 rounded-md bg-white/[0.04] border border-white/[0.06] font-mono text-zinc-300">
                         {cat.percentage}%
                       </span>
                     </td>
                     <td className="py-3.5 text-center font-mono text-zinc-400">
                       {cat.count || 1}x transaksi
                     </td>
-                    <td className="py-3.5 text-right pr-2 font-mono text-zinc-400">
+                    <td className="py-3.5 text-right pr-2 font-mono text-zinc-400 tabular-nums">
                       {isPrivate ? "Rp •••••" : formatRupiah(cat.avgPerTx || cat.amount)}
                     </td>
                   </tr>
@@ -345,10 +345,10 @@ export function AnalyticsView({ data }: AnalyticsViewProps) {
       {/* 4. Smart Insights & Recommendations Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Insight 1 */}
-        <div className="rounded-3xl border border-zinc-800/80 bg-zinc-900/60 backdrop-blur-xl p-5 space-y-3">
+        <div className="rounded-3xl border border-white/[0.08] bg-gradient-to-b from-zinc-900/85 via-zinc-900/50 to-zinc-950/90 backdrop-blur-2xl p-5 space-y-3 shadow-[0_10px_30px_-4px_rgba(0,0,0,0.6),inset_0_1px_0_0_rgba(255,255,255,0.08)]">
           <div className="flex items-center gap-2 text-amber-400">
             <Lightbulb className="h-4 w-4" />
-            <h4 className="text-xs font-bold uppercase tracking-wider">Pola Pengeluaran</h4>
+            <h4 className="text-[10px] font-semibold uppercase tracking-[0.14em] text-zinc-300">Pola Pengeluaran</h4>
           </div>
           <p className="text-xs text-zinc-300 leading-relaxed">
             {topCategory
@@ -358,10 +358,10 @@ export function AnalyticsView({ data }: AnalyticsViewProps) {
         </div>
 
         {/* Insight 2 */}
-        <div className="rounded-3xl border border-zinc-800/80 bg-zinc-900/60 backdrop-blur-xl p-5 space-y-3">
+        <div className="rounded-3xl border border-white/[0.08] bg-gradient-to-b from-zinc-900/85 via-zinc-900/50 to-zinc-950/90 backdrop-blur-2xl p-5 space-y-3 shadow-[0_10px_30px_-4px_rgba(0,0,0,0.6),inset_0_1px_0_0_rgba(255,255,255,0.08)]">
           <div className="flex items-center gap-2 text-emerald-400">
             <CheckCircle2 className="h-4 w-4" />
-            <h4 className="text-xs font-bold uppercase tracking-wider">Kesehatan Arus Kas</h4>
+            <h4 className="text-[10px] font-semibold uppercase tracking-[0.14em] text-zinc-300">Kesehatan Arus Kas</h4>
           </div>
           <p className="text-xs text-zinc-300 leading-relaxed">
             {data.monthlyIncome >= data.monthlyExpense
@@ -371,15 +371,15 @@ export function AnalyticsView({ data }: AnalyticsViewProps) {
         </div>
 
         {/* Insight 3 */}
-        <div className="rounded-3xl border border-zinc-800/80 bg-zinc-900/60 backdrop-blur-xl p-5 space-y-3">
-          <div className="flex items-center gap-2 text-indigo-400">
+        <div className="rounded-3xl border border-white/[0.08] bg-gradient-to-b from-zinc-900/85 via-zinc-900/50 to-zinc-950/90 backdrop-blur-2xl p-5 space-y-3 shadow-[0_10px_30px_-4px_rgba(0,0,0,0.6),inset_0_1px_0_0_rgba(255,255,255,0.08)]">
+          <div className="flex items-center gap-2 text-teal-400">
             <Sparkles className="h-4 w-4" />
-            <h4 className="text-xs font-bold uppercase tracking-wider">Target Finansial</h4>
+            <h4 className="text-[10px] font-semibold uppercase tracking-[0.14em] text-zinc-300">Target Finansial</h4>
           </div>
           <p className="text-xs text-zinc-300 leading-relaxed">
             {data.topGoals.length > 0
-              ? `Anda memiliki ${data.topGoals.length} target tabungan aktif dengan total tabungan ${isPrivate ? "Rp •••••" : formatRupiah(data.totalGoalSavings)}.`
-              : "Buat target tabungan pertama untuk mulai memisahkan dana impian secara teratur."}
+              ? `${data.topGoals.length} target tabungan aktif dengan total alokasi ${isPrivate ? "Rp •••••" : formatRupiah(data.totalGoalSavings)}. Terus pertahankan kedisiplinan alokasi dana.`
+              : "Belum ada target tabungan aktif. Buat target impian baru di menu Vaults untuk mulai menabung terarah."}
           </p>
         </div>
       </div>

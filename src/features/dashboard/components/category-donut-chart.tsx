@@ -81,20 +81,20 @@ export function CategoryDonutChart({
     : [{ name: "Belum Ada Pengeluaran", amount: 1, color: "#27272a", percentage: 100 }];
 
   return (
-    <div className="rounded-3xl border border-zinc-800/80 bg-gradient-to-b from-zinc-900/80 via-zinc-900/50 to-zinc-950/90 backdrop-blur-xl p-5 sm:p-6 space-y-4 shadow-xl flex flex-col justify-between select-none">
+    <div className="rounded-3xl border border-white/[0.08] bg-gradient-to-b from-zinc-900/85 via-zinc-900/50 to-zinc-950/90 backdrop-blur-2xl p-5 sm:p-6 space-y-4 shadow-[0_12px_36px_-4px_rgba(0,0,0,0.6),inset_0_1px_0_0_rgba(255,255,255,0.08)] flex flex-col justify-between select-none">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center shadow-lg shadow-purple-500/5">
-            <PieChartIcon className="h-5 w-5" />
+          <div className="h-8.5 w-8.5 rounded-2xl bg-white/[0.05] border border-white/[0.1] text-zinc-200 flex items-center justify-center shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)]">
+            <PieChartIcon className="h-4 w-4" />
           </div>
           <div>
             <div className="flex items-center gap-2">
               <h3 className="text-base font-bold text-white tracking-tight">
                 Kategori Pengeluaran
               </h3>
-              <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-purple-400 bg-purple-500/10 border border-purple-500/20 px-2 py-0.5 rounded-full">
-                <Sparkles className="h-3 w-3" />
+              <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-zinc-300 bg-white/[0.05] border border-white/[0.1] px-2 py-0.5 rounded-full font-mono">
+                <Sparkles className="h-3 w-3 text-amber-400" />
                 <span>Proporsi</span>
               </span>
             </div>

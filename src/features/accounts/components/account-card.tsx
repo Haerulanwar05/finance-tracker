@@ -97,26 +97,37 @@ export function AccountCard({
   return (
     <>
       <div
-        className="group relative rounded-2xl border border-zinc-800/80 bg-zinc-900/70 backdrop-blur-xl p-5 text-zinc-100 transition-all duration-300 hover:border-zinc-700 hover:shadow-xl hover:shadow-black/30 flex flex-col justify-between min-h-[175px]"
-        style={{
-          borderTop: `3px solid ${cardColor}`,
-        }}
+        className="group relative rounded-3xl border border-white/[0.08] bg-gradient-to-b from-zinc-900/90 via-zinc-900/60 to-zinc-950/95 backdrop-blur-2xl p-5 sm:p-6 text-zinc-100 transition-[transform,border-color,box-shadow] duration-200 hover:border-white/[0.2] hover:scale-[1.01] shadow-[0_12px_32px_-4px_rgba(0,0,0,0.6),inset_0_1px_0_0_rgba(255,255,255,0.08)] flex flex-col justify-between min-h-[185px] overflow-hidden"
       >
+        {/* Subtle Ambient Tint Glow */}
+        <div
+          className="absolute -top-12 -right-12 w-32 h-32 rounded-full blur-2xl opacity-20 pointer-events-none transition-opacity group-hover:opacity-35"
+          style={{ backgroundColor: cardColor }}
+        />
+
+        {/* Top Specular Rim */}
+        <div
+          className="absolute top-0 left-0 right-0 h-1 transition-opacity opacity-80 group-hover:opacity-100"
+          style={{
+            background: `linear-gradient(90deg, transparent, ${cardColor}, transparent)`,
+          }}
+        />
+
         {/* Card Header: Type Badge & Action Tools */}
         <div className="flex items-center justify-between relative z-10">
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-3">
             <div
-              className="h-9 w-9 rounded-xl flex items-center justify-center border transition-transform group-hover:scale-105 shadow-sm"
+              className="h-9.5 w-9.5 rounded-2xl flex items-center justify-center border transition-transform group-hover:scale-105 shadow-sm"
               style={{
-                backgroundColor: `${cardColor}20`,
-                borderColor: `${cardColor}40`,
+                backgroundColor: `${cardColor}18`,
+                borderColor: `${cardColor}35`,
                 color: cardColor,
               }}
             >
-              <IconComponent className="h-4 w-4" />
+              <IconComponent className="h-4.5 w-4.5" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-zinc-100 tracking-tight">{account.name}</h3>
+              <h3 className="text-sm font-bold text-white tracking-tight">{account.name}</h3>
               <span className="text-[10px] font-medium text-zinc-400">
                 {TYPE_LABELS[account.type] || account.type}
                 {account.accountNumber && ` •••• ${account.accountNumber}`}
@@ -131,7 +142,8 @@ export function AccountCard({
               type="button"
               onClick={() => onEditAccount(account)}
               title="Edit Akun"
-              className="p-1.5 rounded-lg text-zinc-500 hover:text-blue-400 hover:bg-zinc-800/80 transition-colors cursor-pointer"
+              aria-label={`Edit akun ${account.name}`}
+              className="p-1.5 rounded-xl text-zinc-400 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer"
             >
               <Pencil className="h-3.5 w-3.5" />
             </button>
@@ -141,7 +153,8 @@ export function AccountCard({
               type="button"
               onClick={() => setIsActionModalOpen(true)}
               title="Menu Akun Lengkap"
-              className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800/80 transition-colors cursor-pointer"
+              aria-label={`Menu lengkap akun ${account.name}`}
+              className="p-1.5 rounded-xl text-zinc-400 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer"
             >
               <MoreVertical className="h-4 w-4" />
             </button>
@@ -149,20 +162,20 @@ export function AccountCard({
         </div>
 
         {/* Card Body: Balance Amount */}
-        <div className="pt-5 pb-2 relative z-10">
-          <p className="text-[10px] font-medium uppercase tracking-wider text-zinc-500">Saldo Tersedia</p>
-          <p className="text-xl sm:text-2xl font-extrabold tracking-tight text-white font-mono tabular-nums">
+        <div className="pt-4 pb-2 relative z-10">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-zinc-400">Saldo Tersedia</p>
+          <p className="text-xl sm:text-2xl font-black tracking-tight text-white font-mono tabular-nums">
             {isPrivate ? "Rp ••••••••" : formatRupiah(account.balance)}
           </p>
         </div>
 
         {/* Card Footer: Quick Transfer Action */}
-        <div className="pt-2 border-t border-zinc-800/60 flex items-center justify-between text-xs relative z-10">
-          <span className="text-[10px] text-zinc-500">IDR • Aktif</span>
+        <div className="pt-2.5 border-t border-white/[0.07] flex items-center justify-between text-xs relative z-10">
+          <span className="text-[10px] text-zinc-400 font-mono">IDR • Aktif</span>
           <button
             type="button"
             onClick={() => onTransferFromThis(account.id)}
-            className="text-xs font-semibold hover:underline transition-all cursor-pointer flex items-center gap-1.5 py-1 px-2 rounded-lg hover:bg-zinc-800/50"
+            className="text-xs font-semibold hover:underline transition-all cursor-pointer flex items-center gap-1.5 py-1 px-2.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.06]"
             style={{ color: cardColor }}
           >
             <span>Kirim Saldo</span>

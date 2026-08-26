@@ -41,9 +41,9 @@ export function DashboardView({ data }: DashboardViewProps) {
             onClick={() => setIsScanReceiptOpen(true)}
             variant="secondary"
             size="sm"
-            className="border border-indigo-500/30 bg-indigo-500/15 hover:bg-indigo-500/25 text-indigo-300 shadow-md shadow-indigo-500/10 font-semibold group h-10 sm:h-9"
+            className="border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.07] text-zinc-200 shadow-sm font-semibold group h-10 sm:h-9"
           >
-            <Sparkles className="h-4 w-4 text-indigo-400 mr-1.5 transition-transform group-hover:scale-110" />
+            <Sparkles className="h-4 w-4 text-emerald-400 mr-1.5 transition-transform group-hover:scale-110" />
             <span>Foto Struk AI</span>
           </Button>
 
@@ -51,16 +51,17 @@ export function DashboardView({ data }: DashboardViewProps) {
             onClick={() => setIsTransferOpen(true)}
             variant="secondary"
             size="sm"
-            className="border border-zinc-800 bg-zinc-900/80 hover:bg-zinc-800 text-zinc-200 group h-10 sm:h-9"
+            className="border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.07] text-zinc-200 group h-10 sm:h-9"
           >
-            <ArrowRightLeft className="h-4 w-4 text-purple-400 mr-1.5 transition-transform group-hover:rotate-180 duration-300" />
+            <ArrowRightLeft className="h-4 w-4 text-zinc-400 mr-1.5 transition-transform group-hover:rotate-180 duration-300" />
             <span>Pindah Saldo</span>
           </Button>
 
           <Button
             onClick={() => setIsAddTxOpen(true)}
+            variant="emerald"
             size="sm"
-            className="col-span-2 sm:col-span-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold shadow-lg shadow-blue-500/25 group cursor-pointer h-10 sm:h-9"
+            className="col-span-2 sm:col-span-1 group cursor-pointer h-10 sm:h-9"
           >
             <Plus className="h-4 w-4 mr-1.5 transition-transform group-hover:rotate-90 duration-200" />
             <span>Catat Transaksi</span>

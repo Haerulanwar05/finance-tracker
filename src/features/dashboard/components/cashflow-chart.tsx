@@ -39,8 +39,8 @@ function CustomTooltip({ active, payload, label, isPrivate }: CustomTooltipProps
   const net = income - expense;
 
   return (
-    <div className="rounded-2xl border border-zinc-700/80 bg-zinc-950/95 backdrop-blur-2xl p-4 shadow-2xl space-y-2.5 min-w-[210px] select-none pointer-events-none">
-      <div className="flex items-center justify-between border-b border-zinc-800/80 pb-2">
+    <div className="rounded-2xl border border-white/[0.12] bg-[#09090c]/95 backdrop-blur-2xl p-4 shadow-2xl space-y-2.5 min-w-[210px] select-none pointer-events-none">
+      <div className="flex items-center justify-between border-b border-white/[0.08] pb-2">
         <span className="text-xs font-bold text-zinc-200">
           Bulan {label}
         </span>
@@ -58,28 +58,32 @@ function CustomTooltip({ active, payload, label, isPrivate }: CustomTooltipProps
       <div className="space-y-2 text-xs">
         <div className="flex items-center justify-between gap-3">
           <span className="flex items-center gap-2 text-zinc-400">
-            <span className="h-2.5 w-2.5 rounded-full bg-gradient-to-tr from-emerald-600 to-emerald-400 shadow-sm shadow-emerald-500/40" />
+            <span className="h-2 w-2 rounded-full bg-emerald-400" />
             <span>Pemasukan</span>
           </span>
-          <span className="font-mono font-bold text-emerald-400 tabular-nums">
+          <span className="font-mono font-bold text-emerald-400">
             {isPrivate ? "Rp •••••" : formatRupiah(income)}
           </span>
         </div>
 
         <div className="flex items-center justify-between gap-3">
           <span className="flex items-center gap-2 text-zinc-400">
-            <span className="h-2.5 w-2.5 rounded-full bg-gradient-to-tr from-rose-600 to-rose-400 shadow-sm shadow-rose-500/40" />
+            <span className="h-2 w-2 rounded-full bg-rose-400" />
             <span>Pengeluaran</span>
           </span>
-          <span className="font-mono font-bold text-rose-400 tabular-nums">
+          <span className="font-mono font-bold text-zinc-200">
             {isPrivate ? "Rp •••••" : formatRupiah(expense)}
           </span>
         </div>
 
-        <div className="pt-1.5 border-t border-zinc-800/60 flex items-center justify-between gap-3">
-          <span className="text-[11px] text-zinc-400">Net Arus Kas</span>
-          <span className={`font-mono font-bold text-xs ${net >= 0 ? "text-emerald-300" : "text-rose-300"}`}>
-            {isPrivate ? "Rp •••••" : (net >= 0 ? `+${formatRupiah(net)}` : formatRupiah(net))}
+        <div className="pt-2 border-t border-white/[0.08] flex items-center justify-between gap-3">
+          <span className="text-zinc-400 text-[11px]">Net Tabungan</span>
+          <span
+            className={`font-mono font-extrabold text-xs ${
+              net >= 0 ? "text-emerald-400" : "text-rose-400"
+            }`}
+          >
+            {isPrivate ? "Rp •••••" : `${net >= 0 ? "+" : ""}${formatRupiah(net)}`}
           </span>
         </div>
       </div>
@@ -96,19 +100,19 @@ export function CashflowChart({ data }: CashflowChartProps) {
   );
 
   return (
-    <div className="rounded-3xl border border-zinc-800/80 bg-gradient-to-b from-zinc-900/80 via-zinc-900/50 to-zinc-950/90 backdrop-blur-xl p-5 sm:p-6 space-y-4 shadow-xl flex flex-col justify-between select-none">
+    <div className="rounded-3xl border border-white/[0.08] bg-gradient-to-b from-zinc-900/85 via-zinc-900/50 to-zinc-950/90 backdrop-blur-2xl p-5 sm:p-6 space-y-4 shadow-[0_12px_36px_-4px_rgba(0,0,0,0.6),inset_0_1px_0_0_rgba(255,255,255,0.08)] flex flex-col justify-between select-none">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center shadow-lg shadow-blue-500/5">
-            <BarChart3 className="h-5 w-5" />
+          <div className="h-8.5 w-8.5 rounded-2xl bg-white/[0.05] border border-white/[0.1] text-zinc-200 flex items-center justify-center shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)]">
+            <BarChart3 className="h-4 w-4" />
           </div>
           <div>
             <div className="flex items-center gap-2">
               <h3 className="text-base font-bold text-white tracking-tight">
                 Tren Arus Kas (6 Bulan)
               </h3>
-              <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">
+              <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full font-mono">
                 <TrendingUp className="h-3 w-3" />
                 <span>Cashflow</span>
               </span>
@@ -119,13 +123,13 @@ export function CashflowChart({ data }: CashflowChartProps) {
           </div>
         </div>
 
-        <div className="flex items-center gap-4 text-xs bg-zinc-900/90 border border-zinc-800/80 px-3 py-1.5 rounded-xl self-start sm:self-auto">
+        <div className="flex items-center gap-4 text-xs bg-white/[0.03] border border-white/[0.08] px-3 py-1.5 rounded-xl self-start sm:self-auto shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
           <div className="flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-full bg-gradient-to-tr from-emerald-600 to-emerald-400" />
+            <span className="h-2 w-2 rounded-full bg-emerald-400" />
             <span className="text-zinc-300 font-medium text-[11px]">Pemasukan</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-full bg-gradient-to-tr from-rose-600 to-rose-400" />
+            <span className="h-2 w-2 rounded-full bg-rose-400" />
             <span className="text-zinc-300 font-medium text-[11px]">Pengeluaran</span>
           </div>
         </div>

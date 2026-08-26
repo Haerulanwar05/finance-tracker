@@ -47,7 +47,7 @@ export function TransactionItem({ transaction, onEdit }: TransactionItemProps) {
 
   return (
     <>
-      <div className="group flex items-center justify-between p-3 sm:p-4 rounded-2xl bg-zinc-900/50 border border-zinc-800/60 hover:border-zinc-700/80 hover:bg-zinc-900/80 transition-all duration-200 gap-2">
+      <div className="group flex items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/[0.14] hover:bg-white/[0.04] transition-[border-color,background-color,transform] duration-150 gap-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
         {/* Left: Type Icon & Info */}
         <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0 flex-1">
           <CategoryBadgeIcon
@@ -67,7 +67,7 @@ export function TransactionItem({ transaction, onEdit }: TransactionItemProps) {
             </p>
             <div className="flex flex-wrap items-center gap-1 sm:gap-1.5 text-[10px] sm:text-[11px] text-zinc-400 mt-0.5">
               {/* Account badge */}
-              <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-zinc-800 border border-zinc-700/50 font-medium text-[10px] truncate max-w-[120px]">
+              <span className="flex items-center gap-1 px-2 py-0.5 rounded-lg bg-zinc-900 border border-white/[0.08] font-medium text-[10px] truncate max-w-[120px]">
                 <span
                   className="h-1.5 w-1.5 rounded-full shrink-0"
                   style={{ backgroundColor: transaction.account.color || "#3B82F6" }}
@@ -83,7 +83,7 @@ export function TransactionItem({ transaction, onEdit }: TransactionItemProps) {
 
               {/* Category badge */}
               {transaction.category && !isTransfer && (
-                <span className="px-1.5 py-0.5 rounded-md bg-zinc-800/80 text-zinc-400 text-[10px] truncate max-w-[110px]">
+                <span className="px-2 py-0.5 rounded-lg bg-zinc-900/80 border border-white/[0.05] text-zinc-400 text-[10px] truncate max-w-[110px]">
                   {transaction.category.name}
                 </span>
               )}
@@ -94,7 +94,8 @@ export function TransactionItem({ transaction, onEdit }: TransactionItemProps) {
                   type="button"
                   onClick={() => setIsReceiptPreviewOpen(true)}
                   title="Lihat Foto Struk Belanja"
-                  className="flex items-center gap-1 text-indigo-400 bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/20 px-1.5 py-0.5 rounded-md text-[9.5px] font-semibold transition-colors cursor-pointer shrink-0"
+                  aria-label="Lihat Foto Struk Belanja"
+                  className="flex items-center gap-1 text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 px-2 py-0.5 rounded-lg text-[9.5px] font-semibold transition-colors cursor-pointer shrink-0"
                 >
                   <Receipt className="h-3 w-3" />
                   <span>Foto Struk</span>
@@ -113,7 +114,7 @@ export function TransactionItem({ transaction, onEdit }: TransactionItemProps) {
                   ? "text-emerald-400"
                   : isExpense
                   ? "text-zinc-100"
-                  : "text-purple-400"
+                  : "text-violet-400"
               }`}
             >
               {isPrivate
@@ -124,7 +125,7 @@ export function TransactionItem({ transaction, onEdit }: TransactionItemProps) {
                 ? `-${formatRupiah(transaction.amount)}`
                 : formatRupiah(transaction.amount)}
             </p>
-            <span className="text-[9.5px] sm:text-[10px] text-zinc-500 block">
+            <span className="text-[9.5px] sm:text-[10px] text-zinc-500 font-mono block">
               {new Date(transaction.date).toLocaleDateString("id-ID", {
                 day: "numeric",
                 month: "short",
@@ -139,7 +140,8 @@ export function TransactionItem({ transaction, onEdit }: TransactionItemProps) {
               type="button"
               onClick={() => onEdit(transaction)}
               title="Edit Transaksi"
-              className="p-1.5 rounded-lg text-zinc-500 hover:text-blue-400 hover:bg-zinc-800 transition-colors cursor-pointer"
+              aria-label="Edit Transaksi"
+              className="p-1.5 rounded-xl text-zinc-400 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer"
             >
               <Pencil className="h-3.5 w-3.5" />
             </button>
@@ -148,7 +150,8 @@ export function TransactionItem({ transaction, onEdit }: TransactionItemProps) {
               type="button"
               onClick={() => setIsActionModalOpen(true)}
               title="Pilihan Lainnya"
-              className="p-1.5 rounded-lg text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800 transition-colors cursor-pointer"
+              aria-label="Pilihan Lainnya"
+              className="p-1.5 rounded-xl text-zinc-400 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer"
             >
               <MoreVertical className="h-3.5 w-3.5" />
             </button>
@@ -158,9 +161,9 @@ export function TransactionItem({ transaction, onEdit }: TransactionItemProps) {
 
       {/* Transaction Action Modal */}
       {isActionModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-in fade-in duration-150">
-          <div className="w-full max-w-sm rounded-3xl border border-zinc-800 bg-zinc-900/95 backdrop-blur-2xl p-5 text-zinc-100 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between border-b border-zinc-800/80 pb-3">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-150">
+          <div className="w-full max-w-sm rounded-3xl border border-white/[0.09] bg-[#09090c]/95 backdrop-blur-2xl p-5 text-zinc-100 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between border-b border-white/[0.08] pb-3">
               <div>
                 <h4 className="text-sm font-bold text-white">Kelola Transaksi</h4>
                 <p className="text-xs text-zinc-400 font-mono">
@@ -170,7 +173,8 @@ export function TransactionItem({ transaction, onEdit }: TransactionItemProps) {
               <button
                 type="button"
                 onClick={() => setIsActionModalOpen(false)}
-                className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer"
+                aria-label="Tutup dialog"
+                className="p-1.5 rounded-xl text-zinc-400 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer"
               >
                 <X className="h-4 w-4" />
               </button>

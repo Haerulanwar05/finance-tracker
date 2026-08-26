@@ -17,12 +17,12 @@ export function GoalsSummaryWidget({ goals }: GoalsSummaryWidgetProps) {
   const { isPrivate } = usePrivacy();
 
   return (
-    <div className="rounded-3xl border border-zinc-800/80 bg-zinc-900/60 backdrop-blur-xl p-5 sm:p-6 space-y-4 shadow-xl flex flex-col justify-between">
+    <div className="rounded-3xl border border-white/[0.08] bg-gradient-to-b from-zinc-900/85 via-zinc-900/50 to-zinc-950/90 backdrop-blur-2xl p-5 sm:p-6 space-y-4 shadow-[0_12px_36px_-4px_rgba(0,0,0,0.6),inset_0_1px_0_0_rgba(255,255,255,0.08)] flex flex-col justify-between">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2.5">
-          <div className="h-9 w-9 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center">
-            <Target className="h-4.5 w-4.5" />
+          <div className="h-8.5 w-8.5 rounded-2xl bg-white/[0.05] border border-white/[0.1] text-zinc-200 flex items-center justify-center shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)]">
+            <Target className="h-4 w-4" />
           </div>
           <div>
             <h3 className="text-base font-bold text-white tracking-tight">
@@ -33,7 +33,7 @@ export function GoalsSummaryWidget({ goals }: GoalsSummaryWidgetProps) {
         </div>
 
         <Link href="/vaults">
-          <Button variant="ghost" size="sm" className="text-xs text-blue-400 hover:text-blue-300">
+          <Button variant="ghost" size="sm" className="text-xs text-zinc-300 hover:text-white">
             <span>Kelola Target</span>
             <ArrowRight className="h-3.5 w-3.5 ml-1" />
           </Button>
@@ -51,14 +51,14 @@ export function GoalsSummaryWidget({ goals }: GoalsSummaryWidgetProps) {
           </Link>
         </div>
       ) : (
-        <div className="space-y-3.5">
+        <div className="space-y-3">
           {goals.map((goal) => {
             const themeColor = goal.color || "#3B82F6";
 
             return (
               <div
                 key={goal.id}
-                className="p-3 rounded-2xl bg-zinc-950/60 border border-zinc-800/80 space-y-2 hover:border-zinc-700 transition-all"
+                className="p-3.5 rounded-2xl bg-white/[0.02] border border-white/[0.06] space-y-2 hover:border-white/[0.12] transition-colors shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]"
               >
                 <div className="flex items-center justify-between text-xs">
                   <div className="flex items-center gap-2.5 min-w-0">
@@ -89,7 +89,7 @@ export function GoalsSummaryWidget({ goals }: GoalsSummaryWidgetProps) {
                 </div>
 
                 {/* Progress Bar */}
-                <div className="h-1.5 w-full bg-zinc-800 rounded-full overflow-hidden">
+                <div className="h-1.5 w-full bg-zinc-800/80 rounded-full overflow-hidden">
                   <div
                     className="h-full rounded-full transition-all duration-500"
                     style={{

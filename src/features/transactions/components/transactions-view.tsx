@@ -194,11 +194,11 @@ export function TransactionsView({
           <Button
             type="button"
             onClick={handlePrintPdf}
-            variant="outline"
+            variant="secondary"
             size="sm"
-            className="border-zinc-800 bg-zinc-900/80 hover:bg-zinc-800 text-zinc-200 text-xs shadow-sm cursor-pointer group h-10 sm:h-9"
+            className="text-xs shadow-xs cursor-pointer group h-10 sm:h-9"
           >
-            <Printer className="h-4 w-4 text-blue-400 mr-1.5 transition-transform group-hover:scale-110" />
+            <Printer className="h-4 w-4 text-zinc-400 mr-1.5 transition-transform group-hover:scale-110" />
             <span>Cetak PDF</span>
           </Button>
 
@@ -206,9 +206,9 @@ export function TransactionsView({
           <Button
             type="button"
             onClick={handleDownloadCsv}
-            variant="outline"
+            variant="secondary"
             size="sm"
-            className="border-zinc-800 bg-zinc-900/80 hover:bg-zinc-800 text-zinc-200 text-xs shadow-sm cursor-pointer group h-10 sm:h-9"
+            className="text-xs shadow-xs cursor-pointer group h-10 sm:h-9"
           >
             <FileSpreadsheet className="h-4 w-4 text-emerald-400 mr-1.5 transition-transform group-hover:scale-110" />
             <span>Unduh CSV</span>
@@ -219,9 +219,9 @@ export function TransactionsView({
             onClick={() => setIsScanModalOpen(true)}
             variant="secondary"
             size="sm"
-            className="border border-indigo-500/30 bg-indigo-500/15 hover:bg-indigo-500/25 text-indigo-300 shadow-md shadow-indigo-500/10 text-xs font-semibold cursor-pointer group h-10 sm:h-9"
+            className="text-xs font-semibold cursor-pointer group h-10 sm:h-9"
           >
-            <Sparkles className="h-4 w-4 text-indigo-400 mr-1.5 transition-transform group-hover:scale-110" />
+            <Sparkles className="h-4 w-4 text-emerald-400 mr-1.5 transition-transform group-hover:scale-110" />
             <span>Foto Struk AI</span>
           </Button>
 
@@ -230,7 +230,7 @@ export function TransactionsView({
             onClick={() => setIsImportModalOpen(true)}
             variant="secondary"
             size="sm"
-            className="border border-zinc-800 bg-zinc-900/80 hover:bg-zinc-800 text-zinc-200 text-xs cursor-pointer group h-10 sm:h-9"
+            className="text-xs cursor-pointer group h-10 sm:h-9"
           >
             <FileSpreadsheet className="h-4 w-4 text-zinc-400 group-hover:text-emerald-400 mr-1.5 transition-colors" />
             <span>Import CSV</span>
@@ -239,8 +239,9 @@ export function TransactionsView({
           {/* Add Transaction */}
           <Button
             onClick={() => setIsAddModalOpen(true)}
+            variant="emerald"
             size="sm"
-            className="col-span-2 sm:col-span-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white shadow-lg shadow-blue-500/25 text-xs font-bold cursor-pointer group h-10 sm:h-9"
+            className="col-span-2 sm:col-span-1 text-xs font-bold cursor-pointer group h-10 sm:h-9"
           >
             <Plus className="h-4 w-4 mr-1.5 transition-transform group-hover:rotate-90 duration-200" />
             <span>Catat Transaksi</span>
@@ -251,44 +252,44 @@ export function TransactionsView({
       {/* Bento Stats Summary Banner (Dynamically reflects active filter) */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {/* Total Income */}
-        <div className="rounded-3xl border border-zinc-800/80 bg-gradient-to-br from-emerald-950/20 via-zinc-900/70 to-zinc-950/90 backdrop-blur-xl p-5 space-y-2 shadow-lg hover:border-emerald-500/40 hover:scale-[1.01] transition-all duration-200 group">
+        <div className="rounded-3xl border border-white/[0.08] bg-gradient-to-b from-zinc-900/85 via-zinc-900/50 to-zinc-950/90 backdrop-blur-2xl p-5 space-y-2 shadow-[0_10px_30px_-4px_rgba(0,0,0,0.6),inset_0_1px_0_0_rgba(255,255,255,0.08)] hover:border-emerald-500/30 transition-[border-color,transform,box-shadow] duration-200 group">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-zinc-400">Total Pemasukan</span>
-            <div className="h-9 w-9 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shadow-sm shadow-emerald-500/10 group-hover:scale-110 transition-transform">
-              <TrendingUp className="h-4.5 w-4.5" />
+            <span className="text-[10px] uppercase tracking-[0.14em] font-semibold text-zinc-400">Total Pemasukan</span>
+            <div className="h-8.5 w-8.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 flex items-center justify-center shadow-[inset_0_1px_0_0_rgba(16,185,129,0.2)] group-hover:scale-105 transition-transform">
+              <TrendingUp className="h-4 w-4" />
             </div>
           </div>
           <p className="text-xl sm:text-2xl font-extrabold text-emerald-400 font-mono tabular-nums tracking-tight">
             {isPrivate ? "Rp ••••••••" : `+${formatRupiah(dynamicSummary.totalIncome)}`}
           </p>
-          <p className="text-[11px] text-zinc-500">Periode: {periodLabel}</p>
+          <p className="text-[11px] text-zinc-400 font-mono">Periode: {periodLabel}</p>
         </div>
 
         {/* Total Expense */}
-        <div className="rounded-3xl border border-zinc-800/80 bg-gradient-to-br from-rose-950/20 via-zinc-900/70 to-zinc-950/90 backdrop-blur-xl p-5 space-y-2 shadow-lg hover:border-rose-500/40 hover:scale-[1.01] transition-all duration-200 group">
+        <div className="rounded-3xl border border-white/[0.08] bg-gradient-to-b from-zinc-900/85 via-zinc-900/50 to-zinc-950/90 backdrop-blur-2xl p-5 space-y-2 shadow-[0_10px_30px_-4px_rgba(0,0,0,0.6),inset_0_1px_0_0_rgba(255,255,255,0.08)] hover:border-rose-500/30 transition-[border-color,transform,box-shadow] duration-200 group">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-zinc-400">Total Pengeluaran</span>
-            <div className="h-9 w-9 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-400 flex items-center justify-center shadow-sm shadow-rose-500/10 group-hover:scale-110 transition-transform">
-              <TrendingDown className="h-4.5 w-4.5" />
+            <span className="text-[10px] uppercase tracking-[0.14em] font-semibold text-zinc-400">Total Pengeluaran</span>
+            <div className="h-8.5 w-8.5 rounded-2xl bg-rose-500/10 border border-rose-500/25 text-rose-400 flex items-center justify-center shadow-[inset_0_1px_0_0_rgba(244,63,94,0.2)] group-hover:scale-105 transition-transform">
+              <TrendingDown className="h-4 w-4" />
             </div>
           </div>
           <p className="text-xl sm:text-2xl font-extrabold text-rose-400 font-mono tabular-nums tracking-tight">
             {isPrivate ? "Rp ••••••••" : `-${formatRupiah(dynamicSummary.totalExpense)}`}
           </p>
-          <p className="text-[11px] text-zinc-500">Periode: {periodLabel}</p>
+          <p className="text-[11px] text-zinc-400 font-mono">Periode: {periodLabel}</p>
         </div>
 
         {/* Net Cashflow */}
-        <div className="rounded-3xl border border-zinc-800/80 bg-gradient-to-br from-blue-950/20 via-zinc-900/70 to-zinc-950/90 backdrop-blur-xl p-5 space-y-2 shadow-lg hover:border-blue-500/40 hover:scale-[1.01] transition-all duration-200 group">
+        <div className="rounded-3xl border border-white/[0.08] bg-gradient-to-b from-zinc-900/85 via-zinc-900/50 to-zinc-950/90 backdrop-blur-2xl p-5 space-y-2 shadow-[0_10px_30px_-4px_rgba(0,0,0,0.6),inset_0_1px_0_0_rgba(255,255,255,0.08)] hover:border-white/[0.2] transition-[border-color,transform,box-shadow] duration-200 group">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-zinc-400">Arus Kas Bersih (Net)</span>
-            <div className="h-9 w-9 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center shadow-sm shadow-blue-500/10 group-hover:scale-110 transition-transform">
-              <Scale className="h-4.5 w-4.5" />
+            <span className="text-[10px] uppercase tracking-[0.14em] font-semibold text-zinc-400">Arus Kas Bersih (Net)</span>
+            <div className="h-8.5 w-8.5 rounded-2xl bg-white/[0.05] border border-white/[0.1] text-zinc-200 flex items-center justify-center shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)] group-hover:scale-105 transition-transform">
+              <Scale className="h-4 w-4" />
             </div>
           </div>
           <p
             className={`text-xl sm:text-2xl font-extrabold font-mono tabular-nums tracking-tight ${
-              dynamicSummary.netCashflow >= 0 ? "text-blue-400" : "text-amber-400"
+              dynamicSummary.netCashflow >= 0 ? "text-white" : "text-amber-400"
             }`}
           >
             {isPrivate
@@ -297,7 +298,7 @@ export function TransactionsView({
               ? `+${formatRupiah(dynamicSummary.netCashflow)}`
               : `-${formatRupiah(Math.abs(dynamicSummary.netCashflow))}`}
           </p>
-          <p className="text-[11px] text-zinc-500">
+          <p className="text-[11px] text-zinc-400">
             {dynamicSummary.netCashflow >= 0 ? "Surplus Keuangan" : "Defisit Keuangan"}
           </p>
         </div>

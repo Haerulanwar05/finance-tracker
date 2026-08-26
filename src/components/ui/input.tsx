@@ -28,7 +28,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             type={actualType}
             ref={ref}
             className={cn(
-              "w-full rounded-xl bg-zinc-900/80 border border-zinc-800 px-3.5 py-2.5 text-sm text-zinc-100 placeholder:text-zinc-500 transition-colors focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500/30 disabled:opacity-50",
+              "w-full rounded-2xl bg-zinc-900/80 border border-white/[0.08] shadow-[inset_0_1px_2px_rgba(0,0,0,0.5)] px-3.5 py-2.5 text-sm text-zinc-100 placeholder:text-zinc-500 transition-all focus:border-emerald-500/60 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 disabled:opacity-50",
               isPassword && showPasswordToggle && "pr-10",
               error && "border-rose-500 focus:border-rose-500 focus:ring-rose-500/30",
               className

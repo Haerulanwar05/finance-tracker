@@ -89,8 +89,9 @@ export function GoalsView({ initialGoals, summary, accounts }: GoalsViewProps) {
 
         <Button
           onClick={() => setIsAddModalOpen(true)}
+          variant="emerald"
           size="sm"
-          className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold shadow-lg shadow-blue-500/25 cursor-pointer group h-10 sm:h-9"
+          className="w-full sm:w-auto h-10 sm:h-9 cursor-pointer group"
         >
           <Plus className="h-4 w-4 mr-1.5 transition-transform group-hover:rotate-90 duration-200" />
           <span>Buat Target Baru</span>
@@ -100,62 +101,62 @@ export function GoalsView({ initialGoals, summary, accounts }: GoalsViewProps) {
       {/* Bento Summary Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Total Terkumpul */}
-        <div className="rounded-3xl border border-zinc-800/80 bg-gradient-to-br from-blue-950/20 via-zinc-900/70 to-zinc-950/90 backdrop-blur-xl p-5 space-y-2 shadow-lg hover:border-blue-500/40 hover:scale-[1.01] transition-all duration-200 group">
+        <div className="rounded-3xl border border-white/[0.08] bg-gradient-to-b from-zinc-900/85 via-zinc-900/50 to-zinc-950/90 backdrop-blur-2xl p-5 space-y-2 shadow-[0_10px_30px_-4px_rgba(0,0,0,0.6),inset_0_1px_0_0_rgba(255,255,255,0.08)] hover:border-white/[0.2] transition-[border-color,transform,box-shadow] duration-200 group">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-zinc-400">Tabungan Terkumpul</span>
-            <div className="h-9 w-9 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center shadow-sm shadow-blue-500/10 group-hover:scale-110 transition-transform">
-              <PiggyBank className="h-4.5 w-4.5" />
+            <span className="text-[10px] uppercase tracking-[0.14em] font-semibold text-zinc-400">Tabungan Terkumpul</span>
+            <div className="h-8.5 w-8.5 rounded-2xl bg-white/[0.05] border border-white/[0.1] text-zinc-200 flex items-center justify-center shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)] group-hover:scale-105 transition-transform">
+              <PiggyBank className="h-4 w-4" />
             </div>
           </div>
-          <p className="text-xl sm:text-2xl font-extrabold text-white font-mono tracking-tight">
+          <p className="text-xl sm:text-2xl font-black text-white font-mono tracking-tight tabular-nums">
             {isPrivate ? "Rp ••••••••" : formatRupiah(summary.totalSaved)}
           </p>
           <p className="text-[11px] text-zinc-500">Dari seluruh target tabungan</p>
         </div>
 
         {/* Total Target */}
-        <div className="rounded-3xl border border-zinc-800/80 bg-gradient-to-br from-purple-950/20 via-zinc-900/70 to-zinc-950/90 backdrop-blur-xl p-5 space-y-2 shadow-lg hover:border-purple-500/40 hover:scale-[1.01] transition-all duration-200 group">
+        <div className="rounded-3xl border border-white/[0.08] bg-gradient-to-b from-zinc-900/85 via-zinc-900/50 to-zinc-950/90 backdrop-blur-2xl p-5 space-y-2 shadow-[0_10px_30px_-4px_rgba(0,0,0,0.6),inset_0_1px_0_0_rgba(255,255,255,0.08)] hover:border-white/[0.2] transition-[border-color,transform,box-shadow] duration-200 group">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-zinc-400">Total Target Impian</span>
-            <div className="h-9 w-9 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center shadow-sm shadow-purple-500/10 group-hover:scale-110 transition-transform">
-              <Target className="h-4.5 w-4.5" />
+            <span className="text-[10px] uppercase tracking-[0.14em] font-semibold text-zinc-400">Total Target Impian</span>
+            <div className="h-8.5 w-8.5 rounded-2xl bg-white/[0.05] border border-white/[0.1] text-zinc-200 flex items-center justify-center shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)] group-hover:scale-105 transition-transform">
+              <Target className="h-4 w-4" />
             </div>
           </div>
-          <p className="text-xl sm:text-2xl font-extrabold text-zinc-200 font-mono tracking-tight">
+          <p className="text-xl sm:text-2xl font-black text-zinc-200 font-mono tracking-tight tabular-nums">
             {isPrivate ? "Rp ••••••••" : formatRupiah(summary.totalTarget)}
           </p>
           <p className="text-[11px] text-zinc-500">Akumulasi seluruh target</p>
         </div>
 
         {/* Overall Progress */}
-        <div className="rounded-3xl border border-zinc-800/80 bg-gradient-to-br from-emerald-950/20 via-zinc-900/70 to-zinc-950/90 backdrop-blur-xl p-5 space-y-2 shadow-lg hover:border-emerald-500/40 hover:scale-[1.01] transition-all duration-200 group">
+        <div className="rounded-3xl border border-white/[0.08] bg-gradient-to-b from-zinc-900/85 via-zinc-900/50 to-zinc-950/90 backdrop-blur-2xl p-5 space-y-2 shadow-[0_10px_30px_-4px_rgba(0,0,0,0.6),inset_0_1px_0_0_rgba(255,255,255,0.08)] hover:border-emerald-500/30 transition-[border-color,transform,box-shadow] duration-200 group">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-zinc-400">Rata-rata Pencapaian</span>
-            <div className="h-9 w-9 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shadow-sm shadow-emerald-500/10 group-hover:scale-110 transition-transform">
-              <TrendingUp className="h-4.5 w-4.5" />
+            <span className="text-[10px] uppercase tracking-[0.14em] font-semibold text-zinc-400">Rata-rata Pencapaian</span>
+            <div className="h-8.5 w-8.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 flex items-center justify-center shadow-[inset_0_1px_0_0_rgba(16,185,129,0.2)] group-hover:scale-105 transition-transform">
+              <TrendingUp className="h-4 w-4" />
             </div>
           </div>
-          <p className="text-xl sm:text-2xl font-extrabold text-emerald-400 font-mono tracking-tight">
+          <p className="text-xl sm:text-2xl font-black text-emerald-400 font-mono tracking-tight tabular-nums">
             {summary.overallProgress}%
           </p>
-          <div className="h-1.5 w-full bg-zinc-800 rounded-full overflow-hidden">
+          <div className="h-1.5 w-full bg-zinc-800/80 rounded-full overflow-hidden">
             <div
-              className="h-full bg-emerald-500 rounded-full transition-all duration-500"
+              className="h-full bg-emerald-400 rounded-full transition-all duration-500 shadow-[0_0_8px_rgba(52,211,153,0.5)]"
               style={{ width: `${summary.overallProgress}%` }}
             />
           </div>
         </div>
 
         {/* Goals Count */}
-        <div className="rounded-3xl border border-zinc-800/80 bg-gradient-to-br from-amber-950/20 via-zinc-900/70 to-zinc-950/90 backdrop-blur-xl p-5 space-y-2 shadow-lg hover:border-amber-500/40 hover:scale-[1.01] transition-all duration-200 group">
+        <div className="rounded-3xl border border-white/[0.08] bg-gradient-to-b from-zinc-900/85 via-zinc-900/50 to-zinc-950/90 backdrop-blur-2xl p-5 space-y-2 shadow-[0_10px_30px_-4px_rgba(0,0,0,0.6),inset_0_1px_0_0_rgba(255,255,255,0.08)] hover:border-amber-500/30 transition-[border-color,transform,box-shadow] duration-200 group">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-zinc-400">Status Target</span>
-            <div className="h-9 w-9 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center shadow-sm shadow-amber-500/10 group-hover:scale-110 transition-transform">
-              <Trophy className="h-4.5 w-4.5" />
+            <span className="text-[10px] uppercase tracking-[0.14em] font-semibold text-zinc-400">Status Target</span>
+            <div className="h-8.5 w-8.5 rounded-2xl bg-amber-500/10 border border-amber-500/25 text-amber-400 flex items-center justify-center shadow-[inset_0_1px_0_0_rgba(245,158,11,0.2)] group-hover:scale-105 transition-transform">
+              <Trophy className="h-4 w-4" />
             </div>
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-xl sm:text-2xl font-extrabold text-white font-mono">
+            <span className="text-xl sm:text-2xl font-black text-white font-mono tabular-nums">
               {summary.achievedCount}
             </span>
             <span className="text-xs text-zinc-400">Tercapai / {initialGoals.length} Total</span>
@@ -166,14 +167,14 @@ export function GoalsView({ initialGoals, summary, accounts }: GoalsViewProps) {
 
       {/* Toolbar Filters & Search */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">
-        <div className="flex items-center gap-1.5 p-1 bg-zinc-900/80 rounded-2xl border border-zinc-800/80 w-fit">
+        <div className="flex items-center gap-1.5 p-1 bg-white/[0.03] rounded-2xl border border-white/[0.08] w-fit shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
           <button
             type="button"
             onClick={() => setFilter("ALL")}
             className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
               filter === "ALL"
-                ? "bg-zinc-800 text-white shadow-sm"
-                : "text-zinc-400 hover:text-white"
+                ? "bg-white/[0.08] text-white border border-white/[0.15] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] font-bold"
+                : "text-zinc-400 hover:text-white border border-transparent"
             }`}
           >
             Semua ({initialGoals.length})
@@ -183,8 +184,8 @@ export function GoalsView({ initialGoals, summary, accounts }: GoalsViewProps) {
             onClick={() => setFilter("ACTIVE")}
             className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
               filter === "ACTIVE"
-                ? "bg-blue-600 text-white shadow-sm shadow-blue-900/30"
-                : "text-zinc-400 hover:text-white"
+                ? "bg-white/[0.08] text-white border border-white/[0.15] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] font-bold"
+                : "text-zinc-400 hover:text-white border border-transparent"
             }`}
           >
             🎯 Aktif ({summary.activeCount})
@@ -194,8 +195,8 @@ export function GoalsView({ initialGoals, summary, accounts }: GoalsViewProps) {
             onClick={() => setFilter("ACHIEVED")}
             className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
               filter === "ACHIEVED"
-                ? "bg-emerald-600 text-white shadow-sm shadow-emerald-900/30"
-                : "text-zinc-400 hover:text-white"
+                ? "bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shadow-[inset_0_1px_0_rgba(16,185,129,0.2)] font-bold"
+                : "text-zinc-400 hover:text-white border border-transparent"
             }`}
           >
             🏆 Tercapai ({summary.achievedCount})
@@ -210,7 +211,7 @@ export function GoalsView({ initialGoals, summary, accounts }: GoalsViewProps) {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Cari target tabungan..."
-            className="pl-9 h-9 text-xs bg-zinc-900/80 border-zinc-800 text-white"
+            className="pl-9 h-9 text-xs bg-zinc-900/80 border-white/[0.08] text-white rounded-2xl"
           />
         </div>
       </div>

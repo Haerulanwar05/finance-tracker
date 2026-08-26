@@ -276,18 +276,18 @@ export function AddTransactionModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-150 overflow-y-auto">
-      <div className="w-full max-w-lg rounded-3xl border border-zinc-800 bg-zinc-900/95 backdrop-blur-2xl p-6 text-zinc-100 shadow-2xl space-y-5 my-8">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-150 overflow-y-auto">
+      <div className="w-full max-w-lg rounded-3xl border border-white/[0.09] bg-[#0c0c0f]/95 backdrop-blur-2xl p-6 text-zinc-100 shadow-[0_20px_50px_-8px_rgba(0,0,0,0.8),inset_0_1px_0_0_rgba(255,255,255,0.08)] space-y-5 my-8">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-zinc-800/80 pb-4">
+        <div className="flex items-center justify-between border-b border-white/[0.08] pb-4">
           <div className="flex items-center gap-2.5">
             <div
-              className={`h-9 w-9 rounded-xl flex items-center justify-center border ${
+              className={`h-9 w-9 rounded-2xl flex items-center justify-center border shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] ${
                 type === "EXPENSE"
                   ? "bg-rose-500/10 border-rose-500/30 text-rose-400"
                   : type === "INCOME"
                   ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
-                  : "bg-purple-500/10 border-purple-500/30 text-purple-400"
+                  : "bg-violet-500/10 border-violet-500/30 text-violet-400"
               }`}
             >
               {type === "EXPENSE" ? (
@@ -306,21 +306,22 @@ export function AddTransactionModal({
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer"
+            aria-label="Tutup dialog"
+            className="p-1.5 rounded-xl text-zinc-400 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
         {/* Transaction Type Segmented Toggle */}
-        <div className="grid grid-cols-3 gap-1.5 p-1 rounded-2xl bg-zinc-950 border border-zinc-800">
+        <div className="grid grid-cols-3 gap-1.5 p-1 rounded-2xl bg-white/[0.03] border border-white/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
           <button
             type="button"
             onClick={() => handleTypeChange("EXPENSE")}
             className={`flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               type === "EXPENSE"
-                ? "bg-rose-500/20 text-rose-300 border border-rose-500/30 shadow-md shadow-rose-950/50"
-                : "text-zinc-400 hover:text-white"
+                ? "bg-rose-500/20 text-rose-300 border border-rose-500/30 shadow-[inset_0_1px_0_rgba(244,63,94,0.2)]"
+                : "text-zinc-400 hover:text-white border border-transparent"
             }`}
           >
             <ArrowDownRight className="h-3.5 w-3.5" />
@@ -332,8 +333,8 @@ export function AddTransactionModal({
             onClick={() => handleTypeChange("INCOME")}
             className={`flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               type === "INCOME"
-                ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 shadow-md shadow-emerald-950/50"
-                : "text-zinc-400 hover:text-white"
+                ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 shadow-[inset_0_1px_0_rgba(16,185,129,0.2)]"
+                : "text-zinc-400 hover:text-white border border-transparent"
             }`}
           >
             <ArrowUpRight className="h-3.5 w-3.5" />
@@ -345,8 +346,8 @@ export function AddTransactionModal({
             onClick={() => handleTypeChange("TRANSFER")}
             className={`flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               type === "TRANSFER"
-                ? "bg-purple-500/20 text-purple-300 border border-purple-500/30 shadow-md shadow-purple-950/50"
-                : "text-zinc-400 hover:text-white"
+                ? "bg-violet-500/20 text-violet-300 border border-violet-500/30 shadow-[inset_0_1px_0_rgba(139,92,246,0.2)]"
+                : "text-zinc-400 hover:text-white border border-transparent"
             }`}
           >
             <ArrowRightLeft className="h-3.5 w-3.5" />
@@ -567,10 +568,10 @@ export function AddTransactionModal({
           </div>
 
           {/* Footer Actions */}
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-zinc-800/80">
+          <div className="flex items-center justify-end gap-3 pt-3 border-t border-white/[0.08]">
             <Button
               type="button"
-              variant="outline"
+              variant="secondary"
               size="sm"
               onClick={onClose}
               disabled={isLoading}
@@ -579,14 +580,15 @@ export function AddTransactionModal({
             </Button>
             <Button
               type="submit"
+              variant={type === "INCOME" ? "emerald" : undefined}
               size="sm"
               disabled={isLoading || numericAmount <= 0}
               className={
                 type === "EXPENSE"
-                  ? "bg-rose-600 hover:bg-rose-500 text-white"
+                  ? "bg-rose-500 hover:bg-rose-400 text-white font-bold shadow-[0_4px_16px_-2px_rgba(244,63,94,0.4),inset_0_1px_0_rgba(255,255,255,0.2)]"
                   : type === "INCOME"
-                  ? "bg-emerald-600 hover:bg-emerald-500 text-white"
-                  : "bg-purple-600 hover:bg-purple-500 text-white"
+                  ? undefined
+                  : "bg-violet-600 hover:bg-violet-500 text-white font-bold shadow-[0_4px_16px_-2px_rgba(139,92,246,0.4),inset_0_1px_0_rgba(255,255,255,0.2)]"
               }
             >
               <Check className="h-4 w-4 mr-1.5" />
