@@ -238,8 +238,13 @@ export async function createTransaction(input: CreateTransactionInput): Promise<
         throw new Error("Akun sumber dana tidak ditemukan.");
       }
 
-      if (type === "TRANSFER" && (!targetAccountId || !target)) {
-        throw new Error("Akun tujuan transfer tidak ditemukan atau tidak valid.");
+      if (type === "TRANSFER") {
+        if (!targetAccountId || !target) {
+          throw new Error("Akun tujuan transfer tidak ditemukan atau tidak valid.");
+        }
+        if (accountId === targetAccountId) {
+          throw new Error("Akun sumber dan tujuan transfer tidak boleh sama.");
+        }
       }
 
       // 2. Intelligent Auto-Sync: If category is provided, align type with category's actual type
@@ -391,6 +396,15 @@ export async function updateTransaction(input: UpdateTransactionInput): Promise<
       let finalType = type;
       if (cat) {
         finalType = cat.type as "INCOME" | "EXPENSE" | "TRANSFER";
+      }
+
+      if (finalType === "TRANSFER") {
+        if (!targetAccountId) {
+          throw new Error("Akun tujuan transfer wajib diisi.");
+        }
+        if (accountId === targetAccountId) {
+          throw new Error("Akun sumber dan tujuan transfer tidak boleh sama.");
+        }
       }
 
       // 4. Apply new balance mutation and update record in parallel

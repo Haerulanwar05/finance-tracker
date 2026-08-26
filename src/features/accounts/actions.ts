@@ -326,6 +326,13 @@ export async function transferFunds(input: TransferInput): Promise<ActionResult>
 
   const { sourceAccountId, targetAccountId, amount, date, description } = validated.data;
 
+  if (sourceAccountId === targetAccountId) {
+    return {
+      success: false,
+      message: "Akun sumber dan tujuan transfer tidak boleh sama.",
+    };
+  }
+
   try {
     await prisma.$transaction(async (tx) => {
       // 1. Fetch & verify source and target accounts concurrently

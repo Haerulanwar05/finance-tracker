@@ -66,6 +66,50 @@ export function EditTransactionModal({
   const [error, setError] = React.useState<string | null>(null);
   const [isLoading, setIsLoading] = React.useState(false);
 
+  // Synchronize targetAccountId whenever type is TRANSFER
+  React.useEffect(() => {
+    if (type === "TRANSFER" && accounts.length >= 2) {
+      const availableTargets = accounts.filter((a) => a.id !== accountId);
+      if (
+        availableTargets.length > 0 &&
+        (!targetAccountId || targetAccountId === accountId || !availableTargets.some((a) => a.id === targetAccountId))
+      ) {
+        setTargetAccountId(availableTargets[0].id);
+      }
+    }
+  }, [type, accountId, targetAccountId, accounts]);
+
+  function handleSourceAccountChange(newAccId: string) {
+    setAccountId(newAccId);
+    setError(null);
+    if (type === "TRANSFER" && newAccId === targetAccountId) {
+      const nextTarget = accounts.find((a) => a.id !== newAccId);
+      if (nextTarget) {
+        setTargetAccountId(nextTarget.id);
+      }
+    }
+  }
+
+  function handleTargetAccountChange(newTargetId: string) {
+    setTargetAccountId(newTargetId);
+    setError(null);
+    if (newTargetId === accountId) {
+      const nextSource = accounts.find((a) => a.id !== newTargetId);
+      if (nextSource) {
+        setAccountId(nextSource.id);
+      }
+    }
+  }
+
+  function handleSwapTransferAccounts() {
+    if (accounts.length < 2) return;
+    setError(null);
+    const prevSource = accountId;
+    const prevTarget = targetAccountId;
+    setAccountId(prevTarget);
+    setTargetAccountId(prevSource);
+  }
+
   if (!isOpen || !transaction) return null;
 
   const numericAmount = parseFloat(amount.replace(/[^0-9]/g, "")) || 0;
@@ -239,46 +283,57 @@ export function EditTransactionModal({
 
           {/* Account Selector */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-zinc-300 flex items-center gap-1.5">
-                <Wallet className="h-3.5 w-3.5 text-zinc-400" />
-                <span>Akun Sumber</span>
-              </label>
-              <select
-                value={accountId}
-                onChange={(e) => setAccountId(e.target.value)}
-                className="w-full h-10 px-3 rounded-xl bg-zinc-950 border border-zinc-800 text-xs text-white focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
-              >
-                {accounts.map((acc) => (
-                  <option key={acc.id} value={acc.id}>
-                    {acc.name} ({formatRupiah(acc.balance)})
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Target Account (Only for TRANSFER) */}
-            {type === "TRANSFER" ? (
               <div className="space-y-1.5">
                 <label className="text-xs font-semibold text-zinc-300 flex items-center gap-1.5">
-                  <ArrowRightLeft className="h-3.5 w-3.5 text-purple-400" />
-                  <span>Akun Tujuan</span>
+                  <Wallet className="h-3.5 w-3.5 text-zinc-400" />
+                  <span>Akun Sumber</span>
                 </label>
                 <select
-                  value={targetAccountId}
-                  onChange={(e) => setTargetAccountId(e.target.value)}
-                  className="w-full h-10 px-3 rounded-xl bg-zinc-950 border border-zinc-800 text-xs text-white focus:outline-none focus:ring-1 focus:ring-purple-500 cursor-pointer"
+                  value={accountId}
+                  onChange={(e) => handleSourceAccountChange(e.target.value)}
+                  className="w-full h-10 px-3 rounded-xl bg-zinc-950 border border-zinc-800 text-xs text-white focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
                 >
-                  {accounts
-                    .filter((a) => a.id !== accountId)
-                    .map((acc) => (
-                      <option key={acc.id} value={acc.id}>
-                        {acc.name} ({formatRupiah(acc.balance)})
-                      </option>
-                    ))}
+                  {accounts.map((acc) => (
+                    <option key={acc.id} value={acc.id}>
+                      {acc.name} ({formatRupiah(acc.balance)})
+                    </option>
+                  ))}
                 </select>
               </div>
-            ) : (
+
+              {/* Target Account (Only for TRANSFER) */}
+              {type === "TRANSFER" ? (
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-semibold text-zinc-300 flex items-center gap-1.5">
+                      <ArrowRightLeft className="h-3.5 w-3.5 text-purple-400" />
+                      <span>Akun Tujuan</span>
+                    </label>
+                    <button
+                      type="button"
+                      onClick={handleSwapTransferAccounts}
+                      className="text-[10px] text-purple-400 hover:text-purple-300 flex items-center gap-1 hover:underline cursor-pointer"
+                      title="Tukar akun sumber dan tujuan"
+                    >
+                      <ArrowRightLeft className="h-2.5 w-2.5" />
+                      <span>Tukar Arah</span>
+                    </button>
+                  </div>
+                  <select
+                    value={targetAccountId}
+                    onChange={(e) => handleTargetAccountChange(e.target.value)}
+                    className="w-full h-10 px-3 rounded-xl bg-zinc-950 border border-zinc-800 text-xs text-white focus:outline-none focus:ring-1 focus:ring-purple-500 cursor-pointer"
+                  >
+                    {accounts
+                      .filter((a) => a.id !== accountId)
+                      .map((acc) => (
+                        <option key={acc.id} value={acc.id}>
+                          {acc.name} ({formatRupiah(acc.balance)})
+                        </option>
+                      ))}
+                  </select>
+                </div>
+              ) : (
               /* Category Selector */
               <div className="space-y-1.5">
                 <label className="text-xs font-semibold text-zinc-300 flex items-center gap-1.5">

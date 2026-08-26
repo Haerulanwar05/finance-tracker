@@ -28,19 +28,85 @@ export function TransferModal({
   defaultSourceId,
 }: TransferModalProps) {
   const router = useRouter();
-  const initialSource = defaultSourceId || accounts[0]?.id || "";
-  const initialTarget = accounts.find((a) => a.id !== initialSource)?.id || "";
 
-  const [sourceId, setSourceId] = React.useState(initialSource);
-  const [targetId, setTargetId] = React.useState(initialTarget);
+  const [sourceId, setSourceId] = React.useState("");
+  const [targetId, setTargetId] = React.useState("");
   const [amount, setAmount] = React.useState("");
   const [description, setDescription] = React.useState("");
   const [error, setError] = React.useState<string | null>(null);
   const [isLoading, setIsLoading] = React.useState(false);
 
+  // Initialize or reset source and target accounts whenever modal opens or defaultSourceId changes
+  React.useEffect(() => {
+    if (isOpen && accounts.length > 0) {
+      const validSource = defaultSourceId && accounts.some((a) => a.id === defaultSourceId)
+        ? defaultSourceId
+        : accounts[0]?.id || "";
+      const validTarget = accounts.find((a) => a.id !== validSource)?.id || "";
+
+      setSourceId(validSource);
+      setTargetId(validTarget);
+      setAmount("");
+      setDescription("");
+      setError(null);
+    }
+  }, [isOpen, defaultSourceId, accounts]);
+
+  // Robust synchronization: Guarantee targetId is valid and NEVER equals sourceId
+  React.useEffect(() => {
+    if (!isOpen || accounts.length < 2) return;
+
+    if (!sourceId && accounts[0]) {
+      setSourceId(accounts[0].id);
+    }
+
+    const availableTargets = accounts.filter((a) => a.id !== sourceId);
+    if (availableTargets.length > 0) {
+      if (!targetId || targetId === sourceId || !availableTargets.some((a) => a.id === targetId)) {
+        setTargetId(availableTargets[0].id);
+      }
+    }
+  }, [isOpen, sourceId, targetId, accounts]);
+
   if (!isOpen) return null;
 
   const sourceAccount = accounts.find((a) => a.id === sourceId);
+  const targetAccount = accounts.find((a) => a.id === targetId);
+
+  function handleSourceChange(newSourceId: string) {
+    setSourceId(newSourceId);
+    setError(null);
+
+    // If newly selected source collides with current target, auto-switch target to another account
+    if (newSourceId === targetId) {
+      const nextTarget = accounts.find((a) => a.id !== newSourceId);
+      if (nextTarget) {
+        setTargetId(nextTarget.id);
+      }
+    }
+  }
+
+  function handleTargetChange(newTargetId: string) {
+    setTargetId(newTargetId);
+    setError(null);
+
+    // If newly selected target collides with current source, auto-switch source to another account
+    if (newTargetId === sourceId) {
+      const nextSource = accounts.find((a) => a.id !== newTargetId);
+      if (nextSource) {
+        setSourceId(nextSource.id);
+      }
+    }
+  }
+
+  function handleSwapAccounts() {
+    if (accounts.length < 2) return;
+    setError(null);
+    const prevSource = sourceId;
+    const prevTarget = targetId;
+    setSourceId(prevTarget);
+    setTargetId(prevSource);
+  }
 
   function handleSetMaxAmount() {
     if (!sourceAccount) return;
@@ -58,7 +124,7 @@ export function TransferModal({
       return;
     }
 
-    if (sourceId === targetId) {
+    if (!sourceId || !targetId || sourceId === targetId) {
       setError("Akun sumber dan tujuan tidak boleh sama");
       return;
     }
@@ -146,7 +212,7 @@ export function TransferModal({
                 </div>
                 <select
                   value={sourceId}
-                  onChange={(e) => setSourceId(e.target.value)}
+                  onChange={(e) => handleSourceChange(e.target.value)}
                   className="w-full rounded-xl bg-zinc-900 border border-zinc-800 px-3.5 py-2.5 text-sm text-zinc-100 focus:border-blue-500 focus:outline-none cursor-pointer"
                 >
                   {accounts.map((acc) => (
@@ -157,12 +223,32 @@ export function TransferModal({
                 </select>
               </div>
 
+              {/* Quick Swap Direction Button */}
+              <div className="flex justify-center -my-1">
+                <button
+                  type="button"
+                  onClick={handleSwapAccounts}
+                  className="px-3 py-1.5 rounded-full bg-zinc-800/80 hover:bg-zinc-700 border border-zinc-700 text-xs font-semibold text-purple-400 hover:text-purple-300 flex items-center gap-1.5 shadow-sm transition-all cursor-pointer active:scale-95"
+                  title="Tukar akun sumber dan tujuan"
+                >
+                  <ArrowRightLeft className="h-3 w-3" />
+                  <span>Tukar Akun Asal & Tujuan</span>
+                </button>
+              </div>
+
               {/* Target Account Selector */}
               <div className="space-y-1.5">
-                <label className="block text-xs font-medium text-zinc-300">Ke Akun (Tujuan)</label>
+                <div className="flex items-center justify-between text-xs">
+                  <label className="font-medium text-zinc-300">Ke Akun (Tujuan)</label>
+                  {targetAccount && (
+                    <span className="text-zinc-400">
+                      Saldo: <span className="text-zinc-200 font-mono">{formatRupiah(targetAccount.balance)}</span>
+                    </span>
+                  )}
+                </div>
                 <select
                   value={targetId}
-                  onChange={(e) => setTargetId(e.target.value)}
+                  onChange={(e) => handleTargetChange(e.target.value)}
                   className="w-full rounded-xl bg-zinc-900 border border-zinc-800 px-3.5 py-2.5 text-sm text-zinc-100 focus:border-blue-500 focus:outline-none cursor-pointer"
                 >
                   {accounts

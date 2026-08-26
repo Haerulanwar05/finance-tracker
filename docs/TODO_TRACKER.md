@@ -181,6 +181,11 @@
 - [x] **9.7 Optimasi Respon Tombol CRUD (*Parallel Database Query Batching*)**
   - [x] Memangkas database roundtrips pada `createTransaction`, `updateTransaction`, `deleteTransaction`, `transferFunds`, `depositToVault`, dan `withdrawFromVault` dari 5-6 roundtrip menjadi hanya 2 roundtrip menggunakan `Promise.all` di dalam transaksi ACID.
   - [x] Menghilangkan *double-fetch delay* pada antarmuka klien sehingga modal tertutup dan merespons mutasi secara instan (< 200ms).
+- [x] **9.8 Resolusi Bug Transfer Antar-Akun & Auto-Collision Handler**
+  - [x] Memperbaiki desinkronisasi state pada `TransferModal`, `AddTransactionModal`, dan `EditTransactionModal` ketika pengguna memilih akun sumber yang sama dengan target (misal: BNI $\rightarrow$ Uang Tunai).
+  - [x] Menyediakan auto-switch otomatis pada akun tujuan saat terjadi tabrakan pilihan (*collision*), sinkronisasi realtime melalui `useEffect`, dan tombol interaktif *Swap Direction* (🔁 Tukar Akun).
+  - [x] Menambahkan validasi proteksi berlapis pada action `transferFunds`, `createTransaction`, dan `updateTransaction`.
+  - [x] Menambahkan test suite komprehensif `tests/unit/transfer-interaccount.test.ts` (11 pengujian baru). Total pengujian meningkat menjadi **13 Test Suites, 109/109 Tests Passing (100% Green)**.
 
 ---
 
@@ -195,7 +200,7 @@
   - [x] Integrasi modal tambah transaksi (`add-transaction-modal.tsx`) dengan fallback otomatis ke antrean lokal HP saat tidak ada koneksi internet.
   - [x] Auto-Sync background dispatcher yang otomatis mengirim transaksi tersimpan ke server cloud saat perangkat kembali online.
   - [x] Banner status offline, modal daftar antrean transaksi offline, dan kontrol PWA di menu Pengaturan.
-  - [x] Unit test suite khusus (`tests/unit/offline-queue.test.ts`) dengan cakupan 6 pengujian lengkap. Total test suite mencapai **12 Test Suites, 98/98 Tests Passing (100%)**.
+  - [x] Unit test suite khusus (`tests/unit/offline-queue.test.ts`) dengan cakupan 6 pengujian lengkap. Total test suite mencapai **13 Test Suites, 109/109 Tests Passing (100%)**.
 - [ ] **10.1 Telegram & WhatsApp AI Ingestion Bot**
   - [ ] Webhook bot Telegram / WhatsApp untuk menerima pesan teks ("Makan 35rb Gopay") atau foto struk langsung dari smartphone.
   - [ ] Auto-reply konfirmasi instan dan pencatatan otomatis ke database tanpa perlu membuka browser.
